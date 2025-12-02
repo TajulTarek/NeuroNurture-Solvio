@@ -1,0 +1,15 @@
+# IMPORTANT: Python 3.8-3.10 required (MediaPipe compatibility)
+# Create virtual environment with: python3.10 -m venv venv
+# Or run: ./setup_venv.sh
+
+fastapi
+uvicorn[standard]
+opencv-python
+numpy<2.0.0  # MediaPipe compatibility
+mediapipe  # Requires Python 3.8-3.10 only
+joblib
+groq
+python-Levenshtein
+python-dotenv
+python-multipart
+scikit-learn
