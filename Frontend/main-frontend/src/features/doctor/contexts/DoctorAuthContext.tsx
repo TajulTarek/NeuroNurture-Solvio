@@ -1,4 +1,10 @@
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface Doctor {
   id: string;
@@ -15,7 +21,7 @@ interface Doctor {
   state: string;
   zipCode: string;
   yearsOfExperience: number;
-  subscriptionStatus: 'pending' | 'active' | 'expired';
+  subscriptionStatus: "pending" | "active" | "expired";
   subscriptionExpiry?: string;
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
@@ -30,7 +36,7 @@ interface Doctor {
   avatar?: string;
   lastLogin?: string;
   preferences?: {
-    theme?: 'light' | 'dark';
+    theme?: "light" | "dark";
     notifications?: boolean;
     language?: string;
   };
@@ -60,7 +66,7 @@ interface DoctorAuthContextType {
   hasPermission: (permission: string) => boolean;
   canAddPatient: () => boolean;
   getSubscriptionInfo: () => {
-    status: 'free' | 'paid';
+    status: "free" | "paid";
     maxPatients: number;
     currentPatients: number;
     remainingSlots: number;
@@ -68,12 +74,14 @@ interface DoctorAuthContextType {
   };
 }
 
-const DoctorAuthContext = createContext<DoctorAuthContextType | undefined>(undefined);
+const DoctorAuthContext = createContext<DoctorAuthContextType | undefined>(
+  undefined
+);
 
 export const useDoctorAuth = () => {
   const context = useContext(DoctorAuthContext);
   if (!context) {
-    throw new Error('useDoctorAuth must be used within a DoctorAuthProvider');
+    throw new Error("useDoctorAuth must be used within a DoctorAuthProvider");
   }
   return context;
 };
@@ -82,8 +90,9 @@ interface DoctorAuthProviderProps {
   children: ReactNode;
 }
 
-
-export const DoctorAuthProvider: React.FC<DoctorAuthProviderProps> = ({ children }) => {
+export const DoctorAuthProvider: React.FC<DoctorAuthProviderProps> = ({
+  children,
+}) => {
   const [doctor, setDoctor] = useState<Doctor | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<AuthError | null>(null);
@@ -91,20 +100,20 @@ export const DoctorAuthProvider: React.FC<DoctorAuthProviderProps> = ({ children
   // Initialize auth state from localStorage
   useEffect(() => {
     // Check for existing doctor session in localStorage
-    const savedDoctor = localStorage.getItem('doctorAuth');
-    const savedToken = localStorage.getItem('doctorToken');
-    console.log('DoctorAuthContext: Checking saved data...');
-    console.log('Saved doctor:', savedDoctor);
-    console.log('Saved token:', savedToken);
+    const savedDoctor = localStorage.getItem("doctorAuth");
+    const savedToken = localStorage.getItem("doctorToken");
+    console.log("DoctorAuthContext: Checking saved data...");
+    console.log("Saved doctor:", savedDoctor);
+    console.log("Saved token:", savedToken);
 
     if (savedDoctor) {
       try {
         const doctorData = JSON.parse(savedDoctor);
         setDoctor(doctorData);
-        console.log('DoctorAuthContext: Doctor data loaded successfully');
+        console.log("DoctorAuthContext: Doctor data loaded successfully");
       } catch (error) {
-        console.error('Error parsing saved doctor data:', error);
-        localStorage.removeItem('doctorAuth');
+        console.error("Error parsing saved doctor data:", error);
+        localStorage.removeItem("doctorAuth");
       }
     }
     setIsLoading(false);
@@ -115,25 +124,28 @@ export const DoctorAuthProvider: React.FC<DoctorAuthProviderProps> = ({ children
     setError(null);
 
     try {
-      const response = await fetch('http://localhost:8093/api/doctor/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: credentials.email,
-          password: credentials.password
-        }),
-      });
+      const response = await fetch(
+        "http://188.166.197.135:8093/api/doctor/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: credentials.email,
+            password: credentials.password,
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
-        console.log('DoctorAuthContext login response:', data);
-        console.log('JWT Token received:', data.token);
+        console.log("DoctorAuthContext login response:", data);
+        console.log("JWT Token received:", data.token);
 
         // Store token and doctor data
-        localStorage.setItem('doctorToken', data.token);
-        localStorage.setItem('doctorEmail', credentials.email);
+        localStorage.setItem("doctorToken", data.token);
+        localStorage.setItem("doctorEmail", credentials.email);
 
         const doctorData: Doctor = {
           id: data.doctor.id.toString(),
@@ -163,26 +175,28 @@ export const DoctorAuthProvider: React.FC<DoctorAuthProviderProps> = ({ children
           rating: 4.8, // Default rating
           joinDate: new Date().toISOString(),
           lastLogin: new Date().toISOString(),
-          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(data.doctor.firstName + ' ' + data.doctor.lastName)}&background=random`,
+          avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(
+            data.doctor.firstName + " " + data.doctor.lastName
+          )}&background=random`,
           preferences: {
-            theme: 'light',
+            theme: "light",
             notifications: true,
-            language: 'en'
-          }
+            language: "en",
+          },
         };
 
         setDoctor(doctorData);
-        localStorage.setItem('doctorAuth', JSON.stringify(doctorData));
+        localStorage.setItem("doctorAuth", JSON.stringify(doctorData));
         setIsLoading(false);
         return true;
       } else {
         const errorText = await response.text();
-        console.error('Login failed:', errorText);
+        console.error("Login failed:", errorText);
         setIsLoading(false);
         return false;
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error("Login error:", error);
       setIsLoading(false);
       return false;
     }
@@ -190,19 +204,18 @@ export const DoctorAuthProvider: React.FC<DoctorAuthProviderProps> = ({ children
 
   const logout = () => {
     setDoctor(null);
-    localStorage.removeItem('doctorAuth');
-    localStorage.removeItem('doctorToken');
-    localStorage.removeItem('doctorEmail');
+    localStorage.removeItem("doctorAuth");
+    localStorage.removeItem("doctorToken");
+    localStorage.removeItem("doctorEmail");
   };
 
   const updateDoctor = (updates: Partial<Doctor>) => {
     if (doctor) {
       const updatedDoctor = { ...doctor, ...updates };
       setDoctor(updatedDoctor);
-      localStorage.setItem('doctorAuth', JSON.stringify(updatedDoctor));
+      localStorage.setItem("doctorAuth", JSON.stringify(updatedDoctor));
     }
   };
-
 
   const clearError = () => {
     setError(null);
@@ -219,12 +232,14 @@ export const DoctorAuthProvider: React.FC<DoctorAuthProviderProps> = ({ children
 
     // Define permission logic based on subscription and role
     const permissions = {
-      'view_patients': true,
-      'add_patients': isSubscriptionActive() || doctor.currentChildrenCount < doctor.maxChildren,
-      'create_tasks': true,
-      'view_analytics': isSubscriptionActive(),
-      'export_data': isSubscriptionActive(),
-      'manage_subscription': true
+      view_patients: true,
+      add_patients:
+        isSubscriptionActive() ||
+        doctor.currentChildrenCount < doctor.maxChildren,
+      create_tasks: true,
+      view_analytics: isSubscriptionActive(),
+      export_data: isSubscriptionActive(),
+      manage_subscription: true,
     };
 
     return permissions[permission as keyof typeof permissions] || false;
@@ -238,11 +253,11 @@ export const DoctorAuthProvider: React.FC<DoctorAuthProviderProps> = ({ children
   const getSubscriptionInfo = () => {
     if (!doctor) {
       return {
-        status: 'free' as const,
+        status: "free" as const,
         maxPatients: 0,
         currentPatients: 0,
         remainingSlots: 0,
-        isAtLimit: true
+        isAtLimit: true,
       };
     }
 
@@ -253,11 +268,11 @@ export const DoctorAuthProvider: React.FC<DoctorAuthProviderProps> = ({ children
     };
 
     return {
-      status: isSubscriptionActive() ? 'paid' as const : 'free' as const,
+      status: isSubscriptionActive() ? ("paid" as const) : ("free" as const),
       maxPatients: doctor.maxChildren,
       currentPatients: doctor.currentChildrenCount,
       remainingSlots: doctor.maxChildren - doctor.currentChildrenCount,
-      isAtLimit: doctor.currentChildrenCount >= doctor.maxChildren
+      isAtLimit: doctor.currentChildrenCount >= doctor.maxChildren,
     };
   };
 
@@ -272,7 +287,7 @@ export const DoctorAuthProvider: React.FC<DoctorAuthProviderProps> = ({ children
     clearError,
     hasPermission,
     canAddPatient,
-    getSubscriptionInfo
+    getSubscriptionInfo,
   };
 
   return (

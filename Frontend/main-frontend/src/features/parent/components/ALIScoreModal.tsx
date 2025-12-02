@@ -1,8 +1,8 @@
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { getCurrentChild } from '@/shared/utils/childUtils';
-import { Brain, CheckCircle, Target, Trophy, X } from 'lucide-react';
-import React, { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { getCurrentChild } from "@/shared/utils/childUtils";
+import { Brain, CheckCircle, Target, Trophy, X } from "lucide-react";
+import React, { useState } from "react";
 
 interface Game {
   id: string;
@@ -22,51 +22,53 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
   const [showResult, setShowResult] = useState(false);
   const [aliScore, setAliScore] = useState<number | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
-  const [sessionErrors, setSessionErrors] = useState<{[key: string]: string}>({});
+  const [sessionErrors, setSessionErrors] = useState<{ [key: string]: string }>(
+    {}
+  );
   const [modelConfidence, setModelConfidence] = useState<number | null>(null);
 
   const games: Game[] = [
     {
-      id: 'dance_doodle_game',
-      title: 'Dance Doodle',
-      description: 'Strike amazing poses!',
-      icon: '🕺',
-      color: 'from-purple-400 to-pink-500'
+      id: "dance_doodle_game",
+      title: "Dance Doodle",
+      description: "Strike amazing poses!",
+      icon: "🕺",
+      color: "from-purple-400 to-pink-500",
     },
     {
-      id: 'gesture_game',
-      title: 'Gesture Game',
-      description: 'Learn hand gestures!',
-      icon: '👋',
-      color: 'from-blue-400 to-purple-500'
+      id: "gesture_game",
+      title: "Gesture Game",
+      description: "Learn hand gestures!",
+      icon: "👋",
+      color: "from-blue-400 to-purple-500",
     },
     {
-      id: 'gaze_tracking_game',
-      title: 'Eye Gaze Tracking',
-      description: 'Pop balloons with your eyes!',
-      icon: '👁️',
-      color: 'from-purple-400 to-blue-500'
+      id: "gaze_tracking_game",
+      title: "Eye Gaze Tracking",
+      description: "Pop balloons with your eyes!",
+      icon: "👁️",
+      color: "from-purple-400 to-blue-500",
     },
     {
-      id: 'mirror_posture_game',
-      title: 'Mirror Posture',
-      description: 'Mimic expressions!',
-      icon: '😎',
-      color: 'from-orange-400 to-pink-500'
+      id: "mirror_posture_game",
+      title: "Mirror Posture",
+      description: "Mimic expressions!",
+      icon: "😎",
+      color: "from-orange-400 to-pink-500",
     },
     {
-      id: 'repeat_with_me_game',
-      title: 'Repeat with Me',
-      description: 'Listen and repeat sentences!',
-      icon: '🎤',
-      color: 'from-pink-400 to-red-500'
-    }
+      id: "repeat_with_me_game",
+      title: "Repeat with Me",
+      description: "Listen and repeat sentences!",
+      icon: "🎤",
+      color: "from-pink-400 to-red-500",
+    },
   ];
 
   const handleGameToggle = (gameId: string) => {
-    setSelectedGames(prev => 
-      prev.includes(gameId) 
-        ? prev.filter(id => id !== gameId)
+    setSelectedGames((prev) =>
+      prev.includes(gameId)
+        ? prev.filter((id) => id !== gameId)
         : [...prev, gameId]
     );
   };
@@ -74,27 +76,33 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
   // Generate 5-bit binary code for selected games
   const generateBinaryCode = (selectedGames: string[]): number => {
     // Game order must match ALI model lexicographic order: dance_doodle_game, gaze_game, gesture_game, mirror_posture_game, repeat_with_me_game
-    const gameOrder = ['dance_doodle_game', 'gaze_game', 'gesture_game', 'mirror_posture_game', 'repeat_with_me_game'];
-    
+    const gameOrder = [
+      "dance_doodle_game",
+      "gaze_game",
+      "gesture_game",
+      "mirror_posture_game",
+      "repeat_with_me_game",
+    ];
+
     // Generate binary string that will be reversed by ALI model
     // We need to think in reverse: what should the final bitmask be after reversal?
-    let binaryString = '';
+    let binaryString = "";
     for (const gameId of gameOrder) {
       // Map frontend game IDs to ALI model game IDs for binary generation
-      const aliGameId = gameId === 'gaze_game' ? 'gaze_tracking_game' : gameId;
-      binaryString += selectedGames.includes(aliGameId) ? '1' : '0';
+      const aliGameId = gameId === "gaze_game" ? "gaze_tracking_game" : gameId;
+      binaryString += selectedGames.includes(aliGameId) ? "1" : "0";
     }
-    
+
     // Reverse the binary string because ALI model will reverse it again
-    const reversedBinary = binaryString.split('').reverse().join('');
+    const reversedBinary = binaryString.split("").reverse().join("");
     const decimalValue = parseInt(reversedBinary, 2);
-    
-    console.log('Selected games:', selectedGames);
-    console.log('Game order:', gameOrder);
-    console.log('Binary string (before reversal):', binaryString);
-    console.log('Binary string (after reversal):', reversedBinary);
-    console.log('Decimal value to send:', decimalValue);
-    
+
+    console.log("Selected games:", selectedGames);
+    console.log("Game order:", gameOrder);
+    console.log("Binary string (before reversal):", binaryString);
+    console.log("Binary string (after reversal):", reversedBinary);
+    console.log("Decimal value to send:", decimalValue);
+
     return decimalValue;
   };
 
@@ -102,29 +110,31 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
   const fetchGameData = async (selectedGames: string[], childId: string) => {
     try {
       const gameData: any = {};
-      const errors: {[key: string]: string} = {};
-      
+      const errors: { [key: string]: string } = {};
+
       // Game service URLs mapping
-      const gameServiceUrls: {[key: string]: string} = {
-        'dance_doodle_game': 'http://localhost:8087/api/dance-doodle',
-        'gesture_game': 'http://localhost:8084/api/gesture-game',
-        'gaze_tracking_game': 'http://localhost:8086/api/gaze-game',
-        'mirror_posture_game': 'http://localhost:8083/api/mirror-posture-game',
-        'repeat_with_me_game': 'http://localhost:8089/api/repeat-with-me-game'
+      const gameServiceUrls: { [key: string]: string } = {
+        dance_doodle_game: "http://188.166.197.135:8087/api/dance-doodle",
+        gesture_game: "http://188.166.197.135:8084/api/gesture-game",
+        gaze_tracking_game: "http://188.166.197.135:8086/api/gaze-game",
+        mirror_posture_game:
+          "http://188.166.197.135:8083/api/mirror-posture-game",
+        repeat_with_me_game:
+          "http://188.166.197.135:8089/api/repeat-with-me-game",
       };
-      
+
       // Map frontend game IDs to ALI model game IDs
-      const gameIdMapping: {[key: string]: string} = {
-        'dance_doodle_game': 'dance_doodle_game',
-        'gesture_game': 'gesture_game',
-        'gaze_tracking_game': 'gaze_game',  // Map to gaze_game for ALI model
-        'mirror_posture_game': 'mirror_posture_game',
-        'repeat_with_me_game': 'repeat_with_me_game'
+      const gameIdMapping: { [key: string]: string } = {
+        dance_doodle_game: "dance_doodle_game",
+        gesture_game: "gesture_game",
+        gaze_tracking_game: "gaze_game", // Map to gaze_game for ALI model
+        mirror_posture_game: "mirror_posture_game",
+        repeat_with_me_game: "repeat_with_me_game",
       };
-      
+
       // Get child age (assuming 6 for now, could be fetched from child data)
       const childAge = 6;
-      
+
       // Fetch data from each game service
       for (const gameId of selectedGames) {
         try {
@@ -133,17 +143,17 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
             errors[gameId] = "Unknown game service";
             continue;
           }
-          
+
           const latestSessionUrl = `${serviceUrl}/child/${childId}/latest-session`;
           console.log(`Fetching data from: ${latestSessionUrl}`);
-          
+
           const response = await fetch(latestSessionUrl, {
-            method: 'GET',
+            method: "GET",
             headers: {
-              'Content-Type': 'application/json',
-            }
+              "Content-Type": "application/json",
+            },
           });
-          
+
           if (response.ok) {
             const sessionData = await response.json();
             // Add age to the session data
@@ -151,13 +161,22 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
             // Use mapped game ID for ALI model compatibility
             const aliGameId = gameIdMapping[gameId] || gameId;
             gameData[aliGameId] = sessionData;
-            console.log(`✅ Successfully fetched data for game: ${gameId} -> ${aliGameId}`, sessionData);
+            console.log(
+              `✅ Successfully fetched data for game: ${gameId} -> ${aliGameId}`,
+              sessionData
+            );
           } else if (response.status === 404) {
-            errors[gameId] = `No session found for ${getGameDisplayName(gameId)}`;
+            errors[gameId] = `No session found for ${getGameDisplayName(
+              gameId
+            )}`;
             console.warn(`❌ No session data found for game: ${gameId} (404)`);
           } else {
-            errors[gameId] = `Service unavailable for ${getGameDisplayName(gameId)}`;
-            console.warn(`❌ Service error for game: ${gameId} (${response.status})`);
+            errors[gameId] = `Service unavailable for ${getGameDisplayName(
+              gameId
+            )}`;
+            console.warn(
+              `❌ Service error for game: ${gameId} (${response.status})`
+            );
           }
         } catch (error) {
           const errorMsg = `No session found for ${getGameDisplayName(gameId)}`;
@@ -165,20 +184,20 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
           console.error(`❌ Error fetching data for game ${gameId}:`, error);
         }
       }
-      
+
       // Store errors for display
       if (Object.keys(errors).length > 0) {
         setSessionErrors(errors);
-        console.warn('Some games had no session data:', errors);
+        console.warn("Some games had no session data:", errors);
         // Return null to indicate that calculation should not proceed
         return null;
       } else {
         setSessionErrors({});
       }
-      
+
       return gameData;
     } catch (error) {
-      console.error('Error fetching game data:', error);
+      console.error("Error fetching game data:", error);
       setSessionErrors({});
       // Fallback to mock data if API fails
       const gameData: any = {};
@@ -188,24 +207,30 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
       return gameData;
     }
   };
-  
+
   const getGameDisplayName = (gameId: string): string => {
     switch (gameId) {
-      case 'dance_doodle_game': return 'Dance Doodle';
-      case 'gesture_game': return 'Gesture Game';
-      case 'gaze_tracking_game': return 'Eye Gaze Tracking';
-      case 'mirror_posture_game': return 'Mirror Posture';
-      case 'repeat_with_me_game': return 'Repeat with Me';
-      default: return gameId;
+      case "dance_doodle_game":
+        return "Dance Doodle";
+      case "gesture_game":
+        return "Gesture Game";
+      case "gaze_tracking_game":
+        return "Eye Gaze Tracking";
+      case "mirror_posture_game":
+        return "Mirror Posture";
+      case "repeat_with_me_game":
+        return "Repeat with Me";
+      default:
+        return gameId;
     }
   };
 
   // Mock game data generator
   const getMockGameData = (gameId: string, childId: string) => {
     const baseData = { age: 6 };
-    
+
     switch (gameId) {
-      case 'dance_doodle_game':
+      case "dance_doodle_game":
         return {
           ...baseData,
           cool_arms: Math.floor(Math.random() * 5) + 1,
@@ -214,9 +239,9 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
           open_wings: Math.floor(Math.random() * 5) + 1,
           shh_fun: Math.floor(Math.random() * 5) + 1,
           silly_boxer: Math.floor(Math.random() * 5) + 1,
-          stretch: Math.floor(Math.random() * 5) + 1
+          stretch: Math.floor(Math.random() * 5) + 1,
         };
-      case 'gesture_game':
+      case "gesture_game":
         return {
           ...baseData,
           butterfly: Math.floor(Math.random() * 5) + 1,
@@ -229,26 +254,29 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
           spectacle: Math.floor(Math.random() * 5) + 1,
           thumbs_down: Math.floor(Math.random() * 5) + 1,
           thumbs_up: Math.floor(Math.random() * 5) + 1,
-          victory: Math.floor(Math.random() * 5) + 1
+          victory: Math.floor(Math.random() * 5) + 1,
         };
-      case 'gaze_tracking_game':
+      case "gaze_tracking_game":
         return {
           ...baseData,
           focus_time: Math.floor(Math.random() * 30) + 10,
           accuracy: Math.floor(Math.random() * 40) + 60,
-          reaction_time: Math.floor(Math.random() * 1000) + 500
+          reaction_time: Math.floor(Math.random() * 1000) + 500,
         };
-      case 'mirror_posture_game':
+      case "mirror_posture_game":
         return {
           ...baseData,
           kiss: Math.floor(Math.random() * 5) + 1,
           looking_sideways: Math.floor(Math.random() * 5) + 1,
           mouth_open: Math.floor(Math.random() * 5) + 1,
-          showing_teeth: Math.floor(Math.random() * 5) + 1
+          showing_teeth: Math.floor(Math.random() * 5) + 1,
         };
-      case 'repeat_with_me_game':
+      case "repeat_with_me_game":
         const rounds = 10;
-        const scores = Array.from({ length: rounds }, () => Math.floor(Math.random() * 20) + 80);
+        const scores = Array.from(
+          { length: rounds },
+          () => Math.floor(Math.random() * 20) + 80
+        );
         return {
           ...baseData,
           average_score: scores.reduce((a, b) => a + b, 0) / scores.length,
@@ -256,7 +284,7 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
           ...scores.reduce((acc, score, index) => {
             acc[`round${index + 1}score`] = score;
             return acc;
-          }, {} as any)
+          }, {} as any),
         };
       default:
         return baseData;
@@ -270,80 +298,87 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
 
   const handleGetResult = async () => {
     if (selectedGames.length === 0) return;
-    
+
     setIsCalculating(true);
-    
+
     try {
       // Get current child data
       const childData = getCurrentChild();
-      const childId = childData?.id || 'default';
-      
+      const childId = childData?.id || "default";
+
       // Generate binary code for selected games
       const gamesBinary = generateBinaryCode(selectedGames);
-      console.log('Selected games:', selectedGames);
-      console.log('Binary code:', gamesBinary);
-      
+      console.log("Selected games:", selectedGames);
+      console.log("Binary code:", gamesBinary);
+
       // Fetch game data for selected games
       const gameData = await fetchGameData(selectedGames, childId);
-      console.log('Game data:', gameData);
-      
+      console.log("Game data:", gameData);
+
       // Check if any game data is missing
       if (gameData === null) {
-        console.log('Cannot proceed with ALI calculation due to missing game data');
+        console.log(
+          "Cannot proceed with ALI calculation due to missing game data"
+        );
         setShowResult(true); // Show result screen but without percentage
         setAliScore(null); // No score to display
         return;
       }
-      
+
       // Prepare the request payload
       const requestPayload = {
         games: gamesBinary,
-        data: gameData
+        data: gameData,
       };
-      
-      console.log('Sending ALI request:', requestPayload);
-      
+
+      console.log("Sending ALI request:", requestPayload);
+
       // Send request to backend
-      const response = await fetch('http://localhost:8010/predict_ali_score', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestPayload)
-      });
-      
+      const response = await fetch(
+        "http://188.166.197.135:8010/predict_ali_score",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestPayload),
+        }
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const result = await response.json();
-      console.log('ALI response:', result);
-      
+      console.log("ALI response:", result);
+
       // Extract score from response - use probability of class 1 (autistic)
       // The higher the probability of class 1, the higher the chance the child is autistic
       const prediction = result.prediction;
       const probabilities = result.probabilities;
       const autisticProbability = probabilities[1]; // probability of class 1 (autistic)
-      
+
       // Convert to ALI score: multiply by 100 to get percentage (0-100%)
       // Higher probability of autistic = higher chance of being autistic
       // Score interpretation: 0-30% = Very Low, 30-50% = Low, 50-70% = Moderate, 70-100% = Higher
       const score = Math.round(autisticProbability * 100);
       const confidence = Math.round(Math.max(...probabilities) * 100);
-      
+
       setAliScore(score);
       setModelConfidence(confidence);
       setShowResult(true);
-      
     } catch (error) {
-      console.error('Error getting ALI score:', error);
-      
+      console.error("Error getting ALI score:", error);
+
       // Fallback to mock calculation if API fails
       const baseScore = 40; // Base percentage
       const gamePenalty = selectedGames.length * 5;
       const randomVariation = Math.floor(Math.random() * 20) - 10;
-      const calculatedScore = Math.max(0, Math.min(100, baseScore + gamePenalty + randomVariation));
-      
+      const calculatedScore = Math.max(
+        0,
+        Math.min(100, baseScore + gamePenalty + randomVariation)
+      );
+
       setAliScore(calculatedScore);
       setShowResult(true);
     } finally {
@@ -362,10 +397,10 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
   };
 
   const getScoreColor = (score: number) => {
-    if (score <= 30) return 'text-green-600';  // Low chance of autism
-    if (score <= 50) return 'text-yellow-600'; // Moderate chance
-    if (score <= 70) return 'text-orange-600'; // Higher chance
-    return 'text-red-600';                     // High chance of autism
+    if (score <= 30) return "text-green-600"; // Low chance of autism
+    if (score <= 50) return "text-yellow-600"; // Moderate chance
+    if (score <= 70) return "text-orange-600"; // Higher chance
+    return "text-red-600"; // High chance of autism
   };
 
   const getScoreMessage = (score: number) => {
@@ -428,8 +463,9 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
                       Instructions
                     </h3>
                     <p className="text-blue-700 text-xs leading-relaxed">
-                      Select the games for which you want to get your ALI (Autism Likelihood Index) assessment. 
-                      Choose multiple games for a more comprehensive evaluation.
+                      Select the games for which you want to get your ALI
+                      (Autism Likelihood Index) assessment. Choose multiple
+                      games for a more comprehensive evaluation.
                     </p>
                   </div>
                 </div>
@@ -446,8 +482,8 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
                       key={game.id}
                       className={`cursor-pointer transition-all duration-200 ${
                         selectedGames.includes(game.id)
-                          ? 'ring-2 ring-green-400 bg-green-50 border-green-300'
-                          : 'hover:shadow-md border-gray-200'
+                          ? "ring-2 ring-green-400 bg-green-50 border-green-300"
+                          : "hover:shadow-md border-gray-200"
                       }`}
                       onClick={() => handleGameToggle(game.id)}
                     >
@@ -456,11 +492,15 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
                         <h4 className="font-semibold text-gray-800 mb-1 text-sm">
                           {game.title}
                         </h4>
-                        <p className="text-xs text-gray-600 mb-2">{game.description}</p>
+                        <p className="text-xs text-gray-600 mb-2">
+                          {game.description}
+                        </p>
                         {selectedGames.includes(game.id) && (
                           <div className="flex items-center justify-center text-green-600">
                             <CheckCircle className="w-4 h-4 mr-1" />
-                            <span className="text-xs font-semibold">Selected</span>
+                            <span className="text-xs font-semibold">
+                              Selected
+                            </span>
                           </div>
                         )}
                       </div>
@@ -476,8 +516,8 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
                   disabled={selectedGames.length === 0 || isCalculating}
                   className={`px-6 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${
                     selectedGames.length === 0
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-blue-600 hover:bg-blue-700 text-white'
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
                   }`}
                 >
                   {isCalculating ? (
@@ -508,7 +548,11 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">
                     ALI Assessment Result
                   </h3>
-                  <div className={`text-4xl font-bold mb-3 ${getScoreColor(aliScore)}`}>
+                  <div
+                    className={`text-4xl font-bold mb-3 ${getScoreColor(
+                      aliScore
+                    )}`}
+                  >
                     {aliScore}%
                   </div>
                   <p className="text-sm text-gray-600 mb-3">
@@ -522,7 +566,9 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
                     Assessment Cannot Be Completed
                   </h3>
                   <p className="text-sm text-gray-600 mb-3">
-                    Some selected games have no session data available. Please ensure your child has played the selected games before running the assessment.
+                    Some selected games have no session data available. Please
+                    ensure your child has played the selected games before
+                    running the assessment.
                   </p>
                 </div>
               )}
@@ -534,26 +580,50 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
                 </h4>
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-600 text-sm">Selected Games:</span>
-                    <span className="font-semibold text-blue-600 text-sm">{selectedGames.length}/5</span>
+                    <span className="text-gray-600 text-sm">
+                      Selected Games:
+                    </span>
+                    <span className="font-semibold text-blue-600 text-sm">
+                      {selectedGames.length}/5
+                    </span>
                   </div>
                   {aliScore !== null ? (
                     <>
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-sm">Likelihood Level:</span>
-                        <span className={`font-semibold text-sm ${getScoreColor(aliScore)}`}>
-                          {aliScore <= 30 ? 'Very Low' : aliScore <= 50 ? 'Low' : aliScore <= 70 ? 'Moderate' : 'Higher'}
+                        <span className="text-gray-600 text-sm">
+                          Likelihood Level:
+                        </span>
+                        <span
+                          className={`font-semibold text-sm ${getScoreColor(
+                            aliScore
+                          )}`}
+                        >
+                          {aliScore <= 30
+                            ? "Very Low"
+                            : aliScore <= 50
+                            ? "Low"
+                            : aliScore <= 70
+                            ? "Moderate"
+                            : "Higher"}
                         </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-gray-600 text-sm">Assessment Status:</span>
-                        <span className="font-semibold text-green-600 text-sm">Complete</span>
+                        <span className="text-gray-600 text-sm">
+                          Assessment Status:
+                        </span>
+                        <span className="font-semibold text-green-600 text-sm">
+                          Complete
+                        </span>
                       </div>
                     </>
                   ) : (
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600 text-sm">Assessment Status:</span>
-                      <span className="font-semibold text-red-600 text-sm">Incomplete - Missing Data</span>
+                      <span className="text-gray-600 text-sm">
+                        Assessment Status:
+                      </span>
+                      <span className="font-semibold text-red-600 text-sm">
+                        Incomplete - Missing Data
+                      </span>
                     </div>
                   )}
                 </div>
@@ -565,31 +635,33 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
                   Games Used for Assessment
                 </h4>
                 <div className="flex flex-wrap gap-1 justify-center">
-                  {selectedGames.map(gameId => {
-                    const game = games.find(g => g.id === gameId);
+                  {selectedGames.map((gameId) => {
+                    const game = games.find((g) => g.id === gameId);
                     const hasError = sessionErrors[gameId];
                     return (
                       <span
                         key={gameId}
                         className={`px-2 py-1 rounded text-xs font-medium border ${
-                          hasError 
-                            ? 'bg-red-100 text-red-700 border-red-300' 
-                            : 'bg-white text-gray-700 border-blue-300'
+                          hasError
+                            ? "bg-red-100 text-red-700 border-red-300"
+                            : "bg-white text-gray-700 border-blue-300"
                         }`}
-                        title={hasError ? sessionErrors[gameId] : ''}
+                        title={hasError ? sessionErrors[gameId] : ""}
                       >
                         {game?.icon} {game?.title}
-                        {hasError && ' ⚠️'}
+                        {hasError && " ⚠️"}
                       </span>
                     );
                   })}
                 </div>
                 {Object.keys(sessionErrors).length > 0 && (
                   <div className="mt-2 text-xs text-red-600">
-                    <p className="font-semibold">Note: Some games had no session data:</p>
+                    <p className="font-semibold">
+                      Note: Some games had no session data:
+                    </p>
                     <ul className="list-disc list-inside mt-1">
                       {Object.entries(sessionErrors).map(([gameId, error]) => {
-                        const game = games.find(g => g.id === gameId);
+                        const game = games.find((g) => g.id === gameId);
                         return (
                           <li key={gameId}>
                             {game?.title}: {error}

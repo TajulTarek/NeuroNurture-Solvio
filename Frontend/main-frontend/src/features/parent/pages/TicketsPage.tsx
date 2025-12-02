@@ -1,19 +1,19 @@
-import Navbar from '@/components/common/Navbar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Ticket, ticketService } from '@/shared/services/ticket/ticketService';
+import Navbar from "@/components/common/Navbar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Ticket, ticketService } from "@/shared/services/ticket/ticketService";
 import {
-    AlertCircle,
-    CheckCircle,
-    Clock,
-    MessageSquare,
-    MoreHorizontal,
-    Plus,
-    XCircle
-} from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  MessageSquare,
+  MoreHorizontal,
+  Plus,
+  XCircle,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const TicketsPage = () => {
   const navigate = useNavigate();
@@ -25,25 +25,33 @@ const TicketsPage = () => {
     const fetchParentIdAndTickets = async () => {
       try {
         // Get parent ID from email
-        const emailResponse = await fetch('http://localhost:8080/auth/me', { 
-          credentials: 'include' 
-        });
+        const emailResponse = await fetch(
+          "http://188.166.197.135:8080/auth/me",
+          {
+            credentials: "include",
+          }
+        );
         const email = await emailResponse.text();
-        
-        const parentResponse = await fetch(`http://localhost:8082/api/parents/by-email/${email}`, {
-          credentials: 'include'
-        });
-        
+
+        const parentResponse = await fetch(
+          `http://188.166.197.135:8082/api/parents/by-email/${email}`,
+          {
+            credentials: "include",
+          }
+        );
+
         if (parentResponse.ok) {
           const parent = await parentResponse.json();
           setParentId(parent.id);
-          
+
           // Fetch tickets
-          const ticketsData = await ticketService.getTicketsByParentId(parent.id);
+          const ticketsData = await ticketService.getTicketsByParentId(
+            parent.id
+          );
           setTickets(ticketsData);
         }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -54,13 +62,13 @@ const TicketsPage = () => {
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'OPEN':
+      case "OPEN":
         return <AlertCircle className="h-4 w-4 text-blue-600" />;
-      case 'IN_PROGRESS':
+      case "IN_PROGRESS":
         return <Clock className="h-4 w-4 text-yellow-600" />;
-      case 'RESOLVED':
+      case "RESOLVED":
         return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case 'CLOSED':
+      case "CLOSED":
         return <XCircle className="h-4 w-4 text-gray-600" />;
       default:
         return <AlertCircle className="h-4 w-4 text-gray-600" />;
@@ -69,46 +77,46 @@ const TicketsPage = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'OPEN':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'IN_PROGRESS':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'RESOLVED':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'CLOSED':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+      case "OPEN":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "IN_PROGRESS":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "RESOLVED":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "CLOSED":
+        return "bg-gray-100 text-gray-800 border-gray-200";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'LOW':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'MEDIUM':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'HIGH':
-        return 'bg-orange-100 text-orange-800 border-orange-200';
-      case 'URGENT':
-        return 'bg-red-100 text-red-800 border-red-200';
+      case "LOW":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "MEDIUM":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "HIGH":
+        return "bg-orange-100 text-orange-800 border-orange-200";
+      case "URGENT":
+        return "bg-red-100 text-red-800 border-red-200";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const handleCreateTicket = () => {
-    navigate('/tickets/new');
+    navigate("/tickets/new");
   };
 
   const handleViewTicket = (ticketId: string) => {
@@ -132,15 +140,19 @@ const TicketsPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
-      
+
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Support Tickets</h1>
-            <p className="text-gray-600 mt-2">Manage your support requests and get help from our team</p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Support Tickets
+            </h1>
+            <p className="text-gray-600 mt-2">
+              Manage your support requests and get help from our team
+            </p>
           </div>
-          <Button 
+          <Button
             onClick={handleCreateTicket}
             className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg flex items-center space-x-2"
           >
@@ -158,8 +170,12 @@ const TicketsPage = () => {
                   <MessageSquare className="h-6 w-6 text-blue-600" />
                 </div>
                 <div className="ml-4">
-                  <p className="text-sm font-medium text-gray-600">Total Tickets</p>
-                  <p className="text-2xl font-bold text-gray-900">{tickets.length}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Total Tickets
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {tickets.length}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -174,7 +190,11 @@ const TicketsPage = () => {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Open</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {tickets.filter(t => t.status === 'OPEN' || t.status === 'IN_PROGRESS').length}
+                    {
+                      tickets.filter(
+                        (t) => t.status === "OPEN" || t.status === "IN_PROGRESS"
+                      ).length
+                    }
                   </p>
                 </div>
               </div>
@@ -190,7 +210,7 @@ const TicketsPage = () => {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Resolved</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {tickets.filter(t => t.status === 'RESOLVED').length}
+                    {tickets.filter((t) => t.status === "RESOLVED").length}
                   </p>
                 </div>
               </div>
@@ -206,7 +226,7 @@ const TicketsPage = () => {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-600">Urgent</p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {tickets.filter(t => t.priority === 'URGENT').length}
+                    {tickets.filter((t) => t.priority === "URGENT").length}
                   </p>
                 </div>
               </div>
@@ -221,9 +241,13 @@ const TicketsPage = () => {
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <MessageSquare className="h-8 w-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No tickets yet</h3>
-              <p className="text-gray-600 mb-6">Create your first support ticket to get help from our team</p>
-              <Button 
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                No tickets yet
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Create your first support ticket to get help from our team
+              </p>
+              <Button
                 onClick={handleCreateTicket}
                 className="bg-blue-600 hover:bg-blue-700 text-white"
               >
@@ -234,8 +258,8 @@ const TicketsPage = () => {
         ) : (
           <div className="space-y-4">
             {tickets.map((ticket) => (
-              <Card 
-                key={ticket.id} 
+              <Card
+                key={ticket.id}
                 className="bg-white border border-gray-200 hover:shadow-md transition-shadow cursor-pointer"
                 onClick={() => handleViewTicket(ticket.id)}
               >
@@ -243,20 +267,30 @@ const TicketsPage = () => {
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{ticket.subject}</h3>
-                        <Badge className={`${getStatusColor(ticket.status)} border`}>
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {ticket.subject}
+                        </h3>
+                        <Badge
+                          className={`${getStatusColor(ticket.status)} border`}
+                        >
                           <div className="flex items-center space-x-1">
                             {getStatusIcon(ticket.status)}
-                            <span>{ticket.status.replace('_', ' ')}</span>
+                            <span>{ticket.status.replace("_", " ")}</span>
                           </div>
                         </Badge>
-                        <Badge className={`${getPriorityColor(ticket.priority)} border`}>
+                        <Badge
+                          className={`${getPriorityColor(
+                            ticket.priority
+                          )} border`}
+                        >
                           {ticket.priority}
                         </Badge>
                       </div>
-                      
-                      <p className="text-gray-600 mb-3 line-clamp-2">{ticket.description}</p>
-                      
+
+                      <p className="text-gray-600 mb-3 line-clamp-2">
+                        {ticket.description}
+                      </p>
+
                       <div className="flex items-center space-x-4 text-sm text-gray-500">
                         <span>Created: {formatDate(ticket.createdAt)}</span>
                         <span>•</span>
@@ -269,7 +303,7 @@ const TicketsPage = () => {
                         )}
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-2">
                       <Button
                         variant="ghost"

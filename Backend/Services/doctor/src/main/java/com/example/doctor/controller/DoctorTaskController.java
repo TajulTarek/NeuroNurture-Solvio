@@ -22,7 +22,7 @@ import com.example.doctor.service.DoctorTaskService;
 
 @RestController
 @RequestMapping("/api/doctor/tasks")
-@CrossOrigin(originPatterns = {"http://localhost:3000", "http://localhost:8081", "http://localhost:3001", "http://localhost:5173"}, allowCredentials = "true")
+@CrossOrigin(originPatterns = {"http://localhost:3000", "http://188.166.197.135", "http://localhost:3001", "http://localhost:5173"}, allowCredentials = "true")
 public class DoctorTaskController {
     
     @Autowired

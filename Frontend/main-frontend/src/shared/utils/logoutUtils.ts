@@ -1,4 +1,4 @@
-import { clearCurrentChild } from './childUtils';
+import { clearCurrentChild } from "./childUtils";
 
 /**
  * Centralized logout function that:
@@ -9,20 +9,20 @@ import { clearCurrentChild } from './childUtils';
 export const performLogout = async (): Promise<void> => {
   try {
     // Call backend logout endpoint
-    await fetch('http://localhost:8080/auth/logout', { 
-      method: 'POST', 
-      credentials: 'include' 
+    await fetch("http://188.166.197.135:8080/auth/logout", {
+      method: "POST",
+      credentials: "include",
     });
-    
+
     // Clear child selection
     clearCurrentChild();
-    
+
     // Redirect to landing page
-    window.location.href = '/';
+    window.location.href = "/";
   } catch (error) {
-    console.error('Error during logout:', error);
+    console.error("Error during logout:", error);
     // Even if logout fails, clear local data and redirect
     clearCurrentChild();
-    window.location.href = '/';
+    window.location.href = "/";
   }
 };

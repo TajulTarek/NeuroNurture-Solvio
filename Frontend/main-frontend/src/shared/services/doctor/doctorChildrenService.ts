@@ -2,7 +2,7 @@
 class AuthError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'AuthError';
+    this.name = "AuthError";
   }
 }
 
@@ -24,27 +24,31 @@ export interface DoctorChild {
 }
 
 class DoctorChildrenService {
-  private baseUrl = 'http://localhost:8082/api/parents'; // Parent service URL
+  private baseUrl = "http://188.166.197.135:8082/api/parents"; // Parent service URL
 
   // Get all children assigned to a specific doctor
   async getChildrenByDoctor(doctorId: number): Promise<DoctorChild[]> {
     try {
-      const response = await this.makeAuthenticatedDoctorRequest(`${this.baseUrl}/doctors/${doctorId}/children`);
+      const response = await this.makeAuthenticatedDoctorRequest(
+        `${this.baseUrl}/doctors/${doctorId}/children`
+      );
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(`HTTP error! status: ${response.status}, response: ${errorText}`);
+        console.error(
+          `HTTP error! status: ${response.status}, response: ${errorText}`
+        );
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
         const responseText = await response.text();
-        console.error('Response is not JSON:', responseText);
-        throw new Error('Response is not JSON');
+        console.error("Response is not JSON:", responseText);
+        throw new Error("Response is not JSON");
       }
-      
+
       const children = await response.json();
-      
+
       // Transform the data to match our frontend interface
       return children.map((child: any) => ({
         id: child.id,
@@ -52,18 +56,18 @@ class DoctorChildrenService {
         age: child.age || this.calculateAge(child.dateOfBirth),
         height: child.height || 0,
         weight: child.weight || 0,
-        grade: child.grade || 'Not Assigned',
-        gender: child.gender || 'Unknown',
+        grade: child.grade || "Not Assigned",
+        gender: child.gender || "Unknown",
         dateOfBirth: child.dateOfBirth,
-        parentName: child.parentName || 'Unknown',
-        parentEmail: child.parentEmail || 'Unknown',
-        parentAddress: child.parentAddress || 'Unknown',
-        problem: child.problem || 'No medical condition specified',
+        parentName: child.parentName || "Unknown",
+        parentEmail: child.parentEmail || "Unknown",
+        parentAddress: child.parentAddress || "Unknown",
+        problem: child.problem || "No medical condition specified",
         schoolId: child.schoolId,
-        isEnrolledInSchool: child.isEnrolledInSchool || false
+        isEnrolledInSchool: child.isEnrolledInSchool || false,
       }));
     } catch (error) {
-      console.error('Error fetching children by doctor:', error);
+      console.error("Error fetching children by doctor:", error);
       throw error;
     }
   }
@@ -75,7 +79,10 @@ class DoctorChildrenService {
     const birthDate = new Date(dateOfBirth);
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
     return age;
@@ -83,17 +90,17 @@ class DoctorChildrenService {
 
   // Make authenticated request to parent service
   private async makeAuthenticatedDoctorRequest(url: string): Promise<Response> {
-    const token = localStorage.getItem('doctorToken');
-    
+    const token = localStorage.getItem("doctorToken");
+
     if (!token) {
-      throw new AuthError('No authentication token found');
+      throw new AuthError("No authentication token found");
     }
 
     return fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     });
   }

@@ -1,24 +1,27 @@
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/shared/hooks/use-toast';
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/shared/hooks/use-toast";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 interface EmailVerificationProps {
   onVerificationSuccess: () => void;
   onBackToSignIn: () => void;
 }
 
-export const EmailVerification = ({ onVerificationSuccess, onBackToSignIn }: EmailVerificationProps) => {
+export const EmailVerification = ({
+  onVerificationSuccess,
+  onBackToSignIn,
+}: EmailVerificationProps) => {
   const [searchParams] = useSearchParams();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
-    const token = searchParams.get('token');
+    const token = searchParams.get("token");
     if (token) {
       verifyEmail(token);
     }
@@ -27,16 +30,20 @@ export const EmailVerification = ({ onVerificationSuccess, onBackToSignIn }: Ema
   const verifyEmail = async (token: string) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`http://localhost:8080/auth/verify-email?token=${token}`, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-      });
+      const res = await fetch(
+        `http://188.166.197.135:8080/auth/verify-email?token=${token}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        }
+      );
 
       if (res.ok) {
         toast({
           title: "Email Verified! 🎉",
-          description: "Your email has been verified successfully. You can now sign in!",
+          description:
+            "Your email has been verified successfully. You can now sign in!",
         });
         onVerificationSuccess();
       } else {
@@ -70,12 +77,15 @@ export const EmailVerification = ({ onVerificationSuccess, onBackToSignIn }: Ema
 
     setIsResending(true);
     try {
-      const res = await fetch("http://localhost:8080/auth/resend-verification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email }),
-      });
+      const res = await fetch(
+        "http://188.166.197.135:8080/auth/resend-verification",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ email }),
+        }
+      );
 
       if (res.ok) {
         toast({
@@ -105,22 +115,30 @@ export const EmailVerification = ({ onVerificationSuccess, onBackToSignIn }: Ema
     <div className="space-y-6">
       <div className="text-center">
         <div className="text-6xl mb-4">📧</div>
-        <h2 className="text-2xl font-playful text-primary mb-2">Verify Your Email</h2>
+        <h2 className="text-2xl font-playful text-primary mb-2">
+          Verify Your Email
+        </h2>
         <p className="text-muted-foreground font-comic">
-          We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.
+          We've sent a verification link to your email address. Please check
+          your inbox and click the link to verify your account.
         </p>
       </div>
 
       {isLoading ? (
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-2 border-primary border-t-transparent mx-auto mb-4"></div>
-          <p className="font-comic text-muted-foreground">Verifying your email...</p>
+          <p className="font-comic text-muted-foreground">
+            Verifying your email...
+          </p>
         </div>
       ) : (
         <>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="resend-email" className="font-comic text-foreground">
+              <Label
+                htmlFor="resend-email"
+                className="font-comic text-foreground"
+              >
                 Didn't receive the email? Enter your email to resend:
               </Label>
               <Input
@@ -152,7 +170,7 @@ export const EmailVerification = ({ onVerificationSuccess, onBackToSignIn }: Ema
 
           <div className="text-center">
             <p className="text-muted-foreground font-comic">
-              Already verified?{' '}
+              Already verified?{" "}
               <button
                 onClick={onBackToSignIn}
                 className="text-primary hover:text-primary-dark font-bold transition-colors"
@@ -165,4 +183,4 @@ export const EmailVerification = ({ onVerificationSuccess, onBackToSignIn }: Ema
       )}
     </div>
   );
-}; 
+};

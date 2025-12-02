@@ -10,28 +10,30 @@ const RepeatWithMeGamePage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [authChecked, setAuthChecked] = useState(false);
-  
+
   // Extract taskId and tournamentId from URL query parameters
-  const taskId = searchParams.get('taskId');
-  const tournamentId = searchParams.get('tournamentId');
+  const taskId = searchParams.get("taskId");
+  const tournamentId = searchParams.get("tournamentId");
 
   useEffect(() => {
     // Check if childId is in URL (from school playground) - skip auth check
     const urlParams = new URLSearchParams(window.location.search);
-    const childId = urlParams.get('childId');
-    
+    const childId = urlParams.get("childId");
+
     if (childId) {
       // Coming from school playground, allow access
       setAuthChecked(true);
       return;
     }
-    
+
     // Otherwise check for parent authentication
-    fetch('http://localhost:8080/auth/session', { credentials: 'include' })
-      .then(res => res.json())
-      .then(authenticated => {
+    fetch("http://188.166.197.135:8080/auth/session", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((authenticated) => {
         if (!authenticated) {
-          navigate('/');
+          navigate("/");
         } else {
           setAuthChecked(true);
         }
@@ -47,9 +49,12 @@ const RepeatWithMeGamePage = () => {
   }, []);
 
   const handleLogout = async () => {
-    console.log('Logout button clicked');
-    await fetch('http://localhost:8080/auth/logout', { method: 'POST', credentials: 'include' });
-    window.location.href = '/';
+    console.log("Logout button clicked");
+    await fetch("http://188.166.197.135:8080/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+    window.location.href = "/";
   };
 
   if (!authChecked) {
@@ -60,26 +65,30 @@ const RepeatWithMeGamePage = () => {
     <div className="h-screen bg-gradient-to-br from-pink-100 via-red-50 to-orange-100 font-nunito overflow-hidden flex flex-col">
       {/* Beautiful Navbar */}
       <Navbar onLogout={handleLogout} />
-      
+
       {/* Game Header - Compact */}
       <div className="px-3 py-1">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <Button
-            onClick={() => navigate('/games/repeat-with-me/insights')}
+            onClick={() => navigate("/games/repeat-with-me/insights")}
             className="btn-fun font-comic text-xs py-1 px-3 bg-gradient-to-r from-pink-400 to-red-400 hover:from-pink-500 hover:to-red-500 text-white border-2 border-pink-300 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
             <ArrowLeft className="w-3 h-3 mr-1" />
             Back 📊
           </Button>
-          
+
           <div className="flex items-center space-x-1">
             <div className="flex items-center space-x-1 bg-gradient-to-r from-pink-400 to-red-400 px-2 py-1 rounded-full shadow-lg">
               <Mic className="w-3 h-3 text-white" />
-              <span className="text-white font-comic font-bold text-xs">Speech Master</span>
+              <span className="text-white font-comic font-bold text-xs">
+                Speech Master
+              </span>
             </div>
             <div className="flex items-center space-x-1 bg-gradient-to-r from-red-400 to-orange-400 px-2 py-1 rounded-full shadow-lg">
               <Headphones className="w-3 h-3 text-white" />
-              <span className="text-white font-comic font-bold text-xs">Listening Expert</span>
+              <span className="text-white font-comic font-bold text-xs">
+                Listening Expert
+              </span>
             </div>
           </div>
         </div>
@@ -107,7 +116,9 @@ const RepeatWithMeGamePage = () => {
         <div className="flex items-center justify-center space-x-2">
           <div className="flex items-center space-x-1 bg-gradient-to-r from-green-400 to-blue-400 px-2 py-1 rounded-full shadow-lg">
             <Repeat className="w-3 h-3 text-white" />
-            <span className="text-white font-comic font-bold text-xs">Practice Makes Perfect! 🎯</span>
+            <span className="text-white font-comic font-bold text-xs">
+              Practice Makes Perfect! 🎯
+            </span>
           </div>
         </div>
       </div>

@@ -1,9 +1,9 @@
-import { AuthLayout } from '@/components/layout/AuthLayout';
-import { AuthSuccessHandler } from '@/features/auth/components/AuthSuccessHandler';
-import { SignInForm } from '@/features/auth/components/SignInForm';
-import { SignUpForm } from '@/features/auth/components/SignUpForm';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { AuthLayout } from "@/components/layout/AuthLayout";
+import { AuthSuccessHandler } from "@/features/auth/components/AuthSuccessHandler";
+import { SignInForm } from "@/features/auth/components/SignInForm";
+import { SignUpForm } from "@/features/auth/components/SignUpForm";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Auth() {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -12,24 +12,30 @@ export default function Auth() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('Auth page: Checking session...');
-    fetch('http://localhost:8080/auth/session', { credentials: 'include' })
-      .then(res => {
-        console.log('Auth page: Session response status:', res.status);
+    console.log("Auth page: Checking session...");
+    fetch("http://188.166.197.135:8080/auth/session", {
+      credentials: "include",
+    })
+      .then((res) => {
+        console.log("Auth page: Session response status:", res.status);
         return res.json();
       })
-      .then(authenticated => {
-        console.log('Auth page: Session result:', authenticated);
+      .then((authenticated) => {
+        console.log("Auth page: Session result:", authenticated);
         if (authenticated) {
-          console.log('Auth page: User is authenticated, showing AuthSuccessHandler');
+          console.log(
+            "Auth page: User is authenticated, showing AuthSuccessHandler"
+          );
           setShowAuthHandler(true);
         } else {
-          console.log('Auth page: User is not authenticated, showing login form');
+          console.log(
+            "Auth page: User is not authenticated, showing login form"
+          );
         }
         setIsCheckingAuth(false);
       })
-      .catch(error => {
-        console.error('Auth page: Session check error:', error);
+      .catch((error) => {
+        console.error("Auth page: Session check error:", error);
         setIsCheckingAuth(false);
       });
   }, [navigate]);
@@ -55,8 +61,8 @@ export default function Auth() {
     <AuthLayout
       title={isSignIn ? "Welcome Back!" : "Join NeuroNurture!"}
       subtitle={
-        isSignIn 
-          ? "Sign in to continue your learning adventure!" 
+        isSignIn
+          ? "Sign in to continue your learning adventure!"
           : "Create an account to start your journey!"
       }
     >

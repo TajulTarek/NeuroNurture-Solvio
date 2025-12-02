@@ -58,16 +58,19 @@ const ParentRegister: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8080/auth/register/parent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          username: formData.email,
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
+      const res = await fetch(
+        "http://188.166.197.135:8080/auth/register/parent",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            username: formData.email,
+            email: formData.email,
+            password: formData.password,
+          }),
+        }
+      );
 
       if (!res.ok) {
         const errorText = await res.text();

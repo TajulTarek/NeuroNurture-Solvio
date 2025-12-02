@@ -1,4 +1,4 @@
-import { makeAuthenticatedSchoolRequest } from '../../utils/schoolApiUtils';
+import { makeAuthenticatedSchoolRequest } from "../../utils/schoolApiUtils";
 
 export interface TournamentDetails {
   tournament: TournamentInfo;
@@ -62,24 +62,26 @@ export interface TournamentStatistics {
 }
 
 class TournamentDetailsService {
-  private baseUrl = 'http://localhost:8091/api/school/tournaments';
+  private baseUrl = "http://188.166.197.135:8091/api/school/tournaments";
 
   /**
    * Get tournament details with leaderboard and statistics
    */
   async getTournamentDetails(tournamentId: number): Promise<TournamentDetails> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/${tournamentId}/details`);
-      
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/${tournamentId}/details`
+      );
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching tournament details:', error);
+      console.error("Error fetching tournament details:", error);
       throw error;
     }
   }
@@ -89,20 +91,24 @@ class TournamentDetailsService {
    */
   async getTournamentById(tournamentId: number): Promise<TournamentInfo> {
     try {
-      console.log(`Fetching tournament info for tournament ID: ${tournamentId}`);
-      
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/${tournamentId}`);
-      
+      console.log(
+        `Fetching tournament info for tournament ID: ${tournamentId}`
+      );
+
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/${tournamentId}`
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      console.log('Tournament info received:', data);
-      
+      console.log("Tournament info received:", data);
+
       return data;
     } catch (error) {
-      console.error('Error fetching tournament info:', error);
+      console.error("Error fetching tournament info:", error);
       throw error;
     }
   }
@@ -112,18 +118,18 @@ class TournamentDetailsService {
    */
   getGameIcon(gameName: string): string {
     const gameIcons: { [key: string]: string } = {
-      'Gaze Tracking': '👁️',
-      'Gesture Control': '✋',
-      'Mirror Posture': '🧍',
-      'Repeat With Me': '🔄',
-      'Dance Doodle': '💃',
-      'gaze-game': '👁️',
-      'gesture-game': '✋',
-      'mirror-posture-game': '🧍',
-      'repeat-with-me-game': '🔄',
-      'dance-doodle': '💃'
+      "Gaze Tracking": "👁️",
+      "Gesture Control": "✋",
+      "Mirror Posture": "🧍",
+      "Repeat With Me": "🔄",
+      "Dance Doodle": "💃",
+      "gaze-game": "👁️",
+      "gesture-game": "✋",
+      "mirror-posture-game": "🧍",
+      "repeat-with-me-game": "🔄",
+      "dance-doodle": "💃",
     };
-    return gameIcons[gameName] || '🎮';
+    return gameIcons[gameName] || "🎮";
   }
 
   /**
@@ -132,13 +138,13 @@ class TournamentDetailsService {
   formatDate(dateString: string): string {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
       });
     } catch (error) {
-      console.error('Error formatting date:', error);
+      console.error("Error formatting date:", error);
       return dateString;
     }
   }
@@ -149,15 +155,15 @@ class TournamentDetailsService {
   formatDateTime(dateString: string): string {
     try {
       const date = new Date(dateString);
-      return date.toLocaleString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+      return date.toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
       });
     } catch (error) {
-      console.error('Error formatting date time:', error);
+      console.error("Error formatting date time:", error);
       return dateString;
     }
   }
@@ -165,21 +171,25 @@ class TournamentDetailsService {
   /**
    * Get tournament status with color
    */
-  getTournamentStatus(startTime: string, endTime: string, status: string): { status: string; color: string } {
+  getTournamentStatus(
+    startTime: string,
+    endTime: string,
+    status: string
+  ): { status: string; color: string } {
     const now = new Date();
     const start = new Date(startTime);
     const end = new Date(endTime);
 
-    if (status === 'CANCELLED') {
-      return { status: 'Cancelled', color: 'text-red-600 bg-red-100' };
+    if (status === "CANCELLED") {
+      return { status: "Cancelled", color: "text-red-600 bg-red-100" };
     }
 
     if (now < start) {
-      return { status: 'Upcoming', color: 'text-blue-600 bg-blue-100' };
+      return { status: "Upcoming", color: "text-blue-600 bg-blue-100" };
     } else if (now >= start && now <= end) {
-      return { status: 'Active', color: 'text-green-600 bg-green-100' };
+      return { status: "Active", color: "text-green-600 bg-green-100" };
     } else {
-      return { status: 'Completed', color: 'text-gray-600 bg-gray-100' };
+      return { status: "Completed", color: "text-gray-600 bg-gray-100" };
     }
   }
 }

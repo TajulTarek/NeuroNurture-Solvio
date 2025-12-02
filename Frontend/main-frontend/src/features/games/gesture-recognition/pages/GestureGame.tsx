@@ -1,38 +1,40 @@
-import Navbar from '@/components/common/Navbar';
-import { Button } from '@/components/ui/button';
-import { stopAllCameraStreams } from '@/shared/utils/cameraUtils';
-import { performLogout } from '@/shared/utils/logoutUtils';
-import { ArrowLeft, Star, Trophy, Zap } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import GestureRecognizerComponent from '../components/GestureRecognizerComponent';
+import Navbar from "@/components/common/Navbar";
+import { Button } from "@/components/ui/button";
+import { stopAllCameraStreams } from "@/shared/utils/cameraUtils";
+import { performLogout } from "@/shared/utils/logoutUtils";
+import { ArrowLeft, Star, Trophy, Zap } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import GestureRecognizerComponent from "../components/GestureRecognizerComponent";
 
 const GestureGame = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [authChecked, setAuthChecked] = useState(false);
-  
+
   // Extract taskId and tournamentId from URL query parameters
-  const taskId = searchParams.get('taskId');
-  const tournamentId = searchParams.get('tournamentId');
+  const taskId = searchParams.get("taskId");
+  const tournamentId = searchParams.get("tournamentId");
 
   useEffect(() => {
     // Check if childId is in URL (from school playground) - skip auth check
     const urlParams = new URLSearchParams(window.location.search);
-    const childId = urlParams.get('childId');
-    
+    const childId = urlParams.get("childId");
+
     if (childId) {
       // Coming from school playground, allow access
       setAuthChecked(true);
       return;
     }
-    
+
     // Otherwise check for parent authentication
-    fetch('http://localhost:8080/auth/session', { credentials: 'include' })
-      .then(res => res.json())
-      .then(authenticated => {
+    fetch("http://188.166.197.135:8080/auth/session", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((authenticated) => {
         if (!authenticated) {
-          navigate('/');
+          navigate("/");
         } else {
           setAuthChecked(true);
         }
@@ -47,10 +49,8 @@ const GestureGame = () => {
     };
   }, []);
 
-  
-
   const handleLogout = async () => {
-    console.log('Logout button clicked');
+    console.log("Logout button clicked");
     await performLogout();
   };
 
@@ -62,26 +62,30 @@ const GestureGame = () => {
     <div className="h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-blue-100 font-nunito overflow-hidden flex flex-col">
       {/* Beautiful Navbar */}
       <Navbar onLogout={handleLogout} />
-      
+
       {/* Game Header - Compact */}
       <div className="px-3 py-1">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <Button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate("/dashboard")}
             className="btn-fun font-comic text-xs py-1 px-3 bg-gradient-to-r from-purple-400 to-pink-400 hover:from-purple-500 hover:to-pink-500 text-white border-2 border-purple-300 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
             <ArrowLeft className="w-3 h-3 mr-1" />
             Back 🏠
           </Button>
-          
+
           <div className="flex items-center space-x-1">
             <div className="flex items-center space-x-1 bg-gradient-to-r from-yellow-400 to-orange-400 px-2 py-1 rounded-full shadow-lg">
               <Trophy className="w-3 h-3 text-white" />
-              <span className="text-white font-comic font-bold text-xs">Gesture Master</span>
+              <span className="text-white font-comic font-bold text-xs">
+                Gesture Master
+              </span>
             </div>
             <div className="flex items-center space-x-1 bg-gradient-to-r from-blue-400 to-purple-400 px-2 py-1 rounded-full shadow-lg">
               <Star className="w-3 h-3 text-white" />
-              <span className="text-white font-comic font-bold text-xs">Learning Fun</span>
+              <span className="text-white font-comic font-bold text-xs">
+                Learning Fun
+              </span>
             </div>
           </div>
         </div>
@@ -100,7 +104,10 @@ const GestureGame = () => {
       {/* Game Component - Standard Size */}
       <div className="flex-1 flex items-center justify-center px-4 overflow-hidden">
         <div className="w-full max-w-4xl h-full">
-          <GestureRecognizerComponent taskId={taskId} tournamentId={tournamentId} />
+          <GestureRecognizerComponent
+            taskId={taskId}
+            tournamentId={tournamentId}
+          />
         </div>
       </div>
 
@@ -109,7 +116,9 @@ const GestureGame = () => {
         <div className="flex items-center justify-center space-x-2">
           <div className="flex items-center space-x-1 bg-gradient-to-r from-green-400 to-blue-400 px-2 py-1 rounded-full shadow-lg">
             <Zap className="w-3 h-3 text-white" />
-            <span className="text-white font-comic font-bold text-xs">You're Amazing! 🎉</span>
+            <span className="text-white font-comic font-bold text-xs">
+              You're Amazing! 🎉
+            </span>
           </div>
         </div>
       </div>
@@ -117,4 +126,4 @@ const GestureGame = () => {
   );
 };
 
-export default GestureGame; 
+export default GestureGame;

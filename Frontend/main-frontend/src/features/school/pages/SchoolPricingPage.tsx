@@ -1,8 +1,8 @@
-import { useSchoolAuth } from '@/features/school/contexts/SchoolAuthContext';
-import { makeAuthenticatedSchoolRequest } from '@/shared/utils/schoolApiUtils';
-import { Check, Star, Zap } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSchoolAuth } from "@/features/school/contexts/SchoolAuthContext";
+import { makeAuthenticatedSchoolRequest } from "@/shared/utils/schoolApiUtils";
+import { Check, Star, Zap } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface SubscriptionPlan {
   id: string;
@@ -24,7 +24,7 @@ const SchoolPricingPage: React.FC = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/auth/school/login');
+      navigate("/auth/school/login");
       return;
     }
     fetchPlans();
@@ -32,39 +32,41 @@ const SchoolPricingPage: React.FC = () => {
 
   const fetchPlans = async () => {
     try {
-      const response = await makeAuthenticatedSchoolRequest('http://localhost:8091/api/school/subscription/plans');
+      const response = await makeAuthenticatedSchoolRequest(
+        "http://188.166.197.135:8091/api/school/subscription/plans"
+      );
       if (response.ok) {
         const data = await response.json();
-        console.log('Raw plans data from backend:', data);
-        
+        console.log("Raw plans data from backend:", data);
+
         // Transform backend data to frontend format
         const transformedPlans = data.map((plan: any) => {
-          console.log('Processing plan:', plan);
+          console.log("Processing plan:", plan);
           return {
             ...plan,
             // Backend already sends priceInCents, so we don't need to convert
             features: [
-              'Unlimited children enrollment',
-              'Full analytics dashboard',
-              'Priority support',
-              'Advanced reporting',
-              'Data export capabilities',
-              'Custom task creation',
-              'Tournament management',
-              'Performance tracking'
+              "Unlimited children enrollment",
+              "Full analytics dashboard",
+              "Priority support",
+              "Advanced reporting",
+              "Data export capabilities",
+              "Custom task creation",
+              "Tournament management",
+              "Performance tracking",
             ],
-            popular: plan.id === '1_year', // Mark annual plan as popular
-            savings: plan.id === '3_year' ? 'Save 17%' : undefined
+            popular: plan.id === "1_year", // Mark annual plan as popular
+            savings: plan.id === "3_year" ? "Save 17%" : undefined,
           };
         });
-        
-        console.log('Transformed plans:', transformedPlans);
+
+        console.log("Transformed plans:", transformedPlans);
         setPlans(transformedPlans);
       } else {
-        console.error('Failed to fetch plans');
+        console.error("Failed to fetch plans");
       }
     } catch (error) {
-      console.error('Error fetching plans:', error);
+      console.error("Error fetching plans:", error);
     } finally {
       setLoading(false);
     }
@@ -73,9 +75,9 @@ const SchoolPricingPage: React.FC = () => {
   const formatPrice = (priceInCents: number) => {
     // Convert USD to Taka (BDT) by multiplying by 100
     const priceInTaka = (priceInCents / 100) * 100;
-    return new Intl.NumberFormat('en-BD', {
-      style: 'currency',
-      currency: 'BDT'
+    return new Intl.NumberFormat("en-BD", {
+      style: "currency",
+      currency: "BDT",
     }).format(priceInTaka);
   };
 
@@ -103,8 +105,9 @@ const SchoolPricingPage: React.FC = () => {
             Choose Your School Plan
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Unlock the full potential of NeuroNurture for your school with our comprehensive plans.
-            Manage unlimited children, track performance, and create engaging learning experiences.
+            Unlock the full potential of NeuroNurture for your school with our
+            comprehensive plans. Manage unlimited children, track performance,
+            and create engaging learning experiences.
           </p>
         </div>
 
@@ -113,17 +116,23 @@ const SchoolPricingPage: React.FC = () => {
           <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-blue-900">Current Status</h3>
+                <h3 className="text-lg font-semibold text-blue-900">
+                  Current Status
+                </h3>
                 <p className="text-blue-700">
-                  Plan: <span className="font-medium">{school.subscriptionPlan || 'Free'}</span>
+                  Plan:{" "}
+                  <span className="font-medium">
+                    {school.subscriptionPlan || "Free"}
+                  </span>
                   {school.subscriptionExpiry && (
                     <span className="ml-4">
-                      Expires: {new Date(school.subscriptionExpiry).toLocaleDateString()}
+                      Expires:{" "}
+                      {new Date(school.subscriptionExpiry).toLocaleDateString()}
                     </span>
                   )}
                 </p>
               </div>
-              {school.subscriptionPlan === 'free' && (
+              {school.subscriptionPlan === "free" && (
                 <div className="text-sm text-blue-600">
                   Upgrade to unlock premium features
                 </div>
@@ -139,8 +148,8 @@ const SchoolPricingPage: React.FC = () => {
               key={plan.id}
               className={`relative bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl ${
                 plan.popular
-                  ? 'border-blue-500 transform scale-105'
-                  : 'border-gray-200 hover:border-gray-300'
+                  ? "border-blue-500 transform scale-105"
+                  : "border-gray-200 hover:border-gray-300"
               }`}
             >
               {plan.popular && (
@@ -154,15 +163,18 @@ const SchoolPricingPage: React.FC = () => {
 
               <div className="p-8">
                 <div className="text-center mb-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                    {plan.name}
+                  </h3>
                   <p className="text-gray-600 mb-4">{plan.description}</p>
-                  
+
                   <div className="mb-4">
                     <span className="text-5xl font-bold text-gray-900">
                       {formatPrice(plan.priceInCents)}
                     </span>
                     <span className="text-gray-600 ml-2">
-                      / {plan.durationInMonths / 12} {plan.durationInMonths / 12 === 1 ? 'year' : 'years'}
+                      / {plan.durationInMonths / 12}{" "}
+                      {plan.durationInMonths / 12 === 1 ? "year" : "years"}
                     </span>
                   </div>
 
@@ -187,11 +199,13 @@ const SchoolPricingPage: React.FC = () => {
                   onClick={() => handleSelectPlan(plan.id)}
                   className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors duration-200 ${
                     plan.popular
-                      ? 'bg-blue-600 text-white hover:bg-blue-700'
-                      : 'bg-gray-900 text-white hover:bg-gray-800'
+                      ? "bg-blue-600 text-white hover:bg-blue-700"
+                      : "bg-gray-900 text-white hover:bg-gray-800"
                   }`}
                 >
-                  {school?.subscriptionPlan === 'premium' ? 'Manage Plan' : 'Select Plan'}
+                  {school?.subscriptionPlan === "premium"
+                    ? "Manage Plan"
+                    : "Select Plan"}
                 </button>
               </div>
             </div>
@@ -203,33 +217,41 @@ const SchoolPricingPage: React.FC = () => {
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
             Why Choose NeuroNurture?
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Zap className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Advanced Analytics</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Advanced Analytics
+              </h3>
               <p className="text-gray-600">
-                Track student progress with detailed analytics and performance insights.
+                Track student progress with detailed analytics and performance
+                insights.
               </p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Check className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Unlimited Children</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Unlimited Children
+              </h3>
               <p className="text-gray-600">
-                Enroll unlimited students without restrictions or additional fees.
+                Enroll unlimited students without restrictions or additional
+                fees.
               </p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Star className="h-8 w-8 text-purple-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Priority Support</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                Priority Support
+              </h3>
               <p className="text-gray-600">
                 Get dedicated support and faster response times for your school.
               </p>
@@ -242,32 +264,36 @@ const SchoolPricingPage: React.FC = () => {
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
             Frequently Asked Questions
           </h2>
-          
+
           <div className="max-w-3xl mx-auto space-y-6">
             <div className="bg-white rounded-lg p-6 shadow">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Can I change my plan later?
               </h3>
               <p className="text-gray-600">
-                Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.
+                Yes, you can upgrade or downgrade your plan at any time. Changes
+                will be reflected in your next billing cycle.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-lg p-6 shadow">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 What happens to my data if I cancel?
               </h3>
               <p className="text-gray-600">
-                Your data is safe and will be retained for 30 days after cancellation. You can reactivate your account anytime during this period.
+                Your data is safe and will be retained for 30 days after
+                cancellation. You can reactivate your account anytime during
+                this period.
               </p>
             </div>
-            
+
             <div className="bg-white rounded-lg p-6 shadow">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Do you offer refunds?
               </h3>
               <p className="text-gray-600">
-                We offer a 30-day money-back guarantee for all new subscriptions. Contact support for assistance.
+                We offer a 30-day money-back guarantee for all new
+                subscriptions. Contact support for assistance.
               </p>
             </div>
           </div>

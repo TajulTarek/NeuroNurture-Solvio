@@ -1,50 +1,55 @@
-import { ArrowLeft, Mail, RefreshCw } from 'lucide-react';
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Mail, RefreshCw } from "lucide-react";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const EmailVerificationRequired: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isResending, setIsResending] = useState(false);
-  const [resendMessage, setResendMessage] = useState('');
+  const [resendMessage, setResendMessage] = useState("");
 
   // Get email from URL params or state
   const searchParams = new URLSearchParams(location.search);
-  const email = searchParams.get('email') || '';
+  const email = searchParams.get("email") || "";
 
   const handleResendVerification = async () => {
     if (!email) {
-      setResendMessage('Email not found. Please try logging in again.');
+      setResendMessage("Email not found. Please try logging in again.");
       return;
     }
 
     setIsResending(true);
-    setResendMessage('');
+    setResendMessage("");
 
     try {
-      const response = await fetch('http://localhost:8080/auth/resend-verification', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        "http://188.166.197.135:8080/auth/resend-verification",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       if (response.ok) {
-        setResendMessage('Verification email sent! Please check your inbox.');
+        setResendMessage("Verification email sent! Please check your inbox.");
       } else {
         const errorData = await response.text();
-        setResendMessage('Failed to send verification email. Please try again.');
+        setResendMessage(
+          "Failed to send verification email. Please try again."
+        );
       }
     } catch (error) {
-      setResendMessage('Network error. Please try again.');
+      setResendMessage("Network error. Please try again.");
     } finally {
       setIsResending(false);
     }
   };
 
   const handleBackToLogin = () => {
-    navigate('/');
+    navigate("/");
   };
 
   return (
@@ -81,15 +86,21 @@ const EmailVerificationRequired: React.FC = () => {
             <h3 className="font-semibold text-gray-900">What to do next:</h3>
             <ol className="text-sm text-gray-600 space-y-2">
               <li className="flex items-start">
-                <span className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5">1</span>
+                <span className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5">
+                  1
+                </span>
                 Check your email inbox for a verification link
               </li>
               <li className="flex items-start">
-                <span className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5">2</span>
+                <span className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5">
+                  2
+                </span>
                 Click the verification link in the email
               </li>
               <li className="flex items-start">
-                <span className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5">3</span>
+                <span className="bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center mr-2 mt-0.5">
+                  3
+                </span>
                 Return here and try logging in again
               </li>
             </ol>
@@ -116,7 +127,13 @@ const EmailVerificationRequired: React.FC = () => {
             </button>
 
             {resendMessage && (
-              <p className={`text-sm ${resendMessage.includes('sent') ? 'text-green-600' : 'text-red-600'}`}>
+              <p
+                className={`text-sm ${
+                  resendMessage.includes("sent")
+                    ? "text-green-600"
+                    : "text-red-600"
+                }`}
+              >
                 {resendMessage}
               </p>
             )}
@@ -136,4 +153,4 @@ const EmailVerificationRequired: React.FC = () => {
   );
 };
 
-export default EmailVerificationRequired; 
+export default EmailVerificationRequired;

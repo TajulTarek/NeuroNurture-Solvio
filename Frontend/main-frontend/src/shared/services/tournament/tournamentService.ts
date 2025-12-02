@@ -1,4 +1,4 @@
-import { makeAuthenticatedSchoolRequest } from '../../utils/schoolApiUtils';
+import { makeAuthenticatedSchoolRequest } from "../../utils/schoolApiUtils";
 
 export interface TournamentCreateRequest {
   tournamentTitle: string;
@@ -30,7 +30,7 @@ export interface TournamentResponse {
   status: string;
   createdAt: string;
   updatedAt: string;
-  
+
   // For grouped tournaments
   assignedChildren?: ChildAssignment[];
   totalAssigned?: number;
@@ -42,18 +42,24 @@ export interface GameMapping {
 }
 
 class TournamentService {
-  private baseUrl = 'http://localhost:8091/api/school/tournaments';
+  private baseUrl = "http://188.166.197.135:8091/api/school/tournaments";
 
   // Create tournaments for a specific grade
-  async createTournaments(request: TournamentCreateRequest, schoolId: number): Promise<TournamentResponse[]> {
+  async createTournaments(
+    request: TournamentCreateRequest,
+    schoolId: number
+  ): Promise<TournamentResponse[]> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/create?schoolId=${schoolId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(request),
-      });
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/create?schoolId=${schoolId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(request),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -61,21 +67,25 @@ class TournamentService {
 
       return await response.json();
     } catch (error) {
-      console.error('Error creating tournaments:', error);
+      console.error("Error creating tournaments:", error);
       throw error;
     }
   }
 
   // Get all tournaments for a school
-  async getTournamentsBySchool(schoolId: number): Promise<TournamentResponse[]> {
+  async getTournamentsBySchool(
+    schoolId: number
+  ): Promise<TournamentResponse[]> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/school/${schoolId}`);
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/school/${schoolId}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Error fetching tournaments by school:', error);
+      console.error("Error fetching tournaments by school:", error);
       throw error;
     }
   }
@@ -83,57 +93,77 @@ class TournamentService {
   // Get tournaments for a specific child
   async getTournamentsByChild(childId: number): Promise<TournamentResponse[]> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/child/${childId}`);
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/child/${childId}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Error fetching tournaments by child:', error);
+      console.error("Error fetching tournaments by child:", error);
       throw error;
     }
   }
 
   // Get tournaments by school and child
-  async getTournamentsBySchoolAndChild(schoolId: number, childId: number): Promise<TournamentResponse[]> {
+  async getTournamentsBySchoolAndChild(
+    schoolId: number,
+    childId: number
+  ): Promise<TournamentResponse[]> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/school/${schoolId}/child/${childId}`);
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/school/${schoolId}/child/${childId}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Error fetching tournaments by school and child:', error);
+      console.error("Error fetching tournaments by school and child:", error);
       throw error;
     }
   }
 
   // Get tournaments by grade level
-  async getTournamentsByGrade(schoolId: number, gradeLevel: string): Promise<TournamentResponse[]> {
+  async getTournamentsByGrade(
+    schoolId: number,
+    gradeLevel: string
+  ): Promise<TournamentResponse[]> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/school/${schoolId}/grade/${encodeURIComponent(gradeLevel)}`);
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/school/${schoolId}/grade/${encodeURIComponent(
+          gradeLevel
+        )}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Error fetching tournaments by grade:', error);
+      console.error("Error fetching tournaments by grade:", error);
       throw error;
     }
   }
 
   // Update tournament status
-  async updateTournamentStatus(tournamentId: number, status: string): Promise<TournamentResponse> {
+  async updateTournamentStatus(
+    tournamentId: number,
+    status: string
+  ): Promise<TournamentResponse> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/${tournamentId}/status?status=${status}`, {
-        method: 'PUT',
-      });
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/${tournamentId}/status?status=${status}`,
+        {
+          method: "PUT",
+        }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Error updating tournament status:', error);
+      console.error("Error updating tournament status:", error);
       throw error;
     }
   }
@@ -141,26 +171,29 @@ class TournamentService {
   // Delete a tournament
   async deleteTournament(tournamentId: number): Promise<void> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/${tournamentId}`, {
-        method: 'DELETE',
-      });
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/${tournamentId}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
-      console.error('Error deleting tournament:', error);
+      console.error("Error deleting tournament:", error);
       throw error;
     }
   }
 
   // Helper method to format date
   formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   }
 
@@ -170,22 +203,25 @@ class TournamentService {
   }
 
   // Helper method to get tournament status
-  getTournamentStatus(startTime: string, endTime: string, status: string): string {
+  getTournamentStatus(
+    startTime: string,
+    endTime: string,
+    status: string
+  ): string {
     const now = new Date();
     const start = new Date(startTime);
     const end = new Date(endTime);
 
-    if (status === 'COMPLETED') {
-      return 'COMPLETED';
+    if (status === "COMPLETED") {
+      return "COMPLETED";
     } else if (now < start) {
-      return 'UPCOMING';
+      return "UPCOMING";
     } else if (now > end) {
-      return 'OVERDUE';
+      return "OVERDUE";
     } else {
-      return 'ACTIVE';
+      return "ACTIVE";
     }
   }
 }
 
 export const tournamentService = new TournamentService();
-

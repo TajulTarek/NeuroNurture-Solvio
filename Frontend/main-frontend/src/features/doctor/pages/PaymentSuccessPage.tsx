@@ -1,7 +1,7 @@
-import { useDoctorAuth } from '@/features/doctor/contexts/DoctorAuthContext';
-import { ArrowRight, Calendar, CheckCircle, CreditCard } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useDoctorAuth } from "@/features/doctor/contexts/DoctorAuthContext";
+import { ArrowRight, Calendar, CheckCircle, CreditCard } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 interface SubscriptionPlan {
   id: string;
@@ -22,7 +22,7 @@ const PaymentSuccessPage: React.FC = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/auth/doctor/login');
+      navigate("/auth/doctor/login");
       return;
     }
     fetchPlanDetails();
@@ -30,14 +30,16 @@ const PaymentSuccessPage: React.FC = () => {
 
   const fetchPlanDetails = async () => {
     try {
-      const planId = searchParams.get('plan');
+      const planId = searchParams.get("plan");
       if (!planId) {
         // If no plan ID in URL, try to get from doctor context or redirect
-        navigate('/doctor/dashboard');
+        navigate("/doctor/dashboard");
         return;
       }
 
-      const response = await fetch('http://localhost:8093/api/doctor/subscription/plans');
+      const response = await fetch(
+        "http://188.166.197.135:8093/api/doctor/subscription/plans"
+      );
       if (response.ok) {
         const plans = await response.json();
         const selectedPlan = plans.find((p: any) => p.id === planId);
@@ -46,7 +48,7 @@ const PaymentSuccessPage: React.FC = () => {
         }
       }
     } catch (error) {
-      console.error('Error fetching plan details:', error);
+      console.error("Error fetching plan details:", error);
     } finally {
       setLoading(false);
     }
@@ -55,23 +57,23 @@ const PaymentSuccessPage: React.FC = () => {
   const formatPrice = (priceInCents: number, currency: string) => {
     // Convert USD to Taka by multiplying by 100
     const priceInTaka = (priceInCents / 100) * 100;
-    return new Intl.NumberFormat('en-BD', {
-      style: 'currency',
-      currency: 'BDT'
+    return new Intl.NumberFormat("en-BD", {
+      style: "currency",
+      currency: "BDT",
     }).format(priceInTaka);
   };
 
   const formatDate = (dateString: string | undefined) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return "N/A";
     try {
-      return new Date(dateString).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       });
     } catch (error) {
-      console.error('Error formatting date:', error);
-      return 'Invalid Date';
+      console.error("Error formatting date:", error);
+      return "Invalid Date";
     }
   };
 
@@ -106,8 +108,10 @@ const PaymentSuccessPage: React.FC = () => {
 
         {/* Subscription Details Card */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Subscription Details</h2>
-          
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            Subscription Details
+          </h2>
+
           {plan && doctor ? (
             <div className="space-y-4">
               <div className="flex items-center justify-between py-3 border-b border-gray-200">
@@ -123,7 +127,9 @@ const PaymentSuccessPage: React.FC = () => {
                   <Calendar className="h-5 w-5 text-green-600 mr-3" />
                   <span className="font-medium text-gray-900">Expires</span>
                 </div>
-                <span className="text-gray-900">{formatDate(getSubscriptionExpiry())}</span>
+                <span className="text-gray-900">
+                  {formatDate(getSubscriptionExpiry())}
+                </span>
               </div>
 
               <div className="flex items-center justify-between py-3 border-b border-gray-200">
@@ -149,7 +155,9 @@ const PaymentSuccessPage: React.FC = () => {
 
         {/* Benefits Card */}
         <div className="bg-blue-50 rounded-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-blue-900 mb-4">What's Next?</h3>
+          <h3 className="text-lg font-semibold text-blue-900 mb-4">
+            What's Next?
+          </h3>
           <ul className="space-y-2 text-blue-800">
             <li className="flex items-center">
               <CheckCircle className="h-4 w-4 mr-2 text-blue-600" />
@@ -173,14 +181,14 @@ const PaymentSuccessPage: React.FC = () => {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4">
           <button
-            onClick={() => navigate('/doctor/dashboard')}
+            onClick={() => navigate("/doctor/dashboard")}
             className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center"
           >
             Go to Dashboard
             <ArrowRight className="ml-2 h-4 w-4" />
           </button>
           <button
-            onClick={() => navigate('/doctor/pricing')}
+            onClick={() => navigate("/doctor/pricing")}
             className="flex-1 bg-gray-200 text-gray-800 py-3 px-6 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
           >
             Manage Subscription
@@ -190,7 +198,8 @@ const PaymentSuccessPage: React.FC = () => {
         {/* Additional Info */}
         <div className="mt-8 text-center">
           <p className="text-sm text-gray-500">
-            You can manage your subscription and view billing history from your dashboard.
+            You can manage your subscription and view billing history from your
+            dashboard.
           </p>
         </div>
       </div>

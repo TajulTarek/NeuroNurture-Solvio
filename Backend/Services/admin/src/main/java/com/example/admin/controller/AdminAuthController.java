@@ -17,7 +17,7 @@ import com.example.admin.service.AdminAuthService;
 
 @RestController
 @RequestMapping("/api/admin/auth")
-@CrossOrigin(originPatterns = {"http://localhost:3001", "http://localhost:8081"}, allowCredentials = "true")
+@CrossOrigin(originPatterns = {"http://localhost:3001", "http://188.166.197.135"}, allowCredentials = "true")
 public class AdminAuthController {
 
     @Autowired

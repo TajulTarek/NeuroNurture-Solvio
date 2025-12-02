@@ -1,24 +1,30 @@
-import Navbar from '@/components/common/Navbar';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getCurrentChild } from '@/shared/utils/childUtils';
-import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import Navbar from "@/components/common/Navbar";
+import { Button } from "@/components/ui/button";
 import {
-    CartesianGrid,
-    Line,
-    LineChart,
-    PolarAngleAxis,
-    PolarGrid,
-    PolarRadiusAxis,
-    Radar,
-    RadarChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis
-} from 'recharts';
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getCurrentChild } from "@/shared/utils/childUtils";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 interface RepeatWithMeGameRecord {
   id: number;
@@ -87,14 +93,32 @@ interface SessionData {
 }
 
 const COLORS = [
-  '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
-  '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9', '#F8C471'
+  "#FF6B6B",
+  "#4ECDC4",
+  "#45B7D1",
+  "#96CEB4",
+  "#FFEAA7",
+  "#DDA0DD",
+  "#98D8C8",
+  "#F7DC6F",
+  "#BB8FCE",
+  "#85C1E9",
+  "#F8C471",
 ];
 
 const ROUND_NAMES = [
-  'Round 1 🎤', 'Round 2 🎤', 'Round 3 🎤', 'Round 4 🎤', 'Round 5 🎤',
-  'Round 6 🎤', 'Round 7 🎤', 'Round 8 🎤', 'Round 9 🎤', 'Round 10 🎤',
-  'Round 11 🎤', 'Round 12 🎤'
+  "Round 1 🎤",
+  "Round 2 🎤",
+  "Round 3 🎤",
+  "Round 4 🎤",
+  "Round 5 🎤",
+  "Round 6 🎤",
+  "Round 7 🎤",
+  "Round 8 🎤",
+  "Round 9 🎤",
+  "Round 10 🎤",
+  "Round 11 🎤",
+  "Round 12 🎤",
 ];
 
 export default function RepeatWithMeGameInsights() {
@@ -121,34 +145,40 @@ export default function RepeatWithMeGameInsights() {
 
   const loadStatistics = async (childId: string) => {
     setLoading(true);
-    console.log('Loading statistics for childId:', childId);
-    
+    console.log("Loading statistics for childId:", childId);
+
     try {
-      const response = await fetch(`http://localhost:8089/api/repeat-with-me-game/child/${childId}/statistics`);
-      console.log('Statistics Response:', response.status, response.ok);
+      const response = await fetch(
+        `http://188.166.197.135:8089/api/repeat-with-me-game/child/${childId}/statistics`
+      );
+      console.log("Statistics Response:", response.status, response.ok);
 
       if (response.ok) {
         const statsData = await response.json();
-        console.log('Statistics Data:', statsData);
+        console.log("Statistics Data:", statsData);
         setStatistics(statsData);
       } else {
-        console.error('Statistics API failed:', response.status, response.statusText);
+        console.error(
+          "Statistics API failed:",
+          response.status,
+          response.statusText
+        );
         // Set default data if no records exist
         setStatistics({
           totalGames: 0,
           averageScores: {},
           roundCompletionCounts: {},
-          daysSinceLastGame: 0
+          daysSinceLastGame: 0,
         });
       }
     } catch (error) {
-      console.error('Error loading statistics:', error);
+      console.error("Error loading statistics:", error);
       // Set default data on error
       setStatistics({
         totalGames: 0,
         averageScores: {},
         roundCompletionCounts: {},
-        daysSinceLastGame: 0
+        daysSinceLastGame: 0,
       });
     } finally {
       setLoading(false);
@@ -158,158 +188,227 @@ export default function RepeatWithMeGameInsights() {
   const loadSessionData = async (childId: string) => {
     try {
       // Use the regular child endpoint instead of paginated history
-      const response = await fetch(`http://localhost:8089/api/repeat-with-me-game/child/${childId}`);
-      console.log('Session Data Response:', response.status, response.ok);
+      const response = await fetch(
+        `http://188.166.197.135:8089/api/repeat-with-me-game/child/${childId}`
+      );
+      console.log("Session Data Response:", response.status, response.ok);
 
       if (response.ok) {
         const sessions = await response.json();
-        console.log('Session Data:', sessions);
-        
+        console.log("Session Data:", sessions);
+
         if (Array.isArray(sessions) && sessions.length > 0) {
           // Process session data for the improvement curve
-          const processedSessions = sessions.map((session: any) => {
-            const totalScore = session.averageScore || 0;
-            const completedRounds = session.completedRounds || 0;
-            const accuracy = totalScore; // For speech game, accuracy is the average score
-            
-            return {
-              sessionId: session.sessionId,
-              dateTime: session.dateTime,
-              totalScore: totalScore,
-              completedRounds: completedRounds,
-              accuracy: accuracy,
-              // Store individual round scores for trends analysis
-              roundScores: {
-                'Round 1': session.round1Score,
-                'Round 2': session.round2Score,
-                'Round 3': session.round3Score,
-                'Round 4': session.round4Score,
-                'Round 5': session.round5Score,
-                'Round 6': session.round6Score,
-                'Round 7': session.round7Score,
-                'Round 8': session.round8Score,
-                'Round 9': session.round9Score,
-                'Round 10': session.round10Score,
-                'Round 11': session.round11Score,
-                'Round 12': session.round12Score
-              }
-            };
-          }).sort((a: any, b: any) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())
-          .map((session, index) => ({
-            ...session,
-            sessionNumber: index + 1
-          }));
-          
-          console.log('Processed Sessions:', processedSessions);
+          const processedSessions = sessions
+            .map((session: any) => {
+              const totalScore = session.averageScore || 0;
+              const completedRounds = session.completedRounds || 0;
+              const accuracy = totalScore; // For speech game, accuracy is the average score
+
+              return {
+                sessionId: session.sessionId,
+                dateTime: session.dateTime,
+                totalScore: totalScore,
+                completedRounds: completedRounds,
+                accuracy: accuracy,
+                // Store individual round scores for trends analysis
+                roundScores: {
+                  "Round 1": session.round1Score,
+                  "Round 2": session.round2Score,
+                  "Round 3": session.round3Score,
+                  "Round 4": session.round4Score,
+                  "Round 5": session.round5Score,
+                  "Round 6": session.round6Score,
+                  "Round 7": session.round7Score,
+                  "Round 8": session.round8Score,
+                  "Round 9": session.round9Score,
+                  "Round 10": session.round10Score,
+                  "Round 11": session.round11Score,
+                  "Round 12": session.round12Score,
+                },
+              };
+            })
+            .sort(
+              (a: any, b: any) =>
+                new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime()
+            )
+            .map((session, index) => ({
+              ...session,
+              sessionNumber: index + 1,
+            }));
+
+          console.log("Processed Sessions:", processedSessions);
           setSessionData(processedSessions);
         } else {
-          console.log('No sessions found or invalid data format');
+          console.log("No sessions found or invalid data format");
           setSessionData([]);
         }
       } else {
-        console.error('Session API failed:', response.status, response.statusText);
+        console.error(
+          "Session API failed:",
+          response.status,
+          response.statusText
+        );
         setSessionData([]);
       }
     } catch (error) {
-      console.error('Error loading session data:', error);
+      console.error("Error loading session data:", error);
       setSessionData([]);
     }
   };
 
   const loadGameHistory = async (childId: string, page: number = 0) => {
     try {
-      const response = await fetch(`http://localhost:8089/api/repeat-with-me-game/child/${childId}/history?page=${page}&size=3`);
-      console.log('Game History Response:', response.status, response.ok);
+      const response = await fetch(
+        `http://188.166.197.135:8089/api/repeat-with-me-game/child/${childId}/history?page=${page}&size=3`
+      );
+      console.log("Game History Response:", response.status, response.ok);
 
       if (response.ok) {
         const historyData = await response.json();
-        console.log('Game History:', historyData);
-        console.log('Current page requested:', page);
-        
+        console.log("Game History:", historyData);
+        console.log("Current page requested:", page);
+
         if (historyData.content && Array.isArray(historyData.content)) {
-          console.log('Setting game history with', historyData.content.length, 'items');
+          console.log(
+            "Setting game history with",
+            historyData.content.length,
+            "items"
+          );
           setGameHistory(historyData.content);
           setTotalPages(historyData.totalPages || 0);
           setTotalElements(historyData.totalElements || 0);
           setCurrentPage(page);
         } else {
-          console.log('No game history found');
+          console.log("No game history found");
           setGameHistory([]);
           setTotalPages(0);
           setTotalElements(0);
         }
       } else {
-        console.error('Game History API failed:', response.status, response.statusText);
+        console.error(
+          "Game History API failed:",
+          response.status,
+          response.statusText
+        );
         setGameHistory([]);
         setTotalPages(0);
         setTotalElements(0);
       }
     } catch (error) {
-      console.error('Error loading game history:', error);
+      console.error("Error loading game history:", error);
       setGameHistory([]);
       setTotalPages(0);
       setTotalElements(0);
     }
   };
 
-  const getRoundScore = (record: RepeatWithMeGameRecord, roundName: string): number | null => {
+  const getRoundScore = (
+    record: RepeatWithMeGameRecord,
+    roundName: string
+  ): number | null => {
     switch (roundName) {
-      case 'Round 1 🎤': return record.round1Score || null;
-      case 'Round 2 🎤': return record.round2Score || null;
-      case 'Round 3 🎤': return record.round3Score || null;
-      case 'Round 4 🎤': return record.round4Score || null;
-      case 'Round 5 🎤': return record.round5Score || null;
-      case 'Round 6 🎤': return record.round6Score || null;
-      case 'Round 7 🎤': return record.round7Score || null;
-      case 'Round 8 🎤': return record.round8Score || null;
-      case 'Round 9 🎤': return record.round9Score || null;
-      case 'Round 10 🎤': return record.round10Score || null;
-      case 'Round 11 🎤': return record.round11Score || null;
-      case 'Round 12 🎤': return record.round12Score || null;
-      default: return null;
+      case "Round 1 🎤":
+        return record.round1Score || null;
+      case "Round 2 🎤":
+        return record.round2Score || null;
+      case "Round 3 🎤":
+        return record.round3Score || null;
+      case "Round 4 🎤":
+        return record.round4Score || null;
+      case "Round 5 🎤":
+        return record.round5Score || null;
+      case "Round 6 🎤":
+        return record.round6Score || null;
+      case "Round 7 🎤":
+        return record.round7Score || null;
+      case "Round 8 🎤":
+        return record.round8Score || null;
+      case "Round 9 🎤":
+        return record.round9Score || null;
+      case "Round 10 🎤":
+        return record.round10Score || null;
+      case "Round 11 🎤":
+        return record.round11Score || null;
+      case "Round 12 🎤":
+        return record.round12Score || null;
+      default:
+        return null;
     }
   };
 
-  const getRoundTargetText = (record: RepeatWithMeGameRecord, roundName: string): string | null => {
+  const getRoundTargetText = (
+    record: RepeatWithMeGameRecord,
+    roundName: string
+  ): string | null => {
     switch (roundName) {
-      case 'Round 1 🎤': return record.round1TargetText || null;
-      case 'Round 2 🎤': return record.round2TargetText || null;
-      case 'Round 3 🎤': return record.round3TargetText || null;
-      case 'Round 4 🎤': return record.round4TargetText || null;
-      case 'Round 5 🎤': return record.round5TargetText || null;
-      case 'Round 6 🎤': return record.round6TargetText || null;
-      case 'Round 7 🎤': return record.round7TargetText || null;
-      case 'Round 8 🎤': return record.round8TargetText || null;
-      case 'Round 9 🎤': return record.round9TargetText || null;
-      case 'Round 10 🎤': return record.round10TargetText || null;
-      case 'Round 11 🎤': return record.round11TargetText || null;
-      case 'Round 12 🎤': return record.round12TargetText || null;
-      default: return null;
+      case "Round 1 🎤":
+        return record.round1TargetText || null;
+      case "Round 2 🎤":
+        return record.round2TargetText || null;
+      case "Round 3 🎤":
+        return record.round3TargetText || null;
+      case "Round 4 🎤":
+        return record.round4TargetText || null;
+      case "Round 5 🎤":
+        return record.round5TargetText || null;
+      case "Round 6 🎤":
+        return record.round6TargetText || null;
+      case "Round 7 🎤":
+        return record.round7TargetText || null;
+      case "Round 8 🎤":
+        return record.round8TargetText || null;
+      case "Round 9 🎤":
+        return record.round9TargetText || null;
+      case "Round 10 🎤":
+        return record.round10TargetText || null;
+      case "Round 11 🎤":
+        return record.round11TargetText || null;
+      case "Round 12 🎤":
+        return record.round12TargetText || null;
+      default:
+        return null;
     }
   };
 
-  const getRoundTranscribedText = (record: RepeatWithMeGameRecord, roundName: string): string | null => {
+  const getRoundTranscribedText = (
+    record: RepeatWithMeGameRecord,
+    roundName: string
+  ): string | null => {
     switch (roundName) {
-      case 'Round 1 🎤': return record.round1TranscribedText || null;
-      case 'Round 2 🎤': return record.round2TranscribedText || null;
-      case 'Round 3 🎤': return record.round3TranscribedText || null;
-      case 'Round 4 🎤': return record.round4TranscribedText || null;
-      case 'Round 5 🎤': return record.round5TranscribedText || null;
-      case 'Round 6 🎤': return record.round6TranscribedText || null;
-      case 'Round 7 🎤': return record.round7TranscribedText || null;
-      case 'Round 8 🎤': return record.round8TranscribedText || null;
-      case 'Round 9 🎤': return record.round9TranscribedText || null;
-      case 'Round 10 🎤': return record.round10TranscribedText || null;
-      case 'Round 11 🎤': return record.round11TranscribedText || null;
-      case 'Round 12 🎤': return record.round12TranscribedText || null;
-      default: return null;
+      case "Round 1 🎤":
+        return record.round1TranscribedText || null;
+      case "Round 2 🎤":
+        return record.round2TranscribedText || null;
+      case "Round 3 🎤":
+        return record.round3TranscribedText || null;
+      case "Round 4 🎤":
+        return record.round4TranscribedText || null;
+      case "Round 5 🎤":
+        return record.round5TranscribedText || null;
+      case "Round 6 🎤":
+        return record.round6TranscribedText || null;
+      case "Round 7 🎤":
+        return record.round7TranscribedText || null;
+      case "Round 8 🎤":
+        return record.round8TranscribedText || null;
+      case "Round 9 🎤":
+        return record.round9TranscribedText || null;
+      case "Round 10 🎤":
+        return record.round10TranscribedText || null;
+      case "Round 11 🎤":
+        return record.round11TranscribedText || null;
+      case "Round 12 🎤":
+        return record.round12TranscribedText || null;
+      default:
+        return null;
     }
   };
 
   const hasData = gameHistory.length > 0;
   const performanceData = sessionData.map((session, index) => ({
     session: `Session ${session.sessionNumber}`,
-    averageScore: session.accuracy
+    averageScore: session.accuracy,
   }));
 
   if (loading) {
@@ -328,7 +427,7 @@ export default function RepeatWithMeGameInsights() {
   return (
     <div className="min-h-screen bg-soft font-nunito">
       <Navbar />
-      
+
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="text-center mb-8">
@@ -338,7 +437,7 @@ export default function RepeatWithMeGameInsights() {
           <p className="text-xl font-comic text-gray-600">
             Track your Bengali speech recognition progress and improvement
           </p>
-          
+
           {selectedChild && (
             <div className="mt-4">
               <span className="inline-block bg-gradient-to-r from-pink-100 to-red-100 text-pink-800 px-4 py-2 rounded-full font-comic">
@@ -357,11 +456,12 @@ export default function RepeatWithMeGameInsights() {
                 Ready to Start Your Journey?
               </h2>
               <p className="text-lg font-comic text-muted-foreground mb-8 max-w-md mx-auto">
-                {selectedChild?.name || 'You'} haven't played the Repeat with Me Game yet. 
-                Start playing to unlock amazing insights and track your progress!
+                {selectedChild?.name || "You"} haven't played the Repeat with Me
+                Game yet. Start playing to unlock amazing insights and track
+                your progress!
               </p>
-              <Button 
-                onClick={() => navigate('/games/repeat-with-me')}
+              <Button
+                onClick={() => navigate("/games/repeat-with-me")}
                 className="bg-gradient-to-r from-pink-500 to-red-600 text-white font-comic text-xl px-12 py-4 hover:scale-105 transition-all shadow-xl rounded-full"
               >
                 🚀 Begin Your Adventure!
@@ -381,8 +481,8 @@ export default function RepeatWithMeGameInsights() {
               <p className="text-xs font-comic text-gray-600 mb-3 max-w-sm mx-auto">
                 Keep improving your Bengali speech skills!
               </p>
-              <Button 
-                onClick={() => navigate('/games/repeat-with-me')}
+              <Button
+                onClick={() => navigate("/games/repeat-with-me")}
                 className="bg-gradient-to-r from-pink-500 to-red-600 text-white font-comic text-sm px-6 py-2 hover:scale-105 transition-all shadow-xl rounded-full border-2 border-white/20"
               >
                 🚀 Play Again!
@@ -407,17 +507,29 @@ export default function RepeatWithMeGameInsights() {
             {/* Detailed Insights Tabs */}
             <Tabs defaultValue="overview" className="space-y-8">
               <TabsList className="flex w-full bg-gradient-to-r from-pink-50 to-red-50 backdrop-blur-sm rounded-2xl p-3 shadow-xl border border-pink-200">
-                <TabsTrigger value="overview" className="flex-1 py-4 px-6 text-base font-semibold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:shadow-xl data-[state=active]:scale-105 hover:bg-white/50 hover:scale-105 transition-all duration-300">
+                <TabsTrigger
+                  value="overview"
+                  className="flex-1 py-4 px-6 text-base font-semibold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:shadow-xl data-[state=active]:scale-105 hover:bg-white/50 hover:scale-105 transition-all duration-300"
+                >
                   📊 Overview
                 </TabsTrigger>
-                <TabsTrigger value="performance" className="flex-1 py-4 px-6 text-base font-semibold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:shadow-xl data-[state=active]:scale-105 hover:bg-white/50 hover:scale-105 transition-all duration-300">
+                <TabsTrigger
+                  value="performance"
+                  className="flex-1 py-4 px-6 text-base font-semibold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:shadow-xl data-[state=active]:scale-105 hover:bg-white/50 hover:scale-105 transition-all duration-300"
+                >
                   📈 Performance
                 </TabsTrigger>
 
-                <TabsTrigger value="consistency" className="flex-1 py-4 px-6 text-base font-semibold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:shadow-xl data-[state=active]:scale-105 hover:bg-white/50 hover:scale-105 transition-all duration-300">
+                <TabsTrigger
+                  value="consistency"
+                  className="flex-1 py-4 px-6 text-base font-semibold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:shadow-xl data-[state=active]:scale-105 hover:bg-white/50 hover:scale-105 transition-all duration-300"
+                >
                   🎯 Consistency
                 </TabsTrigger>
-                <TabsTrigger value="history" className="flex-1 py-4 px-6 text-base font-semibold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:shadow-xl data-[state=active]:scale-105 hover:bg-white/50 hover:scale-105 transition-all duration-300">
+                <TabsTrigger
+                  value="history"
+                  className="flex-1 py-4 px-6 text-base font-semibold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-500 data-[state=active]:to-red-600 data-[state=active]:text-white data-[state=active]:shadow-xl data-[state=active]:scale-105 hover:bg-white/50 hover:scale-105 transition-all duration-300"
+                >
                   📚 Session History
                 </TabsTrigger>
               </TabsList>
@@ -428,20 +540,27 @@ export default function RepeatWithMeGameInsights() {
                 <div className="relative">
                   {/* Background decorative elements */}
                   <div className="absolute inset-0 bg-gradient-to-r from-pink-100/30 via-red-100/30 to-orange-100/30 rounded-3xl"></div>
-                  <div className="absolute top-4 left-4 text-6xl animate-bounce opacity-20">🎤</div>
-                  <div className="absolute top-8 right-8 text-4xl animate-float opacity-20">✨</div>
-                  <div className="absolute bottom-4 left-1/2 text-5xl animate-pulse-fun opacity-20">🏆</div>
-                  
+                  <div className="absolute top-4 left-4 text-6xl animate-bounce opacity-20">
+                    🎤
+                  </div>
+                  <div className="absolute top-8 right-8 text-4xl animate-float opacity-20">
+                    ✨
+                  </div>
+                  <div className="absolute bottom-4 left-1/2 text-5xl animate-pulse-fun opacity-20">
+                    🏆
+                  </div>
+
                   <div className="relative bg-gradient-to-br from-white/95 to-white/85 backdrop-blur-sm rounded-3xl border-2 border-pink-200/50 shadow-2xl p-8">
                     <div className="text-center mb-8">
                       <h3 className="text-3xl font-playful text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-red-600 to-orange-600 mb-2">
                         Your Amazing Progress! 🌟
                       </h3>
                       <p className="text-lg font-comic text-gray-600">
-                        Let's see how {selectedChild?.name || 'you'} are doing with Bengali speech recognition!
+                        Let's see how {selectedChild?.name || "you"} are doing
+                        with Bengali speech recognition!
                       </p>
                     </div>
-                    
+
                     {/* Main Stats Grid */}
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                       {/* Total Sessions */}
@@ -449,8 +568,12 @@ export default function RepeatWithMeGameInsights() {
                         <div className="absolute inset-0 bg-gradient-to-br from-green-400/20 to-emerald-400/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
                         <div className="relative bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border-2 border-green-200 p-6 text-center hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
                           <div className="text-4xl mb-3">🎮</div>
-                          <div className="text-3xl font-bold text-green-600 mb-2">{statistics?.totalGames || 0}</div>
-                          <div className="text-sm text-green-600 font-comic">Total Sessions</div>
+                          <div className="text-3xl font-bold text-green-600 mb-2">
+                            {statistics?.totalGames || 0}
+                          </div>
+                          <div className="text-sm text-green-600 font-comic">
+                            Total Sessions
+                          </div>
                         </div>
                       </div>
 
@@ -460,11 +583,21 @@ export default function RepeatWithMeGameInsights() {
                         <div className="relative bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200 p-6 text-center hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
                           <div className="text-4xl mb-3">⭐</div>
                           <div className="text-3xl font-bold text-blue-600 mb-2">
-                            {statistics?.averageScores && Object.values(statistics.averageScores).length > 0 
-                              ? Math.round(Object.values(statistics.averageScores).reduce((a, b) => a + b, 0) / Object.values(statistics.averageScores).length)
-                              : 0}%
+                            {statistics?.averageScores &&
+                            Object.values(statistics.averageScores).length > 0
+                              ? Math.round(
+                                  Object.values(
+                                    statistics.averageScores
+                                  ).reduce((a, b) => a + b, 0) /
+                                    Object.values(statistics.averageScores)
+                                      .length
+                                )
+                              : 0}
+                            %
                           </div>
-                          <div className="text-sm text-blue-600 font-comic">Average Score</div>
+                          <div className="text-sm text-blue-600 font-comic">
+                            Average Score
+                          </div>
                         </div>
                       </div>
 
@@ -474,9 +607,16 @@ export default function RepeatWithMeGameInsights() {
                         <div className="relative bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl border-2 border-purple-200 p-6 text-center hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl">
                           <div className="text-4xl mb-3">🏆</div>
                           <div className="text-3xl font-bold text-purple-600 mb-2">
-                            {gameHistory.length > 0 ? Math.max(...gameHistory.map(g => g.averageScore)) : 0}%
+                            {gameHistory.length > 0
+                              ? Math.max(
+                                  ...gameHistory.map((g) => g.averageScore)
+                                )
+                              : 0}
+                            %
                           </div>
-                          <div className="text-sm text-purple-600 font-comic">Best Score</div>
+                          <div className="text-sm text-purple-600 font-comic">
+                            Best Score
+                          </div>
                         </div>
                       </div>
 
@@ -488,7 +628,9 @@ export default function RepeatWithMeGameInsights() {
                           <div className="text-3xl font-bold text-orange-600 mb-2">
                             {statistics?.daysSinceLastGame || 0}
                           </div>
-                          <div className="text-sm text-orange-600 font-comic">Days Since Last Game</div>
+                          <div className="text-sm text-orange-600 font-comic">
+                            Days Since Last Game
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -509,10 +651,10 @@ export default function RepeatWithMeGameInsights() {
                       <YAxis tick={{ fontSize: 12 }} />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                          border: '2px solid #ec4899',
-                          borderRadius: '12px',
-                          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
+                          backgroundColor: "rgba(255, 255, 255, 0.95)",
+                          border: "2px solid #ec4899",
+                          borderRadius: "12px",
+                          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
                         }}
                       />
                       <Line
@@ -520,11 +662,17 @@ export default function RepeatWithMeGameInsights() {
                         dataKey="averageScore"
                         stroke="url(#pinkGradient)"
                         strokeWidth={3}
-                        dot={{ fill: '#ec4899', strokeWidth: 2, r: 6 }}
-                        activeDot={{ r: 8, stroke: '#ec4899', strokeWidth: 2 }}
+                        dot={{ fill: "#ec4899", strokeWidth: 2, r: 6 }}
+                        activeDot={{ r: 8, stroke: "#ec4899", strokeWidth: 2 }}
                       />
                       <defs>
-                        <linearGradient id="pinkGradient" x1="0" y1="0" x2="0" y2="1">
+                        <linearGradient
+                          id="pinkGradient"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
                           <stop offset="0%" stopColor="#ec4899" />
                           <stop offset="100%" stopColor="#dc2626" />
                         </linearGradient>
@@ -534,8 +682,6 @@ export default function RepeatWithMeGameInsights() {
                 </div>
               </TabsContent>
 
-
-
               {/* Consistency Tab */}
               <TabsContent value="consistency" className="space-y-8">
                 <div className="bg-gradient-to-br from-white/95 to-white/85 backdrop-blur-sm rounded-3xl border-2 border-pink-200/50 shadow-2xl p-8">
@@ -544,27 +690,39 @@ export default function RepeatWithMeGameInsights() {
                   </h3>
                   <div className="text-center mb-6">
                     <p className="text-lg font-comic text-gray-600 mb-2">
-                      This radar chart shows your average performance across all 12 rounds
+                      This radar chart shows your average performance across all
+                      12 rounds
                     </p>
                     <p className="text-sm text-gray-500">
-                      Each point represents how consistently you perform on that specific round across all your sessions
+                      Each point represents how consistently you perform on that
+                      specific round across all your sessions
                     </p>
                   </div>
                   <ResponsiveContainer width="100%" height={400}>
-                    <RadarChart data={ROUND_NAMES.map((roundName, index) => {
-                      const scores = gameHistory.map(record => getRoundScore(record, roundName)).filter(score => score !== null) as number[];
-                      const avgScore = scores.length > 0 
-                        ? scores.reduce((sum, score) => sum + score, 0) / scores.length
-                        : 0;
-                      return {
-                        round: roundName,
-                        score: avgScore,
-                        fullMark: 100
-                      };
-                    })}>
+                    <RadarChart
+                      data={ROUND_NAMES.map((roundName, index) => {
+                        const scores = gameHistory
+                          .map((record) => getRoundScore(record, roundName))
+                          .filter((score) => score !== null) as number[];
+                        const avgScore =
+                          scores.length > 0
+                            ? scores.reduce((sum, score) => sum + score, 0) /
+                              scores.length
+                            : 0;
+                        return {
+                          round: roundName,
+                          score: avgScore,
+                          fullMark: 100,
+                        };
+                      })}
+                    >
                       <PolarGrid />
                       <PolarAngleAxis dataKey="round" tick={{ fontSize: 10 }} />
-                      <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 12 }} />
+                      <PolarRadiusAxis
+                        angle={90}
+                        domain={[0, 100]}
+                        tick={{ fontSize: 12 }}
+                      />
                       <Radar
                         name="Average Score"
                         dataKey="score"
@@ -574,10 +732,10 @@ export default function RepeatWithMeGameInsights() {
                       />
                       <Tooltip
                         contentStyle={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                          border: '2px solid #ec4899',
-                          borderRadius: '12px',
-                          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
+                          backgroundColor: "rgba(255, 255, 255, 0.95)",
+                          border: "2px solid #ec4899",
+                          borderRadius: "12px",
+                          boxShadow: "0 10px 25px rgba(0, 0, 0, 0.1)",
                         }}
                       />
                     </RadarChart>
@@ -589,28 +747,44 @@ export default function RepeatWithMeGameInsights() {
               <TabsContent value="history" className="space-y-6">
                 <Card className="card-playful backdrop-blur-sm bg-white/90 border-2 border-pink-200 shadow-xl">
                   <CardHeader className="pb-3">
-                    <CardTitle className="font-playful text-xl text-pink-600">Session History 📚</CardTitle>
+                    <CardTitle className="font-playful text-xl text-pink-600">
+                      Session History 📚
+                    </CardTitle>
                     <CardDescription className="font-comic text-base">
-                      Detailed speech recognition results with target text, transcribed text, and similarity scores
+                      Detailed speech recognition results with target text,
+                      transcribed text, and similarity scores
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-6">
                       {gameHistory.map((record, index) => {
-                        const totalScore = ROUND_NAMES.reduce((sum, roundName) => {
-                          const score = getRoundScore(record, roundName);
-                          return sum + (score !== null ? score : 0);
-                        }, 0);
-                        const completedRounds = ROUND_NAMES.filter(roundName => {
-                          const score = getRoundScore(record, roundName);
-                          return score !== null;
-                        }).length;
-                        const averageScore = completedRounds > 0 ? totalScore / completedRounds : 0;
-                        const completionRate = (completedRounds / ROUND_NAMES.length) * 100;
-                        const sessionNumber = totalElements - (currentPage * 3 + index);
-                        
+                        const totalScore = ROUND_NAMES.reduce(
+                          (sum, roundName) => {
+                            const score = getRoundScore(record, roundName);
+                            return sum + (score !== null ? score : 0);
+                          },
+                          0
+                        );
+                        const completedRounds = ROUND_NAMES.filter(
+                          (roundName) => {
+                            const score = getRoundScore(record, roundName);
+                            return score !== null;
+                          }
+                        ).length;
+                        const averageScore =
+                          completedRounds > 0
+                            ? totalScore / completedRounds
+                            : 0;
+                        const completionRate =
+                          (completedRounds / ROUND_NAMES.length) * 100;
+                        const sessionNumber =
+                          totalElements - (currentPage * 3 + index);
+
                         return (
-                          <div key={record.id} className="border-2 border-pink-200 rounded-xl p-6 bg-gradient-to-br from-pink-50/50 to-white hover:shadow-lg transition-all duration-300">
+                          <div
+                            key={record.id}
+                            className="border-2 border-pink-200 rounded-xl p-6 bg-gradient-to-br from-pink-50/50 to-white hover:shadow-lg transition-all duration-300"
+                          >
                             {/* Session Header */}
                             <div className="flex items-center justify-between mb-4">
                               <div>
@@ -618,13 +792,16 @@ export default function RepeatWithMeGameInsights() {
                                   Session {sessionNumber}
                                 </div>
                                 <div className="text-sm text-gray-600">
-                                  {new Date(record.dateTime).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                  })}
+                                  {new Date(record.dateTime).toLocaleDateString(
+                                    "en-US",
+                                    {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "numeric",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    }
+                                  )}
                                 </div>
                               </div>
                               <div className="text-right">
@@ -636,20 +813,32 @@ export default function RepeatWithMeGameInsights() {
                                 </div>
                               </div>
                             </div>
-                            
+
                             {/* Session Summary */}
                             <div className="grid grid-cols-3 gap-3 mb-6">
                               <div className="text-center p-3 bg-pink-100 rounded-lg border border-pink-200">
-                                <div className="text-lg font-bold text-pink-700">{completedRounds}</div>
-                                <div className="text-sm text-pink-600">Rounds Completed</div>
+                                <div className="text-lg font-bold text-pink-700">
+                                  {completedRounds}
+                                </div>
+                                <div className="text-sm text-pink-600">
+                                  Rounds Completed
+                                </div>
                               </div>
                               <div className="text-center p-3 bg-green-100 rounded-lg border border-green-200">
-                                <div className="text-lg font-bold text-green-700">{completionRate.toFixed(0)}%</div>
-                                <div className="text-sm text-green-600">Completion Rate</div>
+                                <div className="text-lg font-bold text-green-700">
+                                  {completionRate.toFixed(0)}%
+                                </div>
+                                <div className="text-sm text-green-600">
+                                  Completion Rate
+                                </div>
                               </div>
                               <div className="text-center p-3 bg-purple-100 rounded-lg border border-purple-200">
-                                <div className="text-lg font-bold text-purple-700">{totalScore.toFixed(1)}%</div>
-                                <div className="text-sm text-purple-600">Total Score</div>
+                                <div className="text-lg font-bold text-purple-700">
+                                  {totalScore.toFixed(1)}%
+                                </div>
+                                <div className="text-sm text-purple-600">
+                                  Total Score
+                                </div>
                               </div>
                             </div>
 
@@ -661,32 +850,51 @@ export default function RepeatWithMeGameInsights() {
                               </div>
                               <div className="grid grid-cols-1 gap-4">
                                 {ROUND_NAMES.map((roundName) => {
-                                  const score = getRoundScore(record, roundName);
-                                  const targetText = getRoundTargetText(record, roundName);
-                                  const transcribedText = getRoundTranscribedText(record, roundName);
-                                  const isCompleted = score !== null && targetText && transcribedText;
-                                  
+                                  const score = getRoundScore(
+                                    record,
+                                    roundName
+                                  );
+                                  const targetText = getRoundTargetText(
+                                    record,
+                                    roundName
+                                  );
+                                  const transcribedText =
+                                    getRoundTranscribedText(record, roundName);
+                                  const isCompleted =
+                                    score !== null &&
+                                    targetText &&
+                                    transcribedText;
+
                                   if (!isCompleted) return null;
-                                  
+
                                   // Extract round number
-                                  const roundNumber = roundName.split(' ')[1];
-                                  
+                                  const roundNumber = roundName.split(" ")[1];
+
                                   return (
-                                    <div key={roundName} className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                                    <div
+                                      key={roundName}
+                                      className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow"
+                                    >
                                       <div className="flex items-center justify-between mb-3">
                                         <div className="flex items-center gap-2">
                                           <span className="text-lg">🎤</span>
-                                          <span className="font-semibold text-gray-700">Round {roundNumber}</span>
+                                          <span className="font-semibold text-gray-700">
+                                            Round {roundNumber}
+                                          </span>
                                         </div>
-                                        <div className={`px-3 py-1 rounded-full text-sm font-bold ${
-                                          score >= 80 ? 'bg-green-100 text-green-700 border border-green-300' :
-                                          score >= 60 ? 'bg-yellow-100 text-yellow-700 border border-yellow-300' :
-                                          'bg-red-100 text-red-700 border border-red-300'
-                                        }`}>
+                                        <div
+                                          className={`px-3 py-1 rounded-full text-sm font-bold ${
+                                            score >= 80
+                                              ? "bg-green-100 text-green-700 border border-green-300"
+                                              : score >= 60
+                                              ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
+                                              : "bg-red-100 text-red-700 border border-red-300"
+                                          }`}
+                                        >
                                           {score.toFixed(1)}% Similarity
                                         </div>
                                       </div>
-                                      
+
                                       <div className="space-y-3">
                                         {/* Target Text */}
                                         <div>
@@ -695,12 +903,15 @@ export default function RepeatWithMeGameInsights() {
                                             Target Text (Bengali)
                                           </div>
                                           <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                                            <div className="text-base font-medium text-blue-800" dir="rtl">
+                                            <div
+                                              className="text-base font-medium text-blue-800"
+                                              dir="rtl"
+                                            >
                                               {targetText}
                                             </div>
                                           </div>
                                         </div>
-                                        
+
                                         {/* Transcribed Text */}
                                         <div>
                                           <div className="text-sm font-medium text-gray-600 mb-1 flex items-center gap-1">
@@ -708,12 +919,15 @@ export default function RepeatWithMeGameInsights() {
                                             What You Said (Bengali)
                                           </div>
                                           <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                                            <div className="text-base font-medium text-green-800" dir="rtl">
+                                            <div
+                                              className="text-base font-medium text-green-800"
+                                              dir="rtl"
+                                            >
                                               {transcribedText}
                                             </div>
                                           </div>
                                         </div>
-                                        
+
                                         {/* Similarity Score Bar */}
                                         <div>
                                           <div className="text-sm font-medium text-gray-600 mb-2 flex items-center gap-1">
@@ -721,19 +935,28 @@ export default function RepeatWithMeGameInsights() {
                                             Similarity Score
                                           </div>
                                           <div className="w-full bg-gray-200 rounded-full h-3">
-                                            <div 
+                                            <div
                                               className={`h-3 rounded-full transition-all duration-700 ${
-                                                score >= 80 ? 'bg-gradient-to-r from-green-400 to-green-600' :
-                                                score >= 60 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' :
-                                                'bg-gradient-to-r from-red-400 to-red-600'
+                                                score >= 80
+                                                  ? "bg-gradient-to-r from-green-400 to-green-600"
+                                                  : score >= 60
+                                                  ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
+                                                  : "bg-gradient-to-r from-red-400 to-red-600"
                                               }`}
-                                              style={{ width: `${Math.min(score, 100)}%` }}
+                                              style={{
+                                                width: `${Math.min(
+                                                  score,
+                                                  100
+                                                )}%`,
+                                              }}
                                             ></div>
                                           </div>
                                           <div className="text-xs text-gray-500 mt-1">
-                                            {score >= 80 ? 'Excellent pronunciation! 🌟' :
-                                             score >= 60 ? 'Good attempt! Keep practicing! 💪' :
-                                             'Keep practicing to improve! 🎯'}
+                                            {score >= 80
+                                              ? "Excellent pronunciation! 🌟"
+                                              : score >= 60
+                                              ? "Good attempt! Keep practicing! 💪"
+                                              : "Keep practicing to improve! 🎯"}
                                           </div>
                                         </div>
                                       </div>
@@ -746,12 +969,14 @@ export default function RepeatWithMeGameInsights() {
                         );
                       })}
                     </div>
-                    
+
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
                       <div className="flex items-center justify-center space-x-2 mt-8">
                         <Button
-                          onClick={() => loadGameHistory(selectedChild.id, currentPage - 1)}
+                          onClick={() =>
+                            loadGameHistory(selectedChild.id, currentPage - 1)
+                          }
                           disabled={currentPage === 0}
                           variant="outline"
                           size="sm"
@@ -759,36 +984,47 @@ export default function RepeatWithMeGameInsights() {
                         >
                           ← Previous
                         </Button>
-                        
+
                         <div className="flex items-center space-x-1">
-                          {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                            let pageNum;
-                            if (totalPages <= 5) {
-                              pageNum = i;
-                            } else if (currentPage < 3) {
-                              pageNum = i;
-                            } else if (currentPage >= totalPages - 3) {
-                              pageNum = totalPages - 5 + i;
-                            } else {
-                              pageNum = currentPage - 2 + i;
+                          {Array.from(
+                            { length: Math.min(5, totalPages) },
+                            (_, i) => {
+                              let pageNum;
+                              if (totalPages <= 5) {
+                                pageNum = i;
+                              } else if (currentPage < 3) {
+                                pageNum = i;
+                              } else if (currentPage >= totalPages - 3) {
+                                pageNum = totalPages - 5 + i;
+                              } else {
+                                pageNum = currentPage - 2 + i;
+                              }
+
+                              return (
+                                <Button
+                                  key={pageNum}
+                                  onClick={() =>
+                                    loadGameHistory(selectedChild.id, pageNum)
+                                  }
+                                  variant={
+                                    currentPage === pageNum
+                                      ? "default"
+                                      : "outline"
+                                  }
+                                  size="sm"
+                                  className="text-sm w-10 h-10 p-0"
+                                >
+                                  {pageNum + 1}
+                                </Button>
+                              );
                             }
-                            
-                            return (
-                              <Button
-                                key={pageNum}
-                                onClick={() => loadGameHistory(selectedChild.id, pageNum)}
-                                variant={currentPage === pageNum ? "default" : "outline"}
-                                size="sm"
-                                className="text-sm w-10 h-10 p-0"
-                              >
-                                {pageNum + 1}
-                              </Button>
-                            );
-                          })}
+                          )}
                         </div>
-                        
+
                         <Button
-                          onClick={() => loadGameHistory(selectedChild.id, currentPage + 1)}
+                          onClick={() =>
+                            loadGameHistory(selectedChild.id, currentPage + 1)
+                          }
                           disabled={currentPage === totalPages - 1}
                           variant="outline"
                           size="sm"
@@ -798,11 +1034,12 @@ export default function RepeatWithMeGameInsights() {
                         </Button>
                       </div>
                     )}
-                    
+
                     {/* Page Info */}
                     {totalPages > 1 && (
                       <div className="text-center mt-4 text-sm text-gray-600">
-                        Page {currentPage + 1} of {totalPages} • Showing {gameHistory.length} of {totalElements} sessions
+                        Page {currentPage + 1} of {totalPages} • Showing{" "}
+                        {gameHistory.length} of {totalElements} sessions
                       </div>
                     )}
                   </CardContent>

@@ -1,9 +1,13 @@
-import { Conversation, NuruService, Message as ServiceMessage } from '@/shared/services/nuru/nuruService';
-import React, { useEffect, useState } from 'react';
-import './assistant-animations.css';
-import ChatInterface, { Message } from './ChatInterface';
-import ChatList, { Chat } from './ChatList';
-import FloatingAssistantButton from './FloatingAssistantButton';
+import {
+  Conversation,
+  NuruService,
+  Message as ServiceMessage,
+} from "@/shared/services/nuru/nuruService";
+import React, { useEffect, useState } from "react";
+import "./assistant-animations.css";
+import ChatInterface, { Message } from "./ChatInterface";
+import ChatList, { Chat } from "./ChatList";
+import FloatingAssistantButton from "./FloatingAssistantButton";
 
 interface AssistantProps {
   isOpen: boolean;
@@ -22,25 +26,28 @@ const Assistant: React.FC<AssistantProps> = ({ isOpen, onToggle }) => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost:8080/auth/me?format=json', { 
-          credentials: 'include' 
-        });
-        
+        const response = await fetch(
+          "http://188.166.197.135:8080/auth/me?format=json",
+          {
+            credentials: "include",
+          }
+        );
+
         if (response.ok) {
           const userData = await response.json();
-          console.log('User data from JWT:', userData);
+          console.log("User data from JWT:", userData);
           setUserId(userData.id);
           setRole(userData.role);
         } else {
           // Fallback for testing
           setUserId(2);
-          setRole('parent');
+          setRole("parent");
         }
       } catch (error) {
-        console.error('Error fetching user data from JWT:', error);
+        console.error("Error fetching user data from JWT:", error);
         // Fallback for testing
         setUserId(2);
-        setRole('parent');
+        setRole("parent");
       }
     };
 
@@ -51,23 +58,28 @@ const Assistant: React.FC<AssistantProps> = ({ isOpen, onToggle }) => {
   useEffect(() => {
     const loadConversations = async () => {
       if (!userId || !role) return;
-      
+
       try {
-        const response = await NuruService.getConversations(role, userId.toString());
-        console.log('Conversations response:', response);
-        
-        const conversationChats: Chat[] = response.conversations.map((conv: Conversation) => ({
-          id: conv.id,
-          title: conv.title,
-          lastMessage: conv.lastMessage,
-          timestamp: new Date(conv.lastMessageTime),
-          unreadCount: 0,
-          isActive: false
-        }));
-        
+        const response = await NuruService.getConversations(
+          role,
+          userId.toString()
+        );
+        console.log("Conversations response:", response);
+
+        const conversationChats: Chat[] = response.conversations.map(
+          (conv: Conversation) => ({
+            id: conv.id,
+            title: conv.title,
+            lastMessage: conv.lastMessage,
+            timestamp: new Date(conv.lastMessageTime),
+            unreadCount: 0,
+            isActive: false,
+          })
+        );
+
         setChats(conversationChats);
       } catch (error) {
-        console.error('Error loading conversations:', error);
+        console.error("Error loading conversations:", error);
       }
     };
 
@@ -77,73 +89,83 @@ const Assistant: React.FC<AssistantProps> = ({ isOpen, onToggle }) => {
   // Load messages for a specific conversation
   const loadMessages = async (conversationId: string) => {
     if (!userId || !role) return;
-    
+
     try {
-      const response = await NuruService.getMessages(role, userId.toString(), conversationId);
-      console.log('Messages response:', response);
-      
-      const frontendMessages: Message[] = response.messages.map((msg: ServiceMessage) => ({
-        id: msg.id,
-        content: msg.content,
-        sender: msg.sender as "user" | "assistant",
-        timestamp: new Date(msg.timestamp),
-        isTyping: msg.isTyping
-      }));
-      
-      setMessages(prev => ({
+      const response = await NuruService.getMessages(
+        role,
+        userId.toString(),
+        conversationId
+      );
+      console.log("Messages response:", response);
+
+      const frontendMessages: Message[] = response.messages.map(
+        (msg: ServiceMessage) => ({
+          id: msg.id,
+          content: msg.content,
+          sender: msg.sender as "user" | "assistant",
+          timestamp: new Date(msg.timestamp),
+          isTyping: msg.isTyping,
+        })
+      );
+
+      setMessages((prev) => ({
         ...prev,
-        [conversationId]: frontendMessages
+        [conversationId]: frontendMessages,
       }));
     } catch (error) {
-      console.error('Error loading messages:', error);
+      console.error("Error loading messages:", error);
     }
   };
 
   const createNewChat = () => {
     setActiveChatId(null); // Signal new chat creation
-    setMessages(prev => ({
+    setMessages((prev) => ({
       ...prev,
-      'new': []
+      new: [],
     }));
   };
 
   const selectChat = (chatId: string) => {
     setActiveChatId(chatId);
-    setChats(prev => prev.map(chat => ({
-      ...chat,
-      isActive: chat.id === chatId,
-      unreadCount: chat.id === chatId ? 0 : chat.unreadCount
-    })));
-    
+    setChats((prev) =>
+      prev.map((chat) => ({
+        ...chat,
+        isActive: chat.id === chatId,
+        unreadCount: chat.id === chatId ? 0 : chat.unreadCount,
+      }))
+    );
+
     // Load messages for this conversation
     loadMessages(chatId);
   };
 
   const deleteChat = async (chatId: string) => {
     if (!userId || !role) return;
-    
+
     try {
       await NuruService.deleteConversation(role, userId.toString(), chatId);
-      
-      setChats(prev => prev.filter(chat => chat.id !== chatId));
-      setMessages(prev => {
+
+      setChats((prev) => prev.filter((chat) => chat.id !== chatId));
+      setMessages((prev) => {
         const newMessages = { ...prev };
         delete newMessages[chatId];
         return newMessages;
       });
-      
+
       if (activeChatId === chatId) {
         setActiveChatId(null);
       }
     } catch (error) {
-      console.error('Error deleting conversation:', error);
+      console.error("Error deleting conversation:", error);
     }
   };
 
   const renameChat = (chatId: string, newTitle: string) => {
-    setChats(prev => prev.map(chat => 
-      chat.id === chatId ? { ...chat, title: newTitle } : chat
-    ));
+    setChats((prev) =>
+      prev.map((chat) =>
+        chat.id === chatId ? { ...chat, title: newTitle } : chat
+      )
+    );
   };
 
   const sendMessage = async (content: string) => {
@@ -152,17 +174,17 @@ const Assistant: React.FC<AssistantProps> = ({ isOpen, onToggle }) => {
     const userMessage: Message = {
       id: Date.now().toString(),
       content,
-      sender: 'user',
-      timestamp: new Date()
+      sender: "user",
+      timestamp: new Date(),
     };
 
     // Determine the chat ID to use
-    const currentChatId = activeChatId || 'new';
-    
+    const currentChatId = activeChatId || "new";
+
     // Add user message immediately
-    setMessages(prev => ({
+    setMessages((prev) => ({
       ...prev,
-      [currentChatId]: [...(prev[currentChatId] || []), userMessage]
+      [currentChatId]: [...(prev[currentChatId] || []), userMessage],
     }));
 
     setIsLoading(true);
@@ -171,15 +193,15 @@ const Assistant: React.FC<AssistantProps> = ({ isOpen, onToggle }) => {
     const typingMessageId = (Date.now() + 1).toString();
     const typingMessage: Message = {
       id: typingMessageId,
-      content: '',
-      sender: 'assistant',
+      content: "",
+      sender: "assistant",
       timestamp: new Date(),
-      isTyping: true
+      isTyping: true,
     };
 
-    setMessages(prev => ({
+    setMessages((prev) => ({
       ...prev,
-      [currentChatId]: [...(prev[currentChatId] || []), typingMessage]
+      [currentChatId]: [...(prev[currentChatId] || []), typingMessage],
     }));
 
     // Call Spring Boot Chat Service
@@ -189,140 +211,160 @@ const Assistant: React.FC<AssistantProps> = ({ isOpen, onToggle }) => {
           message: content,
           userType: role,
           userId: userId.toString(),
-          conversationId: activeChatId || undefined
+          conversationId: activeChatId || undefined,
         });
 
-        const fullResponse = apiResponse.response || "I'm sorry, I couldn't process your request right now.";
-        
+        const fullResponse =
+          apiResponse.response ||
+          "I'm sorry, I couldn't process your request right now.";
+
         // If this is a new conversation, update activeChatId and move messages
         if (!activeChatId && apiResponse.conversationId) {
           const newChatId = apiResponse.conversationId;
-          
+
           // Move messages from 'new' to the actual conversation ID
-          setMessages(prev => {
+          setMessages((prev) => {
             const newMessages = { ...prev };
-            if (newMessages['new']) {
-              newMessages[newChatId] = newMessages['new'];
-              delete newMessages['new'];
+            if (newMessages["new"]) {
+              newMessages[newChatId] = newMessages["new"];
+              delete newMessages["new"];
             }
             return newMessages;
           });
-          
+
           setActiveChatId(newChatId);
-          
+
           // Add new conversation to chats list
           const newChat: Chat = {
             id: newChatId,
-            title: content.length > 50 ? content.substring(0, 50) + '...' : content,
+            title:
+              content.length > 50 ? content.substring(0, 50) + "..." : content,
             lastMessage: fullResponse,
             timestamp: new Date(),
             unreadCount: 0,
-            isActive: true
+            isActive: true,
           };
-          
-          setChats(prev => [newChat, ...prev]);
+
+          setChats((prev) => [newChat, ...prev]);
         }
-        
+
         const responseMessageId = (Date.now() + 2).toString();
         const responseMessage: Message = {
           id: responseMessageId,
-          content: '',
-          sender: 'assistant',
-          timestamp: new Date()
+          content: "",
+          sender: "assistant",
+          timestamp: new Date(),
         };
 
-        const finalChatId = activeChatId || apiResponse.conversationId || currentChatId;
-        
-        setMessages(prev => {
+        const finalChatId =
+          activeChatId || apiResponse.conversationId || currentChatId;
+
+        setMessages((prev) => {
           const currentMessages = prev[finalChatId] || [];
-          const messagesWithoutTyping = currentMessages.filter(msg => msg.id !== typingMessageId);
-          
+          const messagesWithoutTyping = currentMessages.filter(
+            (msg) => msg.id !== typingMessageId
+          );
+
           return {
             ...prev,
-            [finalChatId]: [...messagesWithoutTyping, responseMessage]
+            [finalChatId]: [...messagesWithoutTyping, responseMessage],
           };
         });
 
         // Character-by-character typing effect
-        let currentText = '';
+        let currentText = "";
         let charIndex = 0;
-        
+
         const typeText = () => {
           if (charIndex < fullResponse.length) {
             currentText += fullResponse[charIndex];
             charIndex++;
-            
+
             // Update the message with current text
-            setMessages(prev => ({
+            setMessages((prev) => ({
               ...prev,
-              [finalChatId]: prev[finalChatId].map(msg => 
-                msg.id === responseMessageId 
+              [finalChatId]: prev[finalChatId].map((msg) =>
+                msg.id === responseMessageId
                   ? { ...msg, content: currentText }
                   : msg
-              )
+              ),
             }));
-            
+
             // Random delay between characters (5-15ms for very fast typing speed)
             const delay = Math.random() * 10 + 5;
             setTimeout(typeText, delay);
           } else {
             // Typing complete - update chat last message
-            setChats(prev => prev.map(chat => 
-              chat.id === finalChatId 
-                ? { ...chat, lastMessage: fullResponse, timestamp: new Date() }
-                : chat
-            ));
+            setChats((prev) =>
+              prev.map((chat) =>
+                chat.id === finalChatId
+                  ? {
+                      ...chat,
+                      lastMessage: fullResponse,
+                      timestamp: new Date(),
+                    }
+                  : chat
+              )
+            );
             setIsLoading(false);
           }
         };
-        
+
         // Start typing after a short delay
         setTimeout(typeText, 120);
       } catch (error) {
-        console.error('Error calling Nuru Chat Service:', error);
-        
+        console.error("Error calling Nuru Chat Service:", error);
+
         // Fallback response
-        const fallbackResponse = "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.";
-        
+        const fallbackResponse =
+          "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.";
+
         // Remove typing message and add fallback response
         const responseMessageId = (Date.now() + 2).toString();
         const responseMessage: Message = {
           id: responseMessageId,
           content: fallbackResponse,
-          sender: 'assistant',
-          timestamp: new Date()
+          sender: "assistant",
+          timestamp: new Date(),
         };
 
-        const errorChatId = activeChatId || 'new';
-        
-        setMessages(prev => {
+        const errorChatId = activeChatId || "new";
+
+        setMessages((prev) => {
           const currentMessages = prev[errorChatId] || [];
-          const messagesWithoutTyping = currentMessages.filter(msg => msg.id !== typingMessageId);
-          
+          const messagesWithoutTyping = currentMessages.filter(
+            (msg) => msg.id !== typingMessageId
+          );
+
           return {
             ...prev,
-            [errorChatId]: [...messagesWithoutTyping, responseMessage]
+            [errorChatId]: [...messagesWithoutTyping, responseMessage],
           };
         });
 
         // Update chat last message
-        setChats(prev => prev.map(chat => 
-          chat.id === errorChatId 
-            ? { ...chat, lastMessage: fallbackResponse, timestamp: new Date() }
-            : chat
-        ));
+        setChats((prev) =>
+          prev.map((chat) =>
+            chat.id === errorChatId
+              ? {
+                  ...chat,
+                  lastMessage: fallbackResponse,
+                  timestamp: new Date(),
+                }
+              : chat
+          )
+        );
         setIsLoading(false);
       }
     }, 500);
   };
 
-
   const clearChat = () => {
     if (!activeChatId) return;
-    
-    setMessages(prev => ({
+
+    setMessages((prev) => ({
       ...prev,
-      [activeChatId]: []
+      [activeChatId]: [],
     }));
   };
 
@@ -330,8 +372,12 @@ const Assistant: React.FC<AssistantProps> = ({ isOpen, onToggle }) => {
     return chats.reduce((total, chat) => total + chat.unreadCount, 0);
   };
 
-  const currentMessages = activeChatId ? messages[activeChatId] || [] : (activeChatId === null ? messages['new'] || [] : []);
-  const currentChat = chats.find(chat => chat.id === activeChatId);
+  const currentMessages = activeChatId
+    ? messages[activeChatId] || []
+    : activeChatId === null
+    ? messages["new"] || []
+    : [];
+  const currentChat = chats.find((chat) => chat.id === activeChatId);
 
   return (
     <>
@@ -346,13 +392,16 @@ const Assistant: React.FC<AssistantProps> = ({ isOpen, onToggle }) => {
       {isOpen && (
         <div className="fixed inset-0 z-50 flex justify-end animate-in fade-in duration-300">
           {/* Backdrop */}
-          <div 
+          <div
             className="absolute inset-0 bg-black bg-opacity-20 animate-in fade-in duration-300"
             onClick={onToggle}
           />
-          
+
           {/* Assistant Panel */}
-          <div className="relative w-1/2 h-full bg-white shadow-2xl flex animate-in slide-in-from-right duration-300" style={{ top: '65px', height: 'calc(100vh - 80px)' }}>
+          <div
+            className="relative w-1/2 h-full bg-white shadow-2xl flex animate-in slide-in-from-right duration-300"
+            style={{ top: "65px", height: "calc(100vh - 80px)" }}
+          >
             {/* Chat List */}
             <div className="w-48 border-r border-gray-200 flex-shrink-0">
               <ChatList
@@ -381,8 +430,12 @@ const Assistant: React.FC<AssistantProps> = ({ isOpen, onToggle }) => {
                     <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                       <span className="text-2xl">💬</span>
                     </div>
-                    <h3 className="text-lg font-medium mb-2">Select a chat to start</h3>
-                    <p className="text-sm">Choose an existing conversation or start a new one</p>
+                    <h3 className="text-lg font-medium mb-2">
+                      Select a chat to start
+                    </h3>
+                    <p className="text-sm">
+                      Choose an existing conversation or start a new one
+                    </p>
                   </div>
                 </div>
               )}

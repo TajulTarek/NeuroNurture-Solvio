@@ -21,22 +21,30 @@ interface ConsentData {
   childAge: string;
   suspectedASD: boolean;
   dataConsent: boolean;
-  consentType: 'yes' | 'no' | null;
+  consentType: "yes" | "no" | null;
 }
 
-type GameState = 'consent' | 'loading' | 'playing' | 'countdown' | 'recording' | 'finished';
-type GameScreen = 'consent' | 'game' | 'loading' | 'countdown';
+type GameState =
+  | "consent"
+  | "loading"
+  | "playing"
+  | "countdown"
+  | "recording"
+  | "finished";
+type GameScreen = "consent" | "game" | "loading" | "countdown";
 
 const RepeatWithMeGamePlayPage: React.FC = () => {
-  const [gameState, setGameState] = useState<GameState>('consent');
-  const [currentScreen, setCurrentScreen] = useState<GameScreen>('consent');
+  const [gameState, setGameState] = useState<GameState>("consent");
+  const [currentScreen, setCurrentScreen] = useState<GameScreen>("consent");
   const [round, setRound] = useState(0);
   const [audioFile, setAudioFile] = useState<string | null>(null);
   const [labelText, setLabelText] = useState<string>("");
   const [countdown, setCountdown] = useState<number>(0);
   const [recordingTime, setRecordingTime] = useState<number>(5);
   const [result, setResult] = useState<string>("");
-  const [gameResults, setGameResults] = useState<{ [key: number]: GameResult }>({});
+  const [gameResults, setGameResults] = useState<{ [key: number]: GameResult }>(
+    {}
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [totfiles, setTotfiles] = useState(0);
   const [fileDetectionError, setFileDetectionError] = useState(false);
@@ -44,7 +52,7 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
   const [consentData, setConsentData] = useState<ConsentData | null>(null);
   const [showCompletionAnimation, setShowCompletionAnimation] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks = useRef<Blob[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -58,7 +66,7 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
     if (childData) {
       setSelectedChild(childData);
     }
-    
+
     countFiles();
   }, []);
 
@@ -67,33 +75,47 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
     let count = 0;
     let audioNumber = 1;
     const maxCheck = 12; // We have 12 audio files (audio1.mp3 to audio12.mp3)
-    
-    console.log('Checking for available audio files...');
-    
+
+    console.log("Checking for available audio files...");
+
     try {
       while (audioNumber <= maxCheck) {
         try {
-          const response = await fetch(`/repeatGame/audio/audio${audioNumber}.mp3`, {
-            method: 'HEAD',
-            cache: 'no-cache'
-          });
-          
+          const response = await fetch(
+            `/repeatGame/audio/audio${audioNumber}.mp3`,
+            {
+              method: "HEAD",
+              cache: "no-cache",
+            }
+          );
+
           if (response.ok && response.status === 200) {
-            const contentType = response.headers.get('content-type');
-            const contentLength = response.headers.get('content-length');
-            
-            if (contentType && 
-                (contentType.includes('audio') || contentType.includes('audio/mpeg') || contentType.includes('audio/mp3')) && 
-                contentLength && parseInt(contentLength) > 1000) {
+            const contentType = response.headers.get("content-type");
+            const contentLength = response.headers.get("content-length");
+
+            if (
+              contentType &&
+              (contentType.includes("audio") ||
+                contentType.includes("audio/mpeg") ||
+                contentType.includes("audio/mp3")) &&
+              contentLength &&
+              parseInt(contentLength) > 1000
+            ) {
               count++;
-              console.log(`✅ Valid audio${audioNumber}.mp3 found (${contentType}, ${contentLength} bytes)`);
+              console.log(
+                `✅ Valid audio${audioNumber}.mp3 found (${contentType}, ${contentLength} bytes)`
+              );
               audioNumber++;
             } else {
-              console.log(`❌ audio${audioNumber}.mp3 exists but is not a valid audio file (${contentType}, ${contentLength} bytes), stopping search`);
+              console.log(
+                `❌ audio${audioNumber}.mp3 exists but is not a valid audio file (${contentType}, ${contentLength} bytes), stopping search`
+              );
               break;
             }
           } else {
-            console.log(`❌ No audio${audioNumber}.mp3 found (status: ${response.status}), stopping search`);
+            console.log(
+              `❌ No audio${audioNumber}.mp3 found (status: ${response.status}), stopping search`
+            );
             break;
           }
         } catch (error) {
@@ -101,32 +123,32 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
           break;
         }
       }
-      
+
       console.log(`🎯 Total valid audio files found: ${count}`);
       setTotfiles(count);
       setFileDetectionError(false);
-      
+
       if (count === 0) {
         setFileDetectionError(true);
       }
     } catch (error) {
-      console.error('Error during file detection:', error);
+      console.error("Error during file detection:", error);
       setFileDetectionError(true);
     }
   };
 
   // Handle consent submission
   const handleConsentSubmit = (data: ConsentData) => {
-    console.log('Consent submitted with data:', data);
+    console.log("Consent submitted with data:", data);
     setConsentData(data);
-    setCurrentScreen('game');
-    setGameState('loading');
+    setCurrentScreen("game");
+    setGameState("loading");
     startGameFlow();
   };
 
   // Handle back from consent
   const handleConsentBack = () => {
-    navigate('/games/repeat-with-me/instructions');
+    navigate("/games/repeat-with-me/instructions");
   };
 
   // Pick random audio + matching label
@@ -134,7 +156,7 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
     const randomIndex = Math.floor(Math.random() * totfiles) + 1;
     const audioPath = `/repeatGame/audio/audio${randomIndex}.mp3`;
     const labelPath = `/repeatGame/label/label${randomIndex}.txt`;
-    
+
     setAudioFile(audioPath);
 
     try {
@@ -142,17 +164,17 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
       const text = await res.text();
       setLabelText(text.trim());
     } catch (error) {
-      console.error('Error loading label:', error);
+      console.error("Error loading label:", error);
       setLabelText(`Label ${randomIndex}`);
     }
   };
 
   // Start the automatic game flow
   const startGameFlow = async () => {
-    setGameState('loading');
+    setGameState("loading");
     await loadRound();
-    setGameState('playing');
-    
+    setGameState("playing");
+
     setTimeout(() => {
       if (audioRef.current) {
         audioRef.current.play();
@@ -162,12 +184,12 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
 
   // Handle audio ended - start countdown
   const handleAudioEnded = () => {
-    console.log('Audio ended, starting countdown');
-    setGameState('countdown');
+    console.log("Audio ended, starting countdown");
+    setGameState("countdown");
     setCountdown(3);
-    
+
     const countdownInterval = setInterval(() => {
-      setCountdown(prev => {
+      setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(countdownInterval);
           setCountdown(0);
@@ -181,8 +203,8 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
 
   // Start recording automatically
   const startRecording = async () => {
-    console.log('Starting recording for round', round);
-    setGameState('recording');
+    console.log("Starting recording for round", round);
+    setGameState("recording");
     setRecordingTime(5);
 
     try {
@@ -196,8 +218,8 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
       };
 
       mediaRecorderRef.current.onstop = async () => {
-        console.log('Recording stopped, sending audio to backend...');
-        
+        console.log("Recording stopped, sending audio to backend...");
+
         const audioBlob = new Blob(audioChunks.current, { type: "audio/mp3" });
         const formData = new FormData();
         formData.append("file", audioBlob, `round${round}.mp3`);
@@ -205,10 +227,10 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
         formData.append("round_number", round.toString());
 
         try {
-          fetch("http://localhost:8000/transcribe", {
+          fetch("http://188.166.197.135:8000/transcribe", {
             method: "POST",
             body: formData,
-          }).catch(error => {
+          }).catch((error) => {
             console.error("Error sending audio:", error);
           });
         } catch (err) {
@@ -217,19 +239,19 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
 
         // Process the result
         const result = await processResult(audioBlob);
-        setGameResults(prev => ({
+        setGameResults((prev) => ({
           ...prev,
-          [round]: result
+          [round]: result,
         }));
 
         // Move to next round or finish
         if (round < TOTAL_ROUNDS - 1) {
-          setRound(prev => prev + 1);
+          setRound((prev) => prev + 1);
           setTimeout(() => {
             startGameFlow();
           }, 2000);
         } else {
-          setGameState('finished');
+          setGameState("finished");
           setShowCompletionAnimation(true);
           setTimeout(() => {
             setShowConfetti(true);
@@ -238,41 +260,47 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
       };
 
       mediaRecorderRef.current.start();
-      
+
       // Stop recording after 10 seconds
       setTimeout(() => {
-        if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
+        if (
+          mediaRecorderRef.current &&
+          mediaRecorderRef.current.state === "recording"
+        ) {
           mediaRecorderRef.current.stop();
         }
       }, 10000);
     } catch (error) {
-      console.error('Error starting recording:', error);
-      setGameState('playing');
+      console.error("Error starting recording:", error);
+      setGameState("playing");
     }
   };
 
   // Process the result from backend
   const processResult = async (audioBlob: Blob): Promise<GameResult> => {
     // Simulate processing time
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     // For now, return a mock result
     return {
       target_text: labelText,
       transcribed_text: "Sample transcription",
       similarity_score: Math.random() * 100,
-      status: "completed"
+      status: "completed",
     };
   };
 
   const handleLogout = async () => {
-    console.log('Logout button clicked');
-    await fetch('http://localhost:8080/auth/logout', { method: 'POST', credentials: 'include' });
-    window.location.href = '/';
+    console.log("Logout button clicked");
+    await fetch("http://188.166.197.135:8080/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+    window.location.href = "/";
   };
 
   // Consent Screen
-  if (currentScreen === 'consent') {
+  if (currentScreen === "consent") {
     return (
       <div className="h-screen bg-gradient-to-br from-pink-100 via-red-50 to-orange-100 font-nunito overflow-hidden flex flex-col">
         <Navbar onLogout={handleLogout} />
@@ -288,26 +316,30 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
   return (
     <div className="h-screen bg-gradient-to-br from-pink-100 via-red-50 to-orange-100 font-nunito overflow-hidden flex flex-col">
       <Navbar onLogout={handleLogout} />
-      
+
       {/* Game Header - Compact */}
       <div className="px-3 py-1">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <Button
-            onClick={() => navigate('/games/repeat-with-me/instructions')}
+            onClick={() => navigate("/games/repeat-with-me/instructions")}
             className="btn-fun font-comic text-xs py-1 px-3 bg-gradient-to-r from-pink-400 to-red-400 hover:from-pink-500 hover:to-red-500 text-white border-2 border-pink-300 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
             <ArrowLeft className="w-3 h-3 mr-1" />
             Back 📋
           </Button>
-          
+
           <div className="flex items-center space-x-1">
             <div className="flex items-center space-x-1 bg-gradient-to-r from-pink-400 to-red-400 px-2 py-1 rounded-full shadow-lg">
               <Mic className="w-3 h-3 text-white" />
-              <span className="text-white font-comic font-bold text-xs">Speech Master</span>
+              <span className="text-white font-comic font-bold text-xs">
+                Speech Master
+              </span>
             </div>
             <div className="flex items-center space-x-1 bg-gradient-to-r from-red-400 to-orange-400 px-2 py-1 rounded-full shadow-lg">
               <Headphones className="w-3 h-3 text-white" />
-              <span className="text-white font-comic font-bold text-xs">Listening Expert</span>
+              <span className="text-white font-comic font-bold text-xs">
+                Listening Expert
+              </span>
             </div>
           </div>
         </div>
@@ -329,19 +361,25 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
           <Card className="card-playful border-2 border-primary/20 bg-white/80 backdrop-blur-sm h-full">
             <CardContent className="p-6 h-full flex flex-col">
               {/* Loading State */}
-              {gameState === 'loading' && (
+              {gameState === "loading" && (
                 <div className="flex-1 flex flex-col items-center justify-center">
                   <div className="text-6xl mb-4 animate-spin">🎵</div>
-                  <h2 className="text-2xl font-playful text-primary mb-2">Loading Round...</h2>
-                  <p className="text-muted-foreground font-comic">Preparing your Bengali sentence</p>
+                  <h2 className="text-2xl font-playful text-primary mb-2">
+                    Loading Round...
+                  </h2>
+                  <p className="text-muted-foreground font-comic">
+                    Preparing your Bengali sentence
+                  </p>
                 </div>
               )}
 
               {/* Playing State - Audio Playing */}
-              {gameState === 'playing' && (
+              {gameState === "playing" && (
                 <div className="flex-1 flex flex-col items-center justify-center">
                   <div className="text-8xl mb-6 animate-bounce">🎤</div>
-                  <h2 className="text-3xl font-playful text-primary mb-4">Listen Carefully!</h2>
+                  <h2 className="text-3xl font-playful text-primary mb-4">
+                    Listen Carefully!
+                  </h2>
                   <p className="text-xl text-muted-foreground font-comic mb-6 text-center">
                     {labelText}
                   </p>
@@ -349,36 +387,43 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
                   <p className="text-lg text-muted-foreground font-comic">
                     Audio is playing... Listen and get ready to repeat!
                   </p>
-                  
+
                   {/* Hidden audio element */}
                   <audio
                     ref={audioRef}
-                    src={audioFile || ''}
+                    src={audioFile || ""}
                     onEnded={handleAudioEnded}
-                    style={{ display: 'none' }}
+                    style={{ display: "none" }}
                   />
                 </div>
               )}
 
               {/* Countdown State */}
-              {gameState === 'countdown' && (
+              {gameState === "countdown" && (
                 <div className="flex-1 flex flex-col items-center justify-center">
                   <div className="text-8xl mb-6 animate-bounce">🎯</div>
-                  <h2 className="text-4xl font-playful text-primary mb-4">Get Ready!</h2>
+                  <h2 className="text-4xl font-playful text-primary mb-4">
+                    Get Ready!
+                  </h2>
                   <div className="text-8xl font-bold text-primary mb-4 animate-pulse">
                     {countdown}
                   </div>
                   <p className="text-xl text-muted-foreground font-comic">
-                    Start speaking in {countdown} second{countdown !== 1 ? 's' : ''}!
+                    Start speaking in {countdown} second
+                    {countdown !== 1 ? "s" : ""}!
                   </p>
                 </div>
               )}
 
               {/* Recording State */}
-              {gameState === 'recording' && (
+              {gameState === "recording" && (
                 <div className="flex-1 flex flex-col items-center justify-center">
-                  <div className="text-8xl mb-6 animate-pulse text-red-500">🎙️</div>
-                  <h2 className="text-3xl font-playful text-primary mb-4">Recording!</h2>
+                  <div className="text-8xl mb-6 animate-pulse text-red-500">
+                    🎙️
+                  </div>
+                  <h2 className="text-3xl font-playful text-primary mb-4">
+                    Recording!
+                  </h2>
                   <p className="text-xl text-muted-foreground font-comic mb-6 text-center">
                     {labelText}
                   </p>
@@ -392,22 +437,31 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
               )}
 
               {/* Finished State */}
-              {gameState === 'finished' && (
+              {gameState === "finished" && (
                 <div className="flex-1 flex flex-col items-center justify-center">
                   {showCompletionAnimation && (
                     <div className="text-8xl mb-6 animate-bounce">🎉</div>
                   )}
-                  <h2 className="text-3xl font-playful text-primary mb-4">Game Complete!</h2>
+                  <h2 className="text-3xl font-playful text-primary mb-4">
+                    Game Complete!
+                  </h2>
                   <p className="text-xl text-muted-foreground font-comic mb-6">
                     You've completed all {TOTAL_ROUNDS} rounds!
                   </p>
-                  
+
                   {/* Results Summary */}
                   <div className="w-full max-w-md space-y-3 mb-6">
                     {Object.entries(gameResults).map(([roundNum, result]) => (
-                      <div key={roundNum} className="flex items-center justify-between p-3 bg-gradient-to-r from-pink-50 to-red-50 rounded-lg border border-pink-200">
-                        <span className="font-comic">Round {parseInt(roundNum) + 1}</span>
-                        <span className="font-bold text-primary">{result.similarity_score.toFixed(1)}%</span>
+                      <div
+                        key={roundNum}
+                        className="flex items-center justify-between p-3 bg-gradient-to-r from-pink-50 to-red-50 rounded-lg border border-pink-200"
+                      >
+                        <span className="font-comic">
+                          Round {parseInt(roundNum) + 1}
+                        </span>
+                        <span className="font-bold text-primary">
+                          {result.similarity_score.toFixed(1)}%
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -415,9 +469,15 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
                   {/* Average Score */}
                   <div className="text-center mb-6">
                     <div className="text-4xl font-bold text-primary mb-2">
-                      {Object.values(gameResults).reduce((sum, result) => sum + result.similarity_score, 0) / Object.keys(gameResults).length}%
+                      {Object.values(gameResults).reduce(
+                        (sum, result) => sum + result.similarity_score,
+                        0
+                      ) / Object.keys(gameResults).length}
+                      %
                     </div>
-                    <div className="text-lg text-muted-foreground font-comic">Average Score</div>
+                    <div className="text-lg text-muted-foreground font-comic">
+                      Average Score
+                    </div>
                   </div>
 
                   {/* Action Buttons */}
@@ -426,15 +486,15 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
                       onClick={() => {
                         setRound(0);
                         setGameResults({});
-                        setGameState('consent');
-                        setCurrentScreen('consent');
+                        setGameState("consent");
+                        setCurrentScreen("consent");
                       }}
                       className="btn-fun font-comic text-lg py-3 px-6 bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 text-white border-4 border-pink-300 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110"
                     >
                       🎮 Play Again
                     </Button>
                     <Button
-                      onClick={() => navigate('/games/repeat-with-me/insights')}
+                      onClick={() => navigate("/games/repeat-with-me/insights")}
                       className="btn-fun font-comic text-lg py-3 px-6 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white border-4 border-blue-300 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110"
                     >
                       📊 View Insights
@@ -452,7 +512,9 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
         <div className="flex items-center justify-center space-x-2">
           <div className="flex items-center space-x-1 bg-gradient-to-r from-green-400 to-blue-400 px-2 py-1 rounded-full shadow-lg">
             <Repeat className="w-3 h-3 text-white" />
-            <span className="text-white font-comic font-bold text-xs">You're Doing Great! 🎯</span>
+            <span className="text-white font-comic font-bold text-xs">
+              You're Doing Great! 🎯
+            </span>
           </div>
         </div>
       </div>
@@ -468,7 +530,7 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
                 animationDelay: `${Math.random() * 2}s`,
-                animationDuration: `${1 + Math.random() * 2}s`
+                animationDuration: `${1 + Math.random() * 2}s`,
               }}
             />
           ))}

@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/api/admin/tickets")
-@CrossOrigin(originPatterns = {"http://localhost:3001", "http://localhost:8081"})
+@CrossOrigin(originPatterns = {"http://localhost:3001", "http://188.166.197.135"})
 public class TicketController {
     
     @Autowired

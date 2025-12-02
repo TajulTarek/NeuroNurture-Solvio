@@ -8,21 +8,26 @@ import UserMenu from "./UserMenu";
 interface DashboardNavbarProps {
   onLogout?: () => void;
   showLogout?: boolean;
-  activeTab: 'playground' | 'school' | 'doctor';
-  onTabChange: (tab: 'playground' | 'school' | 'doctor') => void;
+  activeTab: "playground" | "school" | "doctor";
+  onTabChange: (tab: "playground" | "school" | "doctor") => void;
 }
 
-const DashboardNavbar = ({ onLogout, showLogout = true, activeTab, onTabChange }: DashboardNavbarProps) => {
+const DashboardNavbar = ({
+  onLogout,
+  showLogout = true,
+  activeTab,
+  onTabChange,
+}: DashboardNavbarProps) => {
   const [username, setUsername] = useState<string | null>(null);
   const [selectedChild, setSelectedChild] = useState<any>(null);
 
   useEffect(() => {
     // Get username
-    fetch('http://localhost:8080/auth/me', { credentials: 'include' })
-      .then(res => res.text())
-      .then(name => setUsername(name))
-      .catch(err => console.error('Failed to get username:', err));
-    
+    fetch("http://188.166.197.135:8080/auth/me", { credentials: "include" })
+      .then((res) => res.text())
+      .then((name) => setUsername(name))
+      .catch((err) => console.error("Failed to get username:", err));
+
     // Get selected child data
     const childData = getCurrentChild();
     setSelectedChild(childData);
@@ -36,72 +41,75 @@ const DashboardNavbar = ({ onLogout, showLogout = true, activeTab, onTabChange }
     };
 
     // Listen for storage events (when localStorage changes in other tabs)
-    window.addEventListener('storage', handleStorageChange);
-    
+    window.addEventListener("storage", handleStorageChange);
+
     // Also listen for custom events (when localStorage changes in same tab)
-    window.addEventListener('childSelectionChanged', handleStorageChange);
+    window.addEventListener("childSelectionChanged", handleStorageChange);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('childSelectionChanged', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("childSelectionChanged", handleStorageChange);
     };
   }, []);
 
   const handleHomeClick = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Navbar home clicked');
-    
+    console.log("Navbar home clicked");
+
     try {
       // Check if user is authenticated
-      const sessionResponse = await fetch('http://localhost:8080/auth/session', { 
-        credentials: 'include' 
-      });
+      const sessionResponse = await fetch(
+        "http://188.166.197.135:8080/auth/session",
+        {
+          credentials: "include",
+        }
+      );
       const isAuthenticated = await sessionResponse.json();
-      
+
       if (!isAuthenticated) {
         // Not authenticated - redirect to landing page
-        console.log('User not authenticated, redirecting to landing page');
-        window.location.href = '/';
+        console.log("User not authenticated, redirecting to landing page");
+        window.location.href = "/";
         return;
       }
-      
+
       // User is authenticated - check if child is selected
       if (selectedChild) {
         // Child is selected - redirect to dashboard
-        console.log('Child selected, redirecting to dashboard');
-        window.location.href = '/dashboard';
+        console.log("Child selected, redirecting to dashboard");
+        window.location.href = "/dashboard";
       } else {
         // No child selected - redirect to children profile selection
-        console.log('No child selected, redirecting to children profiles');
-        window.location.href = '/children';
+        console.log("No child selected, redirecting to children profiles");
+        window.location.href = "/children";
       }
     } catch (error) {
-      console.error('Error checking authentication status:', error);
+      console.error("Error checking authentication status:", error);
       // On error, redirect to landing page as fallback
-      window.location.href = '/';
+      window.location.href = "/";
     }
   };
 
   const tabs = [
     {
-      id: 'playground' as const,
-      label: 'Playground',
-      icon: '🎮',
-      description: 'Games & Learning'
+      id: "playground" as const,
+      label: "Playground",
+      icon: "🎮",
+      description: "Games & Learning",
     },
     {
-      id: 'school' as const,
-      label: 'School',
-      icon: '🏫',
-      description: 'Academic'
+      id: "school" as const,
+      label: "School",
+      icon: "🏫",
+      description: "Academic",
     },
     {
-      id: 'doctor' as const,
-      label: 'Doctor',
-      icon: '👩‍⚕️',
-      description: 'Health'
-    }
+      id: "doctor" as const,
+      label: "Doctor",
+      icon: "👩‍⚕️",
+      description: "Health",
+    },
   ];
 
   return (
@@ -110,7 +118,7 @@ const DashboardNavbar = ({ onLogout, showLogout = true, activeTab, onTabChange }
         {/* Single Row Layout */}
         <div className="flex items-center justify-between h-16">
           {/* Left - Logo and Tagline */}
-          <button 
+          <button
             className="flex items-center space-x-3 cursor-pointer group bg-transparent border-none outline-none"
             onClick={handleHomeClick}
           >
@@ -147,7 +155,9 @@ const DashboardNavbar = ({ onLogout, showLogout = true, activeTab, onTabChange }
                     {tab.icon}
                   </span>
                   <div className="flex flex-col items-center min-w-0">
-                    <span className="text-xs sm:text-sm font-comic leading-none truncate">{tab.label}</span>
+                    <span className="text-xs sm:text-sm font-comic leading-none truncate">
+                      {tab.label}
+                    </span>
                     {/* <span className="text-xs opacity-80 leading-none hidden sm:block truncate">{tab.description}</span> */}
                   </div>
                 </Button>
@@ -156,8 +166,8 @@ const DashboardNavbar = ({ onLogout, showLogout = true, activeTab, onTabChange }
           </div>
 
           {/* Right - User Menu */}
-          <UserMenu 
-            onLogout={onLogout} 
+          <UserMenu
+            onLogout={onLogout}
             showLogout={showLogout}
             username={username}
             selectedChild={selectedChild}

@@ -1,4 +1,10 @@
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface Child {
   id: number;
@@ -34,7 +40,7 @@ const ChildContext = createContext<ChildContextType | undefined>(undefined);
 export const useChildContext = () => {
   const context = useContext(ChildContext);
   if (context === undefined) {
-    throw new Error('useChildContext must be used within a ChildProvider');
+    throw new Error("useChildContext must be used within a ChildProvider");
   }
   return context;
 };
@@ -51,13 +57,13 @@ export const ChildProvider: React.FC<ChildProviderProps> = ({ children }) => {
   useEffect(() => {
     const storedChild = localStorage.getItem("selectedChild");
     const storedParentId = localStorage.getItem("currentParentId");
-    
+
     if (storedChild) {
       try {
         const childData = JSON.parse(storedChild);
         setCurrentChild(childData);
       } catch (error) {
-        console.error('Error parsing stored child data:', error);
+        console.error("Error parsing stored child data:", error);
         localStorage.removeItem("selectedChild");
       }
     }
@@ -70,15 +76,18 @@ export const ChildProvider: React.FC<ChildProviderProps> = ({ children }) => {
 
   const loadParentData = async (parentId: number) => {
     try {
-      const response = await fetch(`http://localhost:8082/api/parents/${parentId}`, {
-        credentials: 'include'
-      });
+      const response = await fetch(
+        `http://188.166.197.135:8082/api/parents/${parentId}`,
+        {
+          credentials: "include",
+        }
+      );
       if (response.ok) {
         const parentData = await response.json();
         setCurrentParent(parentData);
       }
     } catch (error) {
-      console.error('Error loading parent data:', error);
+      console.error("Error loading parent data:", error);
     }
   };
 
@@ -99,12 +108,10 @@ export const ChildProvider: React.FC<ChildProviderProps> = ({ children }) => {
     setCurrentParent,
     clearCurrentChild,
     clearCurrentParent,
-    isChildSelected: currentChild !== null
+    isChildSelected: currentChild !== null,
   };
 
   return (
-    <ChildContext.Provider value={value}>
-      {children}
-    </ChildContext.Provider>
+    <ChildContext.Provider value={value}>{children}</ChildContext.Provider>
   );
-}; 
+};

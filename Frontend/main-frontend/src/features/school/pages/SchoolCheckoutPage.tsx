@@ -1,13 +1,20 @@
-import { useSchoolAuth } from '@/features/school/contexts/SchoolAuthContext';
-import { makeAuthenticatedSchoolRequest } from '@/shared/utils/schoolApiUtils';
-import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import { ArrowLeft, CreditCard, Lock, Shield } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSchoolAuth } from "@/features/school/contexts/SchoolAuthContext";
+import { makeAuthenticatedSchoolRequest } from "@/shared/utils/schoolApiUtils";
+import {
+  CardElement,
+  Elements,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { ArrowLeft, CreditCard, Lock, Shield } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 // Initialize Stripe
-const stripePromise = loadStripe('pk_test_51S6l8D0EZDpckBwTmtFUk2EKtCa85tMHL0Uj4yBzTKclKnttvL0ILZ7NLRewbmlBCRTOBkkEy8IhLa7y4NHBRoZF00dWsOLlkx');
+const stripePromise = loadStripe(
+  "pk_test_51S6l8D0EZDpckBwTmtFUk2EKtCa85tMHL0Uj4yBzTKclKnttvL0ILZ7NLRewbmlBCRTOBkkEy8IhLa7y4NHBRoZF00dWsOLlkx"
+);
 
 interface SubscriptionPlan {
   id: string;
@@ -39,69 +46,79 @@ const CheckoutForm: React.FC<{ plan: SubscriptionPlan }> = ({ plan }) => {
 
     try {
       // Create payment intent
-      const response = await makeAuthenticatedSchoolRequest('http://localhost:8091/api/school/subscription/create-payment-intent', {
-        method: 'POST',
-        headers: {
-          'X-School-Id': school?.id || '',
-        },
-        body: JSON.stringify({ planId: plan.id }),
-      });
+      const response = await makeAuthenticatedSchoolRequest(
+        "http://188.166.197.135:8091/api/school/subscription/create-payment-intent",
+        {
+          method: "POST",
+          headers: {
+            "X-School-Id": school?.id || "",
+          },
+          body: JSON.stringify({ planId: plan.id }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to create payment intent');
+        throw new Error("Failed to create payment intent");
       }
 
       const { clientSecret } = await response.json();
 
       // Confirm payment
-      const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement)!,
-        },
-      });
+      const { error: stripeError, paymentIntent } =
+        await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement(CardElement)!,
+          },
+        });
 
       if (stripeError) {
-        setError(stripeError.message || 'Payment failed');
+        setError(stripeError.message || "Payment failed");
         setLoading(false);
         return;
       }
 
-      if (paymentIntent.status === 'succeeded') {
+      if (paymentIntent.status === "succeeded") {
         // Confirm payment on backend
-        const confirmResponse = await makeAuthenticatedSchoolRequest('http://localhost:8091/api/school/subscription/confirm-payment', {
-          method: 'POST',
-          headers: {
-            'X-School-Id': school?.id || '',
-          },
-          body: JSON.stringify({ paymentIntentId: paymentIntent.id }),
-        });
+        const confirmResponse = await makeAuthenticatedSchoolRequest(
+          "http://188.166.197.135:8091/api/school/subscription/confirm-payment",
+          {
+            method: "POST",
+            headers: {
+              "X-School-Id": school?.id || "",
+            },
+            body: JSON.stringify({ paymentIntentId: paymentIntent.id }),
+          }
+        );
 
         if (confirmResponse.ok) {
           const responseData = await confirmResponse.json();
-          console.log('Payment confirmation response:', responseData);
-          
+          console.log("Payment confirmation response:", responseData);
+
           // Update school context with new subscription data
           if (responseData.school) {
             const updatedSchoolData = {
               subscriptionStatus: responseData.school.subscriptionStatus,
-              subscriptionPlan: responseData.school.subscriptionPlan || 'free',
+              subscriptionPlan: responseData.school.subscriptionPlan || "free",
               subscriptionExpiry: responseData.school.subscriptionExpiry,
               childrenLimit: responseData.school.childrenLimit,
-              currentChildren: responseData.school.currentChildren
+              currentChildren: responseData.school.currentChildren,
             };
-            
+
             // Update the school context with new subscription data
             updateSchoolData(updatedSchoolData);
-            console.log('Updated school context with subscription data:', updatedSchoolData);
+            console.log(
+              "Updated school context with subscription data:",
+              updatedSchoolData
+            );
           }
-          
+
           handlePaymentSuccess(plan.id);
         } else {
-          throw new Error('Failed to confirm payment');
+          throw new Error("Failed to confirm payment");
         }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Payment failed');
+      setError(err instanceof Error ? err.message : "Payment failed");
     } finally {
       setLoading(false);
     }
@@ -114,17 +131,19 @@ const CheckoutForm: React.FC<{ plan: SubscriptionPlan }> = ({ plan }) => {
   const formatPrice = (priceInCents: number) => {
     // Convert USD to Taka (BDT) by multiplying by 100
     const priceInTaka = (priceInCents / 100) * 100;
-    return new Intl.NumberFormat('en-BD', {
-      style: 'currency',
-      currency: 'BDT'
+    return new Intl.NumberFormat("en-BD", {
+      style: "currency",
+      currency: "BDT",
     }).format(priceInTaka);
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Information</h3>
-        
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Payment Information
+        </h3>
+
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -135,10 +154,10 @@ const CheckoutForm: React.FC<{ plan: SubscriptionPlan }> = ({ plan }) => {
                 options={{
                   style: {
                     base: {
-                      fontSize: '16px',
-                      color: '#424770',
-                      '::placeholder': {
-                        color: '#aab7c4',
+                      fontSize: "16px",
+                      color: "#424770",
+                      "::placeholder": {
+                        color: "#aab7c4",
                       },
                     },
                   },
@@ -161,17 +180,22 @@ const CheckoutForm: React.FC<{ plan: SubscriptionPlan }> = ({ plan }) => {
       </div>
 
       <div className="bg-gray-50 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Summary</h3>
-        
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Order Summary
+        </h3>
+
         <div className="space-y-3">
           <div className="flex justify-between">
             <span className="text-gray-600">{plan.name}</span>
-            <span className="font-semibold">{formatPrice(plan.priceInCents)}</span>
+            <span className="font-semibold">
+              {formatPrice(plan.priceInCents)}
+            </span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Duration</span>
             <span className="font-semibold">
-              {plan.durationInMonths / 12} {plan.durationInMonths / 12 === 1 ? 'year' : 'years'}
+              {plan.durationInMonths / 12}{" "}
+              {plan.durationInMonths / 12 === 1 ? "year" : "years"}
             </span>
           </div>
           <div className="border-t border-gray-200 pt-3">
@@ -211,16 +235,16 @@ const SchoolCheckoutPage: React.FC = () => {
   const [plan, setPlan] = useState<SubscriptionPlan | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const planId = searchParams.get('plan');
+  const planId = searchParams.get("plan");
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/auth/school/login');
+      navigate("/auth/school/login");
       return;
     }
 
     if (!planId) {
-      navigate('/school/pricing');
+      navigate("/school/pricing");
       return;
     }
 
@@ -229,34 +253,36 @@ const SchoolCheckoutPage: React.FC = () => {
 
   const fetchPlan = async () => {
     try {
-      const response = await makeAuthenticatedSchoolRequest('http://localhost:8091/api/school/subscription/plans');
+      const response = await makeAuthenticatedSchoolRequest(
+        "http://188.166.197.135:8091/api/school/subscription/plans"
+      );
       if (response.ok) {
         const plans = await response.json();
         const selectedPlan = plans.find((p: any) => p.id === planId);
-        
+
         if (selectedPlan) {
           setPlan({
             ...selectedPlan,
             features: [
-              'Unlimited children enrollment',
-              'Full analytics dashboard',
-              'Priority support',
-              'Advanced reporting',
-              'Data export capabilities',
-              'Custom task creation',
-              'Tournament management',
-              'Performance tracking'
-            ]
+              "Unlimited children enrollment",
+              "Full analytics dashboard",
+              "Priority support",
+              "Advanced reporting",
+              "Data export capabilities",
+              "Custom task creation",
+              "Tournament management",
+              "Performance tracking",
+            ],
           });
         } else {
-          navigate('/school/pricing');
+          navigate("/school/pricing");
         }
       } else {
-        navigate('/school/pricing');
+        navigate("/school/pricing");
       }
     } catch (error) {
-      console.error('Error fetching plan:', error);
-      navigate('/school/pricing');
+      console.error("Error fetching plan:", error);
+      navigate("/school/pricing");
     } finally {
       setLoading(false);
     }
@@ -265,9 +291,9 @@ const SchoolCheckoutPage: React.FC = () => {
   const formatPrice = (priceInCents: number) => {
     // Convert USD to Taka (BDT) by multiplying by 100
     const priceInTaka = (priceInCents / 100) * 100;
-    return new Intl.NumberFormat('en-BD', {
-      style: 'currency',
-      currency: 'BDT'
+    return new Intl.NumberFormat("en-BD", {
+      style: "currency",
+      currency: "BDT",
     }).format(priceInTaka);
   };
 
@@ -286,10 +312,14 @@ const SchoolCheckoutPage: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Plan not found</h1>
-          <p className="text-gray-600 mb-6">The selected plan could not be found.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Plan not found
+          </h1>
+          <p className="text-gray-600 mb-6">
+            The selected plan could not be found.
+          </p>
           <button
-            onClick={() => navigate('/school/pricing')}
+            onClick={() => navigate("/school/pricing")}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
           >
             Back to Pricing
@@ -305,14 +335,16 @@ const SchoolCheckoutPage: React.FC = () => {
         {/* Header */}
         <div className="mb-8">
           <button
-            onClick={() => navigate('/school/pricing')}
+            onClick={() => navigate("/school/pricing")}
             className="flex items-center text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
             Back to Pricing
           </button>
-          
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Complete Your Purchase</h1>
+
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Complete Your Purchase
+          </h1>
           <p className="text-gray-600">Secure payment powered by Stripe</p>
         </div>
 
@@ -327,19 +359,26 @@ const SchoolCheckoutPage: React.FC = () => {
           {/* Order Summary */}
           <div className="space-y-6">
             <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Plan Details</h3>
-              
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Plan Details
+              </h3>
+
               <div className="space-y-4">
                 <div>
                   <h4 className="font-semibold text-gray-900">{plan.name}</h4>
                   <p className="text-gray-600 text-sm">{plan.description}</p>
                 </div>
-                
+
                 <div className="space-y-2">
-                  <h5 className="font-medium text-gray-900">What's included:</h5>
+                  <h5 className="font-medium text-gray-900">
+                    What's included:
+                  </h5>
                   <ul className="space-y-1">
                     {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-center text-sm text-gray-600">
+                      <li
+                        key={index}
+                        className="flex items-center text-sm text-gray-600"
+                      >
                         <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>
                         {feature}
                       </li>
@@ -351,20 +390,28 @@ const SchoolCheckoutPage: React.FC = () => {
 
             {/* Security Badges */}
             <div className="bg-white rounded-lg p-6 border border-gray-200">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Security & Trust</h3>
-              
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Security & Trust
+              </h3>
+
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
                   <Shield className="h-5 w-5 text-green-500" />
-                  <span className="text-sm text-gray-600">256-bit SSL encryption</span>
+                  <span className="text-sm text-gray-600">
+                    256-bit SSL encryption
+                  </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Lock className="h-5 w-5 text-green-500" />
-                  <span className="text-sm text-gray-600">PCI DSS compliant</span>
+                  <span className="text-sm text-gray-600">
+                    PCI DSS compliant
+                  </span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <CreditCard className="h-5 w-5 text-green-500" />
-                  <span className="text-sm text-gray-600">Powered by Stripe</span>
+                  <span className="text-sm text-gray-600">
+                    Powered by Stripe
+                  </span>
                 </div>
               </div>
             </div>
@@ -372,9 +419,12 @@ const SchoolCheckoutPage: React.FC = () => {
             {/* School Info */}
             {school && (
               <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
-                <h3 className="text-lg font-semibold text-blue-900 mb-2">School Information</h3>
+                <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                  School Information
+                </h3>
                 <p className="text-blue-700">
-                  <strong>{school.name}</strong><br />
+                  <strong>{school.name}</strong>
+                  <br />
                   {school.email}
                 </p>
               </div>

@@ -39,7 +39,7 @@ const SchoolLoginForm: React.FC = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8091/api/school/auth/login",
+        "http://188.166.197.135:8091/api/school/auth/login",
         {
           method: "POST",
           headers: {

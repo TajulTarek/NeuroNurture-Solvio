@@ -1,5 +1,5 @@
 // Task Service for managing school tasks
-import { makeAuthenticatedSchoolRequest } from '../../utils/schoolApiUtils';
+import { makeAuthenticatedSchoolRequest } from "../../utils/schoolApiUtils";
 
 export interface TaskCreateRequest {
   taskTitle: string;
@@ -31,7 +31,7 @@ export interface TaskResponse {
   status: string;
   createdAt: string;
   updatedAt: string;
-  
+
   // For grouped tasks
   assignedChildren?: ChildAssignment[];
   totalAssigned?: number;
@@ -43,32 +43,40 @@ export interface GameMapping {
 }
 
 class TaskService {
-  private baseUrl = 'http://localhost:8091/api/school/tasks';
+  private baseUrl = "http://188.166.197.135:8091/api/school/tasks";
 
   // Create new tasks for multiple children
-  async createTasks(request: TaskCreateRequest, schoolId: number): Promise<TaskResponse[]> {
+  async createTasks(
+    request: TaskCreateRequest,
+    schoolId: number
+  ): Promise<TaskResponse[]> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/create?schoolId=${schoolId}`, {
-        method: 'POST',
-        body: JSON.stringify(request),
-      });
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/create?schoolId=${schoolId}`,
+        {
+          method: "POST",
+          body: JSON.stringify(request),
+        }
+      );
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(`HTTP error! status: ${response.status}, response: ${errorText}`);
+        console.error(
+          `HTTP error! status: ${response.status}, response: ${errorText}`
+        );
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
         const responseText = await response.text();
-        console.error('Response is not JSON:', responseText);
-        throw new Error('Response is not JSON');
+        console.error("Response is not JSON:", responseText);
+        throw new Error("Response is not JSON");
       }
 
       return await response.json();
     } catch (error) {
-      console.error('Error creating tasks:', error);
+      console.error("Error creating tasks:", error);
       throw error;
     }
   }
@@ -76,13 +84,15 @@ class TaskService {
   // Get all tasks for a school
   async getTasksBySchool(schoolId: number): Promise<TaskResponse[]> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/school/${schoolId}`);
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/school/${schoolId}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Error fetching tasks by school:', error);
+      console.error("Error fetching tasks by school:", error);
       throw error;
     }
   }
@@ -90,44 +100,57 @@ class TaskService {
   // Get tasks for a specific child
   async getTasksByChild(childId: number): Promise<TaskResponse[]> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/child/${childId}`);
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/child/${childId}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Error fetching tasks by child:', error);
+      console.error("Error fetching tasks by child:", error);
       throw error;
     }
   }
 
   // Get tasks by school and child
-  async getTasksBySchoolAndChild(schoolId: number, childId: number): Promise<TaskResponse[]> {
+  async getTasksBySchoolAndChild(
+    schoolId: number,
+    childId: number
+  ): Promise<TaskResponse[]> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/school/${schoolId}/child/${childId}`);
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/school/${schoolId}/child/${childId}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Error fetching tasks by school and child:', error);
+      console.error("Error fetching tasks by school and child:", error);
       throw error;
     }
   }
 
   // Update task status
-  async updateTaskStatus(taskId: number, status: string): Promise<TaskResponse> {
+  async updateTaskStatus(
+    taskId: number,
+    status: string
+  ): Promise<TaskResponse> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/${taskId}/status?status=${status}`, {
-        method: 'PUT',
-      });
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/${taskId}/status?status=${status}`,
+        {
+          method: "PUT",
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       return await response.json();
     } catch (error) {
-      console.error('Error updating task status:', error);
+      console.error("Error updating task status:", error);
       throw error;
     }
   }
@@ -135,15 +158,18 @@ class TaskService {
   // Delete a task
   async deleteTask(taskId: number): Promise<void> {
     try {
-      const response = await makeAuthenticatedSchoolRequest(`${this.baseUrl}/${taskId}`, {
-        method: 'DELETE',
-      });
+      const response = await makeAuthenticatedSchoolRequest(
+        `${this.baseUrl}/${taskId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
     } catch (error) {
-      console.error('Error deleting task:', error);
+      console.error("Error deleting task:", error);
       throw error;
     }
   }
@@ -157,7 +183,7 @@ class TaskService {
       }
       return await response.json();
     } catch (error) {
-      console.error('Error fetching available games:', error);
+      console.error("Error fetching available games:", error);
       throw error;
     }
   }
@@ -171,7 +197,7 @@ class TaskService {
       }
       return await response.json();
     } catch (error) {
-      console.error('Error fetching game bit mapping:', error);
+      console.error("Error fetching game bit mapping:", error);
       throw error;
     }
   }
@@ -182,7 +208,7 @@ class TaskService {
       const response = await fetch(`${this.baseUrl}/health`);
       return response.ok;
     } catch (error) {
-      console.error('Task service health check failed:', error);
+      console.error("Task service health check failed:", error);
       return false;
     }
   }

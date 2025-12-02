@@ -63,7 +63,7 @@ const DoctorRegister: React.FC = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8093/api/doctor/auth/register",
+        "http://188.166.197.135:8093/api/doctor/auth/register",
         {
           method: "POST",
           headers: {

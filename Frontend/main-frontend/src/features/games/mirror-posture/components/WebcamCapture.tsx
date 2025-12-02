@@ -1,8 +1,8 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { toast } from '@/components/ui/use-toast';
-import { Camera, CameraOff, Wifi, WifiOff } from 'lucide-react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
+import { Camera, CameraOff, Wifi, WifiOff } from "lucide-react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 interface WebcamCaptureProps {
   onExpressionDetected: (expression: string) => void;
@@ -21,33 +21,32 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const captureIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   const [isConnected, setIsConnected] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [confidence, setConfidence] = useState<number>(0);
 
   // API endpoint for posture detection
-  const API_ENDPOINT = 'http://localhost:8000/predictPosture';
+  const API_ENDPOINT = "http://188.166.197.135:8000/predictPosture";
 
-  
   // Test API connection on component mount
   useEffect(() => {
     const testConnection = async () => {
       try {
         const response = await fetch(API_ENDPOINT, {
-          method: 'POST',
+          method: "POST",
         });
         if (response.ok) {
           setIsConnected(true);
-          console.log('API connection successful');
+          console.log("API connection successful");
         }
       } catch (error) {
-        console.log('API not available, will use demo mode');
+        console.log("API not available, will use demo mode");
         setIsConnected(false);
       }
     };
-    
+
     testConnection();
   }, []);
 
@@ -58,8 +57,8 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({
         video: {
           width: { ideal: 640 },
           height: { ideal: 480 },
-          facingMode: 'user'
-        }
+          facingMode: "user",
+        },
       });
 
       if (videoRef.current) {
@@ -67,14 +66,14 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({
         streamRef.current = stream;
         setIsCameraOn(true);
         onCameraReady(true);
-        
+
         toast({
           title: "Camera ready! 📷",
           description: "You can now start the game",
         });
       }
     } catch (error) {
-      console.error('Error accessing webcam:', error);
+      console.error("Error accessing webcam:", error);
       toast({
         title: "Camera access denied",
         description: "Please allow camera access to play the game",
@@ -87,7 +86,7 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({
   // Stop webcam
   const stopWebcam = useCallback(() => {
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
     setIsCameraOn(false);
@@ -100,7 +99,7 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({
 
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
 
     if (!ctx || video.videoWidth === 0) return;
 
@@ -113,61 +112,80 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({
 
     try {
       setIsProcessing(true);
-      
+
       // Convert canvas to blob
       const blob = await new Promise<Blob>((resolve) => {
-        canvas.toBlob(resolve as BlobCallback, 'image/jpeg', 0.8);
+        canvas.toBlob(resolve as BlobCallback, "image/jpeg", 0.8);
       });
 
       if (!blob) return;
 
       // Create FormData for API request
       const formData = new FormData();
-      formData.append('file', blob, 'frame.jpg');
+      formData.append("file", blob, "frame.jpg");
 
       // Send to API backend
       const response = await fetch(API_ENDPOINT, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
 
       if (response.ok) {
         const result = await response.json();
-        console.log('API Response:', result);
-        
+        console.log("API Response:", result);
+
         // Check if prediction exists and confidence is high enough
-        if (result.prediction && result.confidence > (result.prediction==="showing_teeth" ? 0.9 : (result.prediction==="kiss"?0.84:0.8))) { // Lowered from 0.7 to 0.5
+        if (
+          result.prediction &&
+          result.confidence >
+            (result.prediction === "showing_teeth"
+              ? 0.9
+              : result.prediction === "kiss"
+              ? 0.84
+              : 0.8)
+        ) {
+          // Lowered from 0.7 to 0.5
           // Map API prediction to game expression
           const expressionMap: { [key: string]: string } = {
-            'left': 'looking_left',
-            'right': 'looking_right',
-            'open mouth': 'mouth_open',
-            'showing_teeth': 'showing_teeth',
-            'kiss': 'kiss'
+            left: "looking_left",
+            right: "looking_right",
+            "open mouth": "mouth_open",
+            showing_teeth: "showing_teeth",
+            kiss: "kiss",
           };
-          
+
           const mappedExpression = expressionMap[result.prediction];
           if (mappedExpression) {
             onExpressionDetected(mappedExpression);
             setConfidence(result.confidence);
-            console.log(`Detected: ${result.prediction} (confidence: ${result.confidence})`);
+            console.log(
+              `Detected: ${result.prediction} (confidence: ${result.confidence})`
+            );
           }
         }
         setIsConnected(true);
       } else {
-        throw new Error('API request failed');
+        throw new Error("API request failed");
       }
     } catch (error) {
       // Mock detection for development (remove in production)
-      console.log('API not available, using mock detection');
+      console.log("API not available, using mock detection");
       setIsConnected(false);
-      
+
       // Simulate random detection for testing (fallback when API is not available)
-      if (Math.random() < 0.05) { // 5% chance per frame for testing
-        const expressions = ['looking_left', 'looking_right', 'mouth_open', 'showing_teeth', 'kiss'];
-        const randomExpression = expressions[Math.floor(Math.random() * expressions.length)];
+      if (Math.random() < 0.05) {
+        // 5% chance per frame for testing
+        const expressions = [
+          "looking_left",
+          "looking_right",
+          "mouth_open",
+          "showing_teeth",
+          "kiss",
+        ];
+        const randomExpression =
+          expressions[Math.floor(Math.random() * expressions.length)];
         onExpressionDetected(randomExpression);
-        console.log('Mock detection:', randomExpression);
+        console.log("Mock detection:", randomExpression);
       }
     } finally {
       setIsProcessing(false);
@@ -194,15 +212,15 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({
 
   // Initialize webcam only when game is active
   useEffect(() => {
-    console.log('WebcamCapture: isActive changed to:', isActive);
+    console.log("WebcamCapture: isActive changed to:", isActive);
     if (isActive) {
-      console.log('Initializing webcam...');
+      console.log("Initializing webcam...");
       initializeWebcam();
     } else {
-      console.log('Stopping webcam...');
+      console.log("Stopping webcam...");
       stopWebcam();
     }
-    
+
     return () => {
       stopWebcam();
     };
@@ -221,14 +239,18 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({
         ref={canvasRef}
         className="absolute top-0 left-0 w-full h-full rounded-2xl opacity-0"
       />
-      
+
       {/* Connection Status */}
       <div className="absolute top-4 right-4">
-        <Badge 
+        <Badge
           variant={isConnected ? "default" : "secondary"}
           className="flex items-center gap-2"
         >
-          {isConnected ? <Wifi className="w-4 h-4" /> : <WifiOff className="w-4 h-4" />}
+          {isConnected ? (
+            <Wifi className="w-4 h-4" />
+          ) : (
+            <WifiOff className="w-4 h-4" />
+          )}
           {isConnected ? "Connected" : "Demo Mode"}
         </Badge>
       </div>
@@ -250,11 +272,15 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({
           size="sm"
           className="bg-white/90 backdrop-blur-sm"
         >
-          {isCameraOn ? <CameraOff className="w-4 h-4" /> : <Camera className="w-4 h-4" />}
+          {isCameraOn ? (
+            <CameraOff className="w-4 h-4" />
+          ) : (
+            <Camera className="w-4 h-4" />
+          )}
         </Button>
       </div>
     </div>
   );
 };
 
-export default WebcamCapture; 
+export default WebcamCapture;

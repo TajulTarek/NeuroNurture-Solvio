@@ -3,7 +3,7 @@
 echo "Starting NeuroNurture Admin Website..."
 echo ""
 echo "This will install dependencies and start the development server."
-echo "The admin website will be available at: http://localhost:3001"
+echo "The admin website will be available at: http://188.166.197.135:3001"
 echo ""
 echo "Demo credentials:"
 echo "Email: admin@neuronurture.com"

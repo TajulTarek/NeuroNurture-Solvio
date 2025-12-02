@@ -1,7 +1,7 @@
-import { useDoctorAuth } from '@/features/doctor/contexts/DoctorAuthContext';
-import { Check, Star, Zap } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useDoctorAuth } from "@/features/doctor/contexts/DoctorAuthContext";
+import { Check, Star, Zap } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface SubscriptionPlan {
   id: string;
@@ -23,7 +23,7 @@ const DoctorPricingPage: React.FC = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/auth/doctor/login');
+      navigate("/auth/doctor/login");
       return;
     }
     fetchPlans();
@@ -31,49 +31,51 @@ const DoctorPricingPage: React.FC = () => {
 
   const fetchPlans = async () => {
     try {
-      const response = await fetch('http://localhost:8093/api/doctor/subscription/plans');
+      const response = await fetch(
+        "http://188.166.197.135:8093/api/doctor/subscription/plans"
+      );
       if (response.ok) {
         const data = await response.json();
-        console.log('Raw plans data from backend:', data);
-        
+        console.log("Raw plans data from backend:", data);
+
         // Transform backend data to frontend format
         const transformedPlans = data.map((plan: any) => {
-          console.log('Processing plan:', plan);
+          console.log("Processing plan:", plan);
           return {
             ...plan,
             // Backend already sends priceInCents, so we don't need to convert
             features: [
-              'Unlimited patients',
-              'Full analytics dashboard',
-              'Priority support',
-              'Advanced reporting',
-              'Data export capabilities'
+              "Unlimited patients",
+              "Full analytics dashboard",
+              "Priority support",
+              "Advanced reporting",
+              "Data export capabilities",
             ],
-            popular: plan.id === '1_year',
-            savings: plan.id === '3_year' ? 'Save 16%' : undefined
+            popular: plan.id === "1_year",
+            savings: plan.id === "3_year" ? "Save 16%" : undefined,
           };
         });
-        console.log('Transformed plans:', transformedPlans);
+        console.log("Transformed plans:", transformedPlans);
         setPlans(transformedPlans);
       }
     } catch (error) {
-      console.error('Error fetching plans:', error);
+      console.error("Error fetching plans:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const formatPrice = (priceInCents: number, currency: string) => {
-    console.log('formatPrice called with:', { priceInCents, currency });
+    console.log("formatPrice called with:", { priceInCents, currency });
     if (!priceInCents || isNaN(priceInCents)) {
-      console.error('Invalid priceInCents:', priceInCents);
-      return '৳0.00';
+      console.error("Invalid priceInCents:", priceInCents);
+      return "৳0.00";
     }
     // Convert USD to Taka by multiplying by 100
     const priceInTaka = (priceInCents / 100) * 100;
-    return new Intl.NumberFormat('en-BD', {
-      style: 'currency',
-      currency: 'BDT'
+    return new Intl.NumberFormat("en-BD", {
+      style: "currency",
+      currency: "BDT",
     }).format(priceInTaka);
   };
 
@@ -98,7 +100,8 @@ const DoctorPricingPage: React.FC = () => {
             Choose Your Subscription Plan
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Unlock unlimited patients, advanced analytics, and priority support with our flexible subscription plans.
+            Unlock unlimited patients, advanced analytics, and priority support
+            with our flexible subscription plans.
           </p>
         </div>
 
@@ -108,7 +111,7 @@ const DoctorPricingPage: React.FC = () => {
             <div
               key={plan.id}
               className={`relative bg-white rounded-2xl shadow-lg p-8 ${
-                plan.popular ? 'ring-2 ring-blue-500 scale-105' : ''
+                plan.popular ? "ring-2 ring-blue-500 scale-105" : ""
               }`}
             >
               {plan.popular && (
@@ -129,22 +132,32 @@ const DoctorPricingPage: React.FC = () => {
               )}
 
               <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  {plan.name}
+                </h3>
                 <p className="text-gray-600 mb-4">{plan.description}</p>
                 <div className="flex items-baseline justify-center">
                   <span className="text-5xl font-bold text-gray-900">
                     {formatPrice(plan.priceInCents, plan.currency)}
                   </span>
                   <span className="text-gray-500 ml-2">
-                    /{plan.durationInMonths === 12 ? 'year' : `${plan.durationInMonths / 12} years`}
+                    /
+                    {plan.durationInMonths === 12
+                      ? "year"
+                      : `${plan.durationInMonths / 12} years`}
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 mt-2">
-                  {formatPrice(plan.priceInCents / (plan.durationInMonths / 12), plan.currency)} per year
+                  {formatPrice(
+                    plan.priceInCents / (plan.durationInMonths / 12),
+                    plan.currency
+                  )}{" "}
+                  per year
                 </p>
                 {/* Debug info */}
                 <div className="text-xs text-gray-400 mt-1">
-                  Debug: priceInCents={plan.priceInCents}, durationInMonths={plan.durationInMonths}
+                  Debug: priceInCents={plan.priceInCents}, durationInMonths=
+                  {plan.durationInMonths}
                 </div>
               </div>
 
@@ -161,8 +174,8 @@ const DoctorPricingPage: React.FC = () => {
                 onClick={() => handleSelectPlan(plan.id)}
                 className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors ${
                   plan.popular
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-gray-900 text-white hover:bg-gray-800'
+                    ? "bg-blue-600 text-white hover:bg-blue-700"
+                    : "bg-gray-900 text-white hover:bg-gray-800"
                 }`}
               >
                 {plan.popular ? (
@@ -171,7 +184,7 @@ const DoctorPricingPage: React.FC = () => {
                     Get Started
                   </span>
                 ) : (
-                  'Choose Plan'
+                  "Choose Plan"
                 )}
               </button>
             </div>
@@ -188,7 +201,9 @@ const DoctorPricingPage: React.FC = () => {
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Zap className="w-6 h-6 text-blue-600" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Unlimited Patients</h4>
+              <h4 className="font-semibold text-gray-900 mb-2">
+                Unlimited Patients
+              </h4>
               <p className="text-gray-600 text-sm">
                 Add and manage unlimited patients without any restrictions.
               </p>
@@ -197,18 +212,24 @@ const DoctorPricingPage: React.FC = () => {
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Check className="w-6 h-6 text-green-600" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Advanced Analytics</h4>
+              <h4 className="font-semibold text-gray-900 mb-2">
+                Advanced Analytics
+              </h4>
               <p className="text-gray-600 text-sm">
-                Get detailed insights and reports on patient progress and outcomes.
+                Get detailed insights and reports on patient progress and
+                outcomes.
               </p>
             </div>
             <div className="text-center">
               <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Star className="w-6 h-6 text-purple-600" />
               </div>
-              <h4 className="font-semibold text-gray-900 mb-2">Priority Support</h4>
+              <h4 className="font-semibold text-gray-900 mb-2">
+                Priority Support
+              </h4>
               <p className="text-gray-600 text-sm">
-                Get priority support and faster response times for all your needs.
+                Get priority support and faster response times for all your
+                needs.
               </p>
             </div>
           </div>
@@ -225,7 +246,8 @@ const DoctorPricingPage: React.FC = () => {
                 Can I change my plan later?
               </h4>
               <p className="text-gray-600">
-                Yes, you can upgrade or downgrade your plan at any time. Changes will be prorated.
+                Yes, you can upgrade or downgrade your plan at any time. Changes
+                will be prorated.
               </p>
             </div>
             <div className="bg-white rounded-lg p-6 shadow">
@@ -233,7 +255,8 @@ const DoctorPricingPage: React.FC = () => {
                 What payment methods do you accept?
               </h4>
               <p className="text-gray-600">
-                We accept all major credit cards, debit cards, and bank transfers through Stripe.
+                We accept all major credit cards, debit cards, and bank
+                transfers through Stripe.
               </p>
             </div>
             <div className="bg-white rounded-lg p-6 shadow">
@@ -241,7 +264,8 @@ const DoctorPricingPage: React.FC = () => {
                 Is there a free trial?
               </h4>
               <p className="text-gray-600">
-                Yes, you can use the platform with limited features for free. Upgrade anytime for full access.
+                Yes, you can use the platform with limited features for free.
+                Upgrade anytime for full access.
               </p>
             </div>
           </div>

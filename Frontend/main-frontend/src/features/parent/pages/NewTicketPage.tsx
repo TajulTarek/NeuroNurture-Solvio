@@ -1,47 +1,64 @@
-import Navbar from '@/components/common/Navbar';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { aiService, TicketClassification } from '@/shared/services/ai/aiService';
-import { ticketService } from '@/shared/services/ticket/ticketService';
-import { AlertCircle, ArrowLeft, Bot, CheckCircle, Loader2, Send } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import Navbar from "@/components/common/Navbar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  aiService,
+  TicketClassification,
+} from "@/shared/services/ai/aiService";
+import { ticketService } from "@/shared/services/ticket/ticketService";
+import {
+  AlertCircle,
+  ArrowLeft,
+  Bot,
+  CheckCircle,
+  Loader2,
+  Send,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const NewTicketPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [aiProcessing, setAiProcessing] = useState(false);
-  const [aiClassification, setAiClassification] = useState<TicketClassification | null>(null);
+  const [aiClassification, setAiClassification] =
+    useState<TicketClassification | null>(null);
   const [showFinalPreview, setShowFinalPreview] = useState(false);
   const [formData, setFormData] = useState({
-    subject: '',
-    description: ''
+    subject: "",
+    description: "",
   });
-  const [aiPriority, setAiPriority] = useState<string>('MEDIUM');
+  const [aiPriority, setAiPriority] = useState<string>("MEDIUM");
   const [parentId, setParentId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchParentId = async () => {
       try {
-        const emailResponse = await fetch('http://localhost:8080/auth/me', { 
-          credentials: 'include' 
-        });
+        const emailResponse = await fetch(
+          "http://188.166.197.135:8080/auth/me",
+          {
+            credentials: "include",
+          }
+        );
         const email = await emailResponse.text();
-        
-        const parentResponse = await fetch(`http://localhost:8082/api/parents/by-email/${email}`, {
-          credentials: 'include'
-        });
-        
+
+        const parentResponse = await fetch(
+          `http://188.166.197.135:8082/api/parents/by-email/${email}`,
+          {
+            credentials: "include",
+          }
+        );
+
         if (parentResponse.ok) {
           const parent = await parentResponse.json();
           setParentId(parent.id);
         }
       } catch (error) {
-        console.error('Error fetching parent ID:', error);
+        console.error("Error fetching parent ID:", error);
       }
     };
 
@@ -49,13 +66,13 @@ const NewTicketPage = () => {
   }, []);
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
-    
+
     // Reset AI classification when user changes input
-    if (field === 'description' || field === 'subject') {
+    if (field === "description" || field === "subject") {
       setAiClassification(null);
       setShowFinalPreview(false);
     }
@@ -63,29 +80,38 @@ const NewTicketPage = () => {
 
   const handleProcessTicket = async () => {
     if (!formData.subject.trim() || !formData.description.trim()) {
-      alert('Please fill in both subject and description before processing.');
+      alert("Please fill in both subject and description before processing.");
       return;
     }
 
     setAiProcessing(true);
     try {
       const fullMessage = `Subject: ${formData.subject}\n\nDescription: ${formData.description}`;
-      const classification = await aiService.classifyTicket(fullMessage, 'parent', parentId || undefined);
-      
+      const classification = await aiService.classifyTicket(
+        fullMessage,
+        "parent",
+        parentId || undefined
+      );
+
       // Extract only the description part from the AI response and clean up any JSON artifacts
-      let aiRefinedDescription = classification.rewritten_message.replace(/^Subject:.*?\n\n/, '');
+      let aiRefinedDescription = classification.rewritten_message.replace(
+        /^Subject:.*?\n\n/,
+        ""
+      );
       // Remove any "rewritten_message" text that might be included
-      aiRefinedDescription = aiRefinedDescription.replace(/^"rewritten_message":\s*"/, '').replace(/"$/, '');
-      
+      aiRefinedDescription = aiRefinedDescription
+        .replace(/^"rewritten_message":\s*"/, "")
+        .replace(/"$/, "");
+
       setAiClassification({
         ...classification,
-        rewritten_message: aiRefinedDescription
+        rewritten_message: aiRefinedDescription,
       });
       setAiPriority(classification.priority);
       setShowFinalPreview(true);
     } catch (error) {
-      console.error('Error processing with AI:', error);
-      alert('Failed to process with AI. Please try again.');
+      console.error("Error processing with AI:", error);
+      alert("Failed to process with AI. Please try again.");
     } finally {
       setAiProcessing(false);
     }
@@ -93,9 +119,9 @@ const NewTicketPage = () => {
 
   const handleAcceptRefinedMessage = () => {
     if (aiClassification) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        description: aiClassification.rewritten_message
+        description: aiClassification.rewritten_message,
       }));
     }
   };
@@ -106,20 +132,20 @@ const NewTicketPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!parentId) {
-      alert('Unable to identify parent. Please try again.');
+      alert("Unable to identify parent. Please try again.");
       return;
     }
 
     if (!formData.subject.trim() || !formData.description.trim()) {
-      alert('Please fill in all required fields.');
+      alert("Please fill in all required fields.");
       return;
     }
 
     // Ensure AI has processed the ticket
     if (!aiClassification) {
-      alert('Please process your ticket with AI before submitting.');
+      alert("Please process your ticket with AI before submitting.");
       return;
     }
 
@@ -130,63 +156,65 @@ const NewTicketPage = () => {
         parentId,
         subject: formData.subject.trim(),
         description: formData.description.trim(),
-        priority: aiPriority
+        priority: aiPriority,
       });
 
       if (ticket) {
         navigate(`/tickets/${ticket.id}`);
       } else {
-        alert('Failed to create ticket. Please try again.');
+        alert("Failed to create ticket. Please try again.");
       }
     } catch (error) {
-      console.error('Error creating ticket:', error);
-      alert('An error occurred while creating the ticket. Please try again.');
+      console.error("Error creating ticket:", error);
+      alert("An error occurred while creating the ticket. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'LOW':
-        return 'bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 border-emerald-200';
-      case 'MEDIUM':
-        return 'bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 border-amber-200';
-      case 'HIGH':
-        return 'bg-gradient-to-r from-orange-100 to-red-100 text-orange-800 border-orange-200';
-      case 'URGENT':
-        return 'bg-gradient-to-r from-red-100 to-rose-100 text-red-800 border-red-200';
+      case "LOW":
+        return "bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 border-emerald-200";
+      case "MEDIUM":
+        return "bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-800 border-amber-200";
+      case "HIGH":
+        return "bg-gradient-to-r from-orange-100 to-red-100 text-orange-800 border-orange-200";
+      case "URGENT":
+        return "bg-gradient-to-r from-red-100 to-rose-100 text-red-800 border-red-200";
       default:
-        return 'bg-gradient-to-r from-slate-100 to-gray-100 text-slate-800 border-slate-200';
+        return "bg-gradient-to-r from-slate-100 to-gray-100 text-slate-800 border-slate-200";
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       <Navbar />
-      
+
       <div className="max-w-5xl mx-auto px-4 py-8">
         {/* Header Section */}
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-6">
             <Button
               variant="ghost"
-              onClick={() => navigate('/tickets')}
+              onClick={() => navigate("/tickets")}
               className="flex items-center space-x-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
               <span>Back to Tickets</span>
             </Button>
           </div>
-          
+
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4">
               <AlertCircle className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-slate-900 mb-2">Create Support Ticket</h1>
+            <h1 className="text-4xl font-bold text-slate-900 mb-2">
+              Create Support Ticket
+            </h1>
             <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-              Describe your issue and our AI-powered system will help prioritize and refine your request for faster resolution.
+              Describe your issue and our AI-powered system will help prioritize
+              and refine your request for faster resolution.
             </p>
           </div>
         </div>
@@ -195,8 +223,13 @@ const NewTicketPage = () => {
           <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-2xl shadow-blue-100/50">
             <CardHeader className="pb-6 pt-8 px-8">
               <div className="text-center">
-                <h2 className="text-2xl font-semibold text-slate-800 mb-2">Ticket Information</h2>
-                <p className="text-slate-600">Fill in the details below and our AI will help optimize your request</p>
+                <h2 className="text-2xl font-semibold text-slate-800 mb-2">
+                  Ticket Information
+                </h2>
+                <p className="text-slate-600">
+                  Fill in the details below and our AI will help optimize your
+                  request
+                </p>
               </div>
             </CardHeader>
 
@@ -204,7 +237,10 @@ const NewTicketPage = () => {
               <form onSubmit={handleSubmit} className="space-y-8">
                 {/* Subject */}
                 <div className="space-y-3">
-                  <Label htmlFor="subject" className="text-sm font-semibold text-slate-700 flex items-center space-x-2">
+                  <Label
+                    htmlFor="subject"
+                    className="text-sm font-semibold text-slate-700 flex items-center space-x-2"
+                  >
                     <span>Subject</span>
                     <span className="text-red-500">*</span>
                   </Label>
@@ -214,7 +250,9 @@ const NewTicketPage = () => {
                       type="text"
                       placeholder="Brief description of your issue"
                       value={formData.subject}
-                      onChange={(e) => handleInputChange('subject', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("subject", e.target.value)
+                      }
                       className="w-full h-12 px-4 text-slate-700 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 placeholder:text-slate-400"
                       maxLength={100}
                       required
@@ -234,10 +272,16 @@ const NewTicketPage = () => {
                       <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center">
                         <CheckCircle className="h-4 w-4 text-white" />
                       </div>
-                      <h3 className="text-lg font-semibold text-slate-800">AI-Determined Priority</h3>
+                      <h3 className="text-lg font-semibold text-slate-800">
+                        AI-Determined Priority
+                      </h3>
                     </div>
                     <div className="flex items-center space-x-3">
-                      <Badge className={`${getPriorityColor(aiPriority)} border-0 text-sm font-medium px-4 py-2 rounded-full`}>
+                      <Badge
+                        className={`${getPriorityColor(
+                          aiPriority
+                        )} border-0 text-sm font-medium px-4 py-2 rounded-full`}
+                      >
                         {aiPriority}
                       </Badge>
                       <span className="text-sm text-slate-600">
@@ -249,7 +293,10 @@ const NewTicketPage = () => {
 
                 {/* Description */}
                 <div className="space-y-3">
-                  <Label htmlFor="description" className="text-sm font-semibold text-slate-700 flex items-center space-x-2">
+                  <Label
+                    htmlFor="description"
+                    className="text-sm font-semibold text-slate-700 flex items-center space-x-2"
+                  >
                     <span>Description</span>
                     <span className="text-red-500">*</span>
                   </Label>
@@ -258,7 +305,9 @@ const NewTicketPage = () => {
                       id="description"
                       placeholder="Please provide detailed information about your issue. Include steps to reproduce, expected behavior, and any error messages you're seeing."
                       value={formData.description}
-                      onChange={(e) => handleInputChange('description', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("description", e.target.value)
+                      }
                       className="w-full min-h-[200px] px-4 py-4 text-slate-700 bg-slate-50 border-2 border-slate-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 placeholder:text-slate-400 resize-none"
                       maxLength={2000}
                       required
@@ -279,25 +328,39 @@ const NewTicketPage = () => {
                         <Bot className="h-6 w-6 text-white" />
                       </div>
                       <div>
-                        <h4 className="text-2xl font-bold text-slate-800">Ticket Preview</h4>
-                        <p className="text-slate-600">Review your ticket before submitting</p>
+                        <h4 className="text-2xl font-bold text-slate-800">
+                          Ticket Preview
+                        </h4>
+                        <p className="text-slate-600">
+                          Review your ticket before submitting
+                        </p>
                       </div>
                     </div>
-                    
+
                     <div className="space-y-6">
                       {/* Subject */}
                       <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/50">
-                        <Label className="text-sm font-semibold text-slate-700 mb-3 block">Subject</Label>
+                        <Label className="text-sm font-semibold text-slate-700 mb-3 block">
+                          Subject
+                        </Label>
                         <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                          <p className="text-slate-800 font-medium">{formData.subject}</p>
+                          <p className="text-slate-800 font-medium">
+                            {formData.subject}
+                          </p>
                         </div>
                       </div>
 
                       {/* Priority */}
                       <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/50">
-                        <Label className="text-sm font-semibold text-slate-700 mb-3 block">Priority (AI-Determined)</Label>
+                        <Label className="text-sm font-semibold text-slate-700 mb-3 block">
+                          Priority (AI-Determined)
+                        </Label>
                         <div className="flex items-center space-x-4">
-                          <Badge className={`${getPriorityColor(aiPriority)} border-0 text-sm font-semibold px-6 py-3 rounded-full`}>
+                          <Badge
+                            className={`${getPriorityColor(
+                              aiPriority
+                            )} border-0 text-sm font-semibold px-6 py-3 rounded-full`}
+                          >
                             {aiPriority}
                           </Badge>
                           <p className="text-sm text-slate-600 flex-1">
@@ -308,21 +371,31 @@ const NewTicketPage = () => {
 
                       {/* Message Choice */}
                       <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/50">
-                        <Label className="text-sm font-semibold text-slate-700 mb-4 block">Description</Label>
+                        <Label className="text-sm font-semibold text-slate-700 mb-4 block">
+                          Description
+                        </Label>
                         <div className="space-y-4">
                           {/* Original Message */}
                           <div>
-                            <Label className="text-xs font-semibold text-slate-600 mb-2 block">Original Message</Label>
+                            <Label className="text-xs font-semibold text-slate-600 mb-2 block">
+                              Original Message
+                            </Label>
                             <div className="p-4 bg-slate-50 border-2 border-slate-200 rounded-xl">
-                              <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">{formData.description}</p>
+                              <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">
+                                {formData.description}
+                              </p>
                             </div>
                           </div>
 
                           {/* Refined Message */}
                           <div>
-                            <Label className="text-xs font-semibold text-slate-600 mb-2 block">AI-Refined Message</Label>
+                            <Label className="text-xs font-semibold text-slate-600 mb-2 block">
+                              AI-Refined Message
+                            </Label>
                             <div className="p-4 bg-gradient-to-r from-emerald-50 to-blue-50 border-2 border-emerald-200 rounded-xl">
-                              <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">{aiClassification.rewritten_message}</p>
+                              <p className="text-slate-700 whitespace-pre-wrap leading-relaxed">
+                                {aiClassification.rewritten_message}
+                              </p>
                             </div>
                           </div>
 
@@ -359,31 +432,43 @@ const NewTicketPage = () => {
                     <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center">
                       <AlertCircle className="h-4 w-4 text-white" />
                     </div>
-                    <h4 className="text-lg font-semibold text-slate-800">Tips for Better Support</h4>
+                    <h4 className="text-lg font-semibold text-slate-800">
+                      Tips for Better Support
+                    </h4>
                   </div>
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <div className="flex items-start space-x-2">
                         <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                        <p className="text-sm text-slate-700">Be specific about what you were trying to do</p>
+                        <p className="text-sm text-slate-700">
+                          Be specific about what you were trying to do
+                        </p>
                       </div>
                       <div className="flex items-start space-x-2">
                         <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                        <p className="text-sm text-slate-700">Include any error messages you received</p>
+                        <p className="text-sm text-slate-700">
+                          Include any error messages you received
+                        </p>
                       </div>
                       <div className="flex items-start space-x-2">
                         <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
-                        <p className="text-sm text-slate-700">Mention which device or browser you're using</p>
+                        <p className="text-sm text-slate-700">
+                          Mention which device or browser you're using
+                        </p>
                       </div>
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-start space-x-2">
                         <div className="w-2 h-2 bg-indigo-500 rounded-full mt-2"></div>
-                        <p className="text-sm text-slate-700">Click "Process Ticket" for AI assistance</p>
+                        <p className="text-sm text-slate-700">
+                          Click "Process Ticket" for AI assistance
+                        </p>
                       </div>
                       <div className="flex items-start space-x-2">
                         <div className="w-2 h-2 bg-indigo-500 rounded-full mt-2"></div>
-                        <p className="text-sm text-slate-700">Priority is automatically determined by AI</p>
+                        <p className="text-sm text-slate-700">
+                          Priority is automatically determined by AI
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -394,18 +479,23 @@ const NewTicketPage = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => navigate('/tickets')}
+                    onClick={() => navigate("/tickets")}
                     disabled={loading}
                     className="px-8 py-3 rounded-xl border-2 border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold transition-all duration-200"
                   >
                     Cancel
                   </Button>
-                  
+
                   {!showFinalPreview ? (
                     <Button
                       type="button"
                       onClick={handleProcessTicket}
-                      disabled={loading || !formData.subject.trim() || !formData.description.trim() || aiProcessing}
+                      disabled={
+                        loading ||
+                        !formData.subject.trim() ||
+                        !formData.description.trim() ||
+                        aiProcessing
+                      }
                       className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-8 py-3 rounded-xl font-semibold shadow-lg shadow-purple-200/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {aiProcessing ? (

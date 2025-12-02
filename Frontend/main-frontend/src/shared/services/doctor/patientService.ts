@@ -1,4 +1,4 @@
-import { makeAuthenticatedDoctorRequest } from '@/shared/utils/apiUtils';
+import { makeAuthenticatedDoctorRequest } from "@/shared/utils/apiUtils";
 
 export interface Patient {
   id: number;
@@ -17,28 +17,32 @@ export interface Patient {
 }
 
 class PatientService {
-  private baseUrl = 'http://localhost:8093/api/doctor'; // Doctor service URL
+  private baseUrl = "http://188.166.197.135:8093/api/doctor"; // Doctor service URL
 
   // Get all patients for a specific doctor
   async getPatientsByDoctor(doctorId: number): Promise<Patient[]> {
     try {
-      const response = await makeAuthenticatedDoctorRequest(`${this.baseUrl}/patients/${doctorId}`);
-      
+      const response = await makeAuthenticatedDoctorRequest(
+        `${this.baseUrl}/patients/${doctorId}`
+      );
+
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(`HTTP error! status: ${response.status}, response: ${errorText}`);
+        console.error(
+          `HTTP error! status: ${response.status}, response: ${errorText}`
+        );
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
         const responseText = await response.text();
-        console.error('Response is not JSON:', responseText);
-        throw new Error('Response is not JSON');
+        console.error("Response is not JSON:", responseText);
+        throw new Error("Response is not JSON");
       }
-      
+
       const patients = await response.json();
-      
+
       // Transform the data to match our frontend interface
       return patients.map((patient: any) => ({
         id: patient.id,
@@ -46,17 +50,17 @@ class PatientService {
         age: patient.age || 0,
         height: patient.height || 0,
         weight: patient.weight || 0,
-        grade: patient.grade || 'Not Assigned',
-        gender: patient.gender || 'Unknown',
+        grade: patient.grade || "Not Assigned",
+        gender: patient.gender || "Unknown",
         schoolId: patient.schoolId,
         enrolledInSchool: patient.enrolledInSchool || false,
-        parentName: patient.parentName || 'Unknown',
-        parentEmail: patient.parentEmail || 'Unknown',
-        parentAddress: patient.parentAddress || 'Unknown',
-        problem: patient.problem || 'Condition not specified'
+        parentName: patient.parentName || "Unknown",
+        parentEmail: patient.parentEmail || "Unknown",
+        parentAddress: patient.parentAddress || "Unknown",
+        problem: patient.problem || "Condition not specified",
       }));
     } catch (error) {
-      console.error('Error fetching patients:', error);
+      console.error("Error fetching patients:", error);
       throw error;
     }
   }
@@ -68,20 +72,23 @@ class PatientService {
     const birthDate = new Date(dateOfBirth);
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
-    
+
     return age;
   }
 
   // Format date for display
   private formatDate(date: Date): string {
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   }
 }

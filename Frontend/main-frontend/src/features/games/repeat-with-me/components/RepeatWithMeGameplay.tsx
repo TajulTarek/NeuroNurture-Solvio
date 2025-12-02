@@ -285,10 +285,13 @@ const RepeatWithMeGameplay: React.FC = () => {
 
         // Send audio to backend for transcription
         try {
-          const response = await fetch("http://localhost:8000/transcribe", {
-            method: "POST",
-            body: formData,
-          });
+          const response = await fetch(
+            "http://188.166.197.135:8000/transcribe",
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
 
           if (response.ok) {
             console.log("Audio sent to backend for transcription");
@@ -413,7 +416,7 @@ const RepeatWithMeGameplay: React.FC = () => {
     const pollInterval = setInterval(async () => {
       try {
         const resultResponse = await fetch(
-          `http://localhost:8000/round-result/${round}`
+          `http://188.166.197.135:8000/round-result/${round}`
         );
         if (resultResponse.ok) {
           const resultData = await resultResponse.json();
@@ -439,7 +442,7 @@ const RepeatWithMeGameplay: React.FC = () => {
   // Get all game results from backend (like Javafest_agor)
   const getGameResults = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost:8000/game-results");
+      const response = await fetch("http://188.166.197.135:8000/game-results");
       if (response.ok) {
         const data = await response.json();
         console.log("All game results:", data);
@@ -457,9 +460,12 @@ const RepeatWithMeGameplay: React.FC = () => {
   // Clear game results from backend (like Javafest_agor)
   const clearGameResults = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost:8000/clear-game-results", {
-        method: "POST",
-      });
+      const response = await fetch(
+        "http://188.166.197.135:8000/clear-game-results",
+        {
+          method: "POST",
+        }
+      );
       if (response.ok) {
         console.log("Game results cleared");
       }
@@ -512,7 +518,7 @@ const RepeatWithMeGameplay: React.FC = () => {
           if (childId) {
             try {
               const response = await fetch(
-                `http://localhost:8082/api/parents/children/${childId}/details`
+                `http://188.166.197.135:8082/api/parents/children/${childId}/details`
               );
               if (response.ok) {
                 childData = await response.json();
@@ -598,7 +604,7 @@ const RepeatWithMeGameplay: React.FC = () => {
         console.log("Saving game data to backend:", gameData);
 
         const response = await fetch(
-          "http://localhost:8089/api/repeat-with-me-game/save",
+          "http://188.166.197.135:8089/api/repeat-with-me-game/save",
           {
             method: "POST",
             headers: {
@@ -663,7 +669,7 @@ const RepeatWithMeGameplay: React.FC = () => {
 
   const handleLogout = async () => {
     console.log("Logout button clicked");
-    await fetch("http://localhost:8080/auth/logout", {
+    await fetch("http://188.166.197.135:8080/auth/logout", {
       method: "POST",
       credentials: "include",
     });

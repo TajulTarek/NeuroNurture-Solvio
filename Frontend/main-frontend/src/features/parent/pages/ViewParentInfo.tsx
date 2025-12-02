@@ -25,37 +25,43 @@ const ViewParentInfo = () => {
   const [editData, setEditData] = useState({
     numberOfChildren: 1,
     address: "",
-    suspectedAutisticChildCount: 0
+    suspectedAutisticChildCount: 0,
   });
 
   useEffect(() => {
     // Fetch parent info
-    fetch('http://localhost:8080/auth/me', { credentials: 'include' })
-      .then(res => res.text())
-      .then(email => {
-        return fetch(`http://localhost:8082/api/parents/by-email/${email}`, {
-          credentials: 'include'
-        });
+    fetch("http://188.166.197.135:8080/auth/me", { credentials: "include" })
+      .then((res) => res.text())
+      .then((email) => {
+        return fetch(
+          `http://188.166.197.135:8082/api/parents/by-email/${email}`,
+          {
+            credentials: "include",
+          }
+        );
       })
-      .then(res => res.json())
-      .then(parent => {
+      .then((res) => res.json())
+      .then((parent) => {
         setParentInfo(parent);
         setEditData({
           numberOfChildren: parent.numberOfChildren,
           address: parent.address,
-          suspectedAutisticChildCount: parent.suspectedAutisticChildCount
+          suspectedAutisticChildCount: parent.suspectedAutisticChildCount,
         });
         setIsLoading(false);
       })
-      .catch(err => {
-        console.error('Failed to fetch parent info:', err);
+      .catch((err) => {
+        console.error("Failed to fetch parent info:", err);
         toast.error("Failed to load parent information");
         setIsLoading(false);
       });
   }, []);
 
-  const handleInputChange = (field: 'numberOfChildren' | 'address' | 'suspectedAutisticChildCount', value: string | number) => {
-    setEditData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (
+    field: "numberOfChildren" | "address" | "suspectedAutisticChildCount",
+    value: string | number
+  ) => {
+    setEditData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
@@ -63,22 +69,25 @@ const ViewParentInfo = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:8082/api/parents/${parentInfo.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          ...parentInfo,
-          numberOfChildren: editData.numberOfChildren,
-          address: editData.address,
-          suspectedAutisticChildCount: editData.suspectedAutisticChildCount
-        }),
-      });
+      const response = await fetch(
+        `http://188.166.197.135:8082/api/parents/${parentInfo.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            ...parentInfo,
+            numberOfChildren: editData.numberOfChildren,
+            address: editData.address,
+            suspectedAutisticChildCount: editData.suspectedAutisticChildCount,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to update parent information');
+        throw new Error("Failed to update parent information");
       }
 
       const updatedParent = await response.json();
@@ -87,7 +96,7 @@ const ViewParentInfo = () => {
       toast.success("Parent information updated successfully! 🌟");
     } catch (error) {
       toast.error("Failed to update parent information. Please try again.");
-      console.error('Error updating parent info:', error);
+      console.error("Error updating parent info:", error);
     } finally {
       setIsLoading(false);
     }
@@ -95,13 +104,13 @@ const ViewParentInfo = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:8080/auth/logout', { 
-        method: 'POST', 
-        credentials: 'include' 
+      await fetch("http://188.166.197.135:8080/auth/logout", {
+        method: "POST",
+        credentials: "include",
       });
-      window.location.href = '/';
+      window.location.href = "/";
     } catch (error) {
-      console.error('Error during logout:', error);
+      console.error("Error during logout:", error);
       toast.error("Logout failed. Please try again.");
     }
   };
@@ -109,7 +118,9 @@ const ViewParentInfo = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-soft flex items-center justify-center">
-        <div className="text-2xl font-comic">Loading parent information... 🌟</div>
+        <div className="text-2xl font-comic">
+          Loading parent information... 🌟
+        </div>
       </div>
     );
   }
@@ -117,7 +128,9 @@ const ViewParentInfo = () => {
   if (!parentInfo) {
     return (
       <div className="min-h-screen bg-soft flex items-center justify-center">
-        <div className="text-2xl font-comic">Parent information not found. Please contact support.</div>
+        <div className="text-2xl font-comic">
+          Parent information not found. Please contact support.
+        </div>
       </div>
     );
   }
@@ -131,7 +144,9 @@ const ViewParentInfo = () => {
       <div className="fixed top-20 left-10 text-6xl bounce-gentle z-10">🌈</div>
       <div className="fixed top-32 right-16 text-5xl float z-10">⭐</div>
       <div className="fixed bottom-20 left-20 text-4xl wiggle z-10">🎈</div>
-      <div className="fixed bottom-10 right-10 text-5xl bounce-gentle z-10">🎉</div>
+      <div className="fixed bottom-10 right-10 text-5xl bounce-gentle z-10">
+        🎉
+      </div>
 
       <div className="max-w-lg mx-auto pt-8 px-4">
         {/* Header */}
@@ -153,7 +168,7 @@ const ViewParentInfo = () => {
               <Heart className="w-5 h-5 bounce-gentle" />
             </CardTitle>
           </CardHeader>
-          
+
           <CardContent className="p-6 space-y-4">
             {/* Read-only fields */}
             <div className="space-y-3">
@@ -166,7 +181,9 @@ const ViewParentInfo = () => {
                 <div className="text-sm py-3 px-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-700 hover:shadow-md transition-all duration-300">
                   {parentInfo.name}
                 </div>
-                <p className="text-xs text-muted-foreground">Name cannot be changed</p>
+                <p className="text-xs text-muted-foreground">
+                  Name cannot be changed
+                </p>
               </div>
 
               {/* Email - Read Only */}
@@ -178,12 +195,17 @@ const ViewParentInfo = () => {
                 <div className="text-sm py-3 px-3 rounded-lg border-2 border-gray-200 bg-gray-50 text-gray-700 hover:shadow-md transition-all duration-300">
                   {parentInfo.email}
                 </div>
-                <p className="text-xs text-muted-foreground">Email cannot be changed</p>
+                <p className="text-xs text-muted-foreground">
+                  Email cannot be changed
+                </p>
               </div>
 
               {/* Number of Children - Editable */}
               <div className="space-y-2 group">
-                <Label htmlFor="numberOfChildren" className="text-sm font-semibold text-foreground flex items-center gap-2 group-hover:text-primary transition-colors">
+                <Label
+                  htmlFor="numberOfChildren"
+                  className="text-sm font-semibold text-foreground flex items-center gap-2 group-hover:text-primary transition-colors"
+                >
                   <Users className="w-4 h-4 text-fun-orange group-hover:scale-110 transition-transform" />
                   Number of Children
                 </Label>
@@ -193,7 +215,12 @@ const ViewParentInfo = () => {
                     type="number"
                     min="1"
                     value={editData.numberOfChildren}
-                    onChange={(e) => handleInputChange("numberOfChildren", parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "numberOfChildren",
+                        parseInt(e.target.value)
+                      )
+                    }
                     className="text-sm py-3 rounded-lg border-2 border-fun-orange focus:border-primary transition-all duration-300 hover:shadow-md"
                   />
                 ) : (
@@ -205,7 +232,10 @@ const ViewParentInfo = () => {
 
               {/* Address - Editable */}
               <div className="space-y-2 group">
-                <Label htmlFor="address" className="text-sm font-semibold text-foreground flex items-center gap-2 group-hover:text-primary transition-colors">
+                <Label
+                  htmlFor="address"
+                  className="text-sm font-semibold text-foreground flex items-center gap-2 group-hover:text-primary transition-colors"
+                >
                   <MapPin className="w-4 h-4 text-fun-green group-hover:scale-110 transition-transform" />
                   Address
                 </Label>
@@ -214,7 +244,9 @@ const ViewParentInfo = () => {
                     id="address"
                     type="text"
                     value={editData.address}
-                    onChange={(e) => handleInputChange("address", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("address", e.target.value)
+                    }
                     placeholder="Enter your address"
                     className="text-sm py-3 rounded-lg border-2 border-fun-green focus:border-primary transition-all duration-300 hover:shadow-md"
                   />
@@ -227,7 +259,10 @@ const ViewParentInfo = () => {
 
               {/* Suspected Autistic Child Count - Editable */}
               <div className="space-y-2 group">
-                <Label htmlFor="suspectedAutisticChildCount" className="text-sm font-semibold text-foreground flex items-center gap-2 group-hover:text-primary transition-colors">
+                <Label
+                  htmlFor="suspectedAutisticChildCount"
+                  className="text-sm font-semibold text-foreground flex items-center gap-2 group-hover:text-primary transition-colors"
+                >
                   <Heart className="w-4 h-4 text-fun-pink group-hover:scale-110 transition-transform" />
                   Suspected Autistic Children
                 </Label>
@@ -237,7 +272,12 @@ const ViewParentInfo = () => {
                     type="number"
                     min="0"
                     value={editData.suspectedAutisticChildCount}
-                    onChange={(e) => handleInputChange("suspectedAutisticChildCount", parseInt(e.target.value))}
+                    onChange={(e) =>
+                      handleInputChange(
+                        "suspectedAutisticChildCount",
+                        parseInt(e.target.value)
+                      )
+                    }
                     className="text-sm py-3 rounded-lg border-2 border-fun-pink focus:border-primary transition-all duration-300 hover:shadow-md"
                   />
                 ) : (
@@ -265,7 +305,8 @@ const ViewParentInfo = () => {
                       setEditData({
                         numberOfChildren: parentInfo.numberOfChildren,
                         address: parentInfo.address,
-                        suspectedAutisticChildCount: parentInfo.suspectedAutisticChildCount
+                        suspectedAutisticChildCount:
+                          parentInfo.suspectedAutisticChildCount,
                       });
                     }}
                     className="btn-fun bg-secondary hover:bg-secondary/90 text-secondary-foreground font-comic text-sm py-2 hover:scale-105 transition-all duration-300"
@@ -297,4 +338,4 @@ const ViewParentInfo = () => {
   );
 };
 
-export default ViewParentInfo; 
+export default ViewParentInfo;

@@ -11,14 +11,14 @@ export interface DashboardStats {
   totalSessions: number;
 }
 
-const API_BASE_URL = 'http://localhost:8093'; // Doctor service URL (direct)
+const API_BASE_URL = "http://188.166.197.135:8093"; // Doctor service URL (direct)
 
 export class DoctorDashboardService {
   private static getAuthHeaders(): HeadersInit {
-    const token = localStorage.getItem('doctorToken');
+    const token = localStorage.getItem("doctorToken");
     return {
-      'Content-Type': 'application/json',
-      ...(token && { 'Authorization': `Bearer ${token}` })
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
     };
   }
 
@@ -27,21 +27,24 @@ export class DoctorDashboardService {
    */
   static async getDashboardStats(doctorId: string): Promise<DashboardStats> {
     try {
-      console.log('Fetching dashboard stats for doctor ID:', doctorId);
-      
-      const response = await fetch(`${API_BASE_URL}/api/doctor/dashboard/stats/${doctorId}`, {
-        method: 'GET',
-        headers: this.getAuthHeaders(),
-        credentials: 'include'
-      });
+      console.log("Fetching dashboard stats for doctor ID:", doctorId);
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/doctor/dashboard/stats/${doctorId}`,
+        {
+          method: "GET",
+          headers: this.getAuthHeaders(),
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const stats = await response.json();
-      console.log('Dashboard stats received:', stats);
-      
+      console.log("Dashboard stats received:", stats);
+
       return {
         totalPatients: stats.totalPatients || 0,
         activePatients: stats.activePatients || 0,
@@ -49,11 +52,11 @@ export class DoctorDashboardService {
         activeTasks: stats.activeTasks || 0,
         completedTasks: stats.completedTasks || 0,
         averageProgress: stats.averageProgress || 0,
-        totalSessions: stats.totalSessions || 0
+        totalSessions: stats.totalSessions || 0,
       };
     } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
-      
+      console.error("Error fetching dashboard stats:", error);
+
       // Return empty stats on error
       return {
         totalPatients: 0,
@@ -62,7 +65,7 @@ export class DoctorDashboardService {
         activeTasks: 0,
         completedTasks: 0,
         averageProgress: 0,
-        totalSessions: 0
+        totalSessions: 0,
       };
     }
   }
@@ -72,24 +75,27 @@ export class DoctorDashboardService {
    */
   static async getPatients(doctorId: string) {
     try {
-      console.log('Fetching patients for doctor ID:', doctorId);
-      
-      const response = await fetch(`${API_BASE_URL}/api/doctor/patients/${doctorId}`, {
-        method: 'GET',
-        headers: this.getAuthHeaders(),
-        credentials: 'include'
-      });
+      console.log("Fetching patients for doctor ID:", doctorId);
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/doctor/patients/${doctorId}`,
+        {
+          method: "GET",
+          headers: this.getAuthHeaders(),
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const patients = await response.json();
-      console.log('Patients received:', patients);
-      
+      console.log("Patients received:", patients);
+
       return patients;
     } catch (error) {
-      console.error('Error fetching patients:', error);
+      console.error("Error fetching patients:", error);
       return [];
     }
   }

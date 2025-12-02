@@ -52,19 +52,24 @@ export interface PerformanceOverview {
 }
 
 class PerformanceOverviewService {
-  private baseUrl = 'http://localhost:8005';
+  private baseUrl = "http://188.166.197.135:8005";
 
   /**
    * Get performance overview for a specific child
    */
-  async getChildPerformanceOverview(childId: string): Promise<PerformanceOverview> {
+  async getChildPerformanceOverview(
+    childId: string
+  ): Promise<PerformanceOverview> {
     try {
-      const response = await fetch(`${this.baseUrl}/child/${childId}/performance-overview`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `${this.baseUrl}/child/${childId}/performance-overview`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -73,11 +78,10 @@ class PerformanceOverviewService {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error('Error fetching performance overview:', error);
+      console.error("Error fetching performance overview:", error);
       throw error;
     }
   }
 }
 
 export const performanceOverviewService = new PerformanceOverviewService();
-

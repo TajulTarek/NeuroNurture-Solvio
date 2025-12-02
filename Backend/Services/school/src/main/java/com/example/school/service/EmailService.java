@@ -33,7 +33,7 @@ public class EmailService {
             String subject = "Verify Your School Account - NeuroNurture";
             Email to = new Email(toEmail);
             
-            String verificationUrl = "http://localhost:8081/school/verify-email?token=" + verificationToken;
+            String verificationUrl = "http://188.166.197.135/school/verify-email?token=" + verificationToken;
             
             String htmlContent = buildVerificationEmailHtml(schoolName, verificationUrl);
             Content content = new Content("text/html", htmlContent);

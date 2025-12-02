@@ -1,14 +1,14 @@
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { MessageCircle, Send, User } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { MessageCircle, Send, User } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 interface ChatMessage {
   id: string;
   childId: number;
   doctorId: number;
-  senderType: 'child' | 'doctor';
+  senderType: "child" | "doctor";
   senderId: number;
   message: string;
   timestamp: string;
@@ -22,9 +22,14 @@ interface ChildDoctorChatPageProps {
   doctorName: string;
 }
 
-export default function ChildDoctorChatPage({ childId, childName, doctorId, doctorName }: ChildDoctorChatPageProps) {
+export default function ChildDoctorChatPage({
+  childId,
+  childName,
+  doctorId,
+  doctorName,
+}: ChildDoctorChatPageProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [newMessage, setNewMessage] = useState('');
+  const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,25 +46,27 @@ export default function ChildDoctorChatPage({ childId, childName, doctorId, doct
   }, [messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const loadChatHistory = async () => {
     try {
       setIsLoading(true);
       setError(null);
-      
-      const response = await fetch(`http://localhost:8082/api/parents/chat/history/${childId}/${doctorId}`);
-      
+
+      const response = await fetch(
+        `http://188.166.197.135:8082/api/parents/chat/history/${childId}/${doctorId}`
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const chatMessages = await response.json();
       setMessages(chatMessages);
     } catch (error) {
-      console.error('Error loading chat history:', error);
-      setError('Failed to load chat history');
+      console.error("Error loading chat history:", error);
+      setError("Failed to load chat history");
     } finally {
       setIsLoading(false);
     }
@@ -67,11 +74,14 @@ export default function ChildDoctorChatPage({ childId, childName, doctorId, doct
 
   const markMessagesAsRead = async () => {
     try {
-      await fetch(`http://localhost:8082/api/parents/chat/mark-read/${childId}/${doctorId}/child`, {
-        method: 'PUT'
-      });
+      await fetch(
+        `http://188.166.197.135:8082/api/parents/chat/mark-read/${childId}/${doctorId}/child`,
+        {
+          method: "PUT",
+        }
+      );
     } catch (error) {
-      console.error('Error marking messages as read:', error);
+      console.error("Error marking messages as read:", error);
     }
   };
 
@@ -82,42 +92,48 @@ export default function ChildDoctorChatPage({ childId, childName, doctorId, doct
       setIsSending(true);
       setError(null);
 
-      const response = await fetch('http://localhost:8082/api/parents/chat/send-from-child', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          childId: parseInt(childId),
-          doctorId: doctorId,
-          message: newMessage.trim()
-        })
-      });
+      const response = await fetch(
+        "http://188.166.197.135:8082/api/parents/chat/send-from-child",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            childId: parseInt(childId),
+            doctorId: doctorId,
+            message: newMessage.trim(),
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const sentMessage = await response.json();
-      setMessages(prev => [...prev, sentMessage]);
-      setNewMessage('');
+      setMessages((prev) => [...prev, sentMessage]);
+      setNewMessage("");
     } catch (error) {
-      console.error('Error sending message:', error);
-      setError('Failed to send message');
+      console.error("Error sending message:", error);
+      setError("Failed to send message");
     } finally {
       setIsSending(false);
     }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
   };
 
   const formatTime = (timestamp: string) => {
-    return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return new Date(timestamp).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   if (isLoading) {
@@ -141,7 +157,9 @@ export default function ChildDoctorChatPage({ childId, childName, doctorId, doct
               <MessageCircle className="h-4 w-4 text-blue-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 text-sm">Chat with {doctorName}</h3>
+              <h3 className="font-semibold text-gray-900 text-sm">
+                Chat with {doctorName}
+              </h3>
               <p className="text-xs text-gray-600">Patient: {childName}</p>
             </div>
           </div>
@@ -170,25 +188,35 @@ export default function ChildDoctorChatPage({ childId, childName, doctorId, doct
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex ${message.senderType === 'child' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex ${
+                    message.senderType === "child"
+                      ? "justify-end"
+                      : "justify-start"
+                  }`}
                 >
                   <div
                     className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                      message.senderType === 'child'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-900'
+                      message.senderType === "child"
+                        ? "bg-blue-600 text-white"
+                        : "bg-gray-100 text-gray-900"
                     }`}
                   >
                     <div className="flex items-center space-x-2 mb-1">
                       <User className="h-4 w-4" />
                       <span className="text-xs font-medium">
-                        {message.senderType === 'child' ? childName : doctorName}
+                        {message.senderType === "child"
+                          ? childName
+                          : doctorName}
                       </span>
                     </div>
                     <p className="text-sm">{message.message}</p>
-                    <p className={`text-xs mt-1 ${
-                      message.senderType === 'child' ? 'text-blue-100' : 'text-gray-500'
-                    }`}>
+                    <p
+                      className={`text-xs mt-1 ${
+                        message.senderType === "child"
+                          ? "text-blue-100"
+                          : "text-gray-500"
+                      }`}
+                    >
                       {formatTime(message.timestamp)}
                     </p>
                   </div>

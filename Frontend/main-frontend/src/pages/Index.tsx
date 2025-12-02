@@ -1,9 +1,9 @@
-import heroImage from '@/assets/hero-children.jpg';
-import mascotImage from '@/assets/mascot.jpg';
-import { AuthSuccessHandler } from '@/features/auth/components/AuthSuccessHandler';
-import { Button } from '@/components/ui/button';
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import heroImage from "@/assets/hero-children.jpg";
+import mascotImage from "@/assets/mascot.jpg";
+import { AuthSuccessHandler } from "@/features/auth/components/AuthSuccessHandler";
+import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -11,15 +11,17 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:8080/auth/session', { credentials: 'include' })
-      .then(res => res.json())
-      .then(authenticated => {
+    fetch("http://188.166.197.135:8080/auth/session", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((authenticated) => {
         if (authenticated) {
           setShowAuthHandler(true);
         }
       })
-      .catch(error => {
-        console.error('Error checking authentication:', error);
+      .catch((error) => {
+        console.error("Error checking authentication:", error);
         // If there's an error checking auth, just show the landing page
       })
       .finally(() => {
@@ -45,32 +47,33 @@ const Index = () => {
         {/* Hero Section */}
         <div className="space-y-8">
           <div className="flex items-center justify-center space-x-4 mb-8">
-            <img 
-              src={mascotImage} 
-                              alt="NeuroNurture Mascot" 
+            <img
+              src={mascotImage}
+              alt="NeuroNurture Mascot"
               className="w-20 h-20 animate-wiggle"
             />
             <h1 className="text-6xl lg:text-7xl font-playful text-primary">
               NeuroNurture
             </h1>
           </div>
-          
+
           <h2 className="text-2xl lg:text-3xl font-comic text-foreground max-w-4xl mx-auto">
-            Where Fun Meets Learning! 🌟 🌟 🌟 
+            Where Fun Meets Learning! 🌟 🌟 🌟
           </h2>
-          
+
           <p className="text-lg lg:text-xl text-muted-foreground font-comic max-w-3xl mx-auto">
-            Join thousands of children on an amazing journey of discovery through interactive games 
-            that help identify learning patterns and support growth. Every game is designed with love, 
-            care, and endless fun! 🎮✨
+            Join thousands of children on an amazing journey of discovery
+            through interactive games that help identify learning patterns and
+            support growth. Every game is designed with love, care, and endless
+            fun! 🎮✨
           </p>
         </div>
 
         {/* Hero Image */}
         <div className="relative max-w-4xl mx-auto">
-          <img 
-            src={heroImage} 
-            alt="Happy children playing and learning" 
+          <img
+            src={heroImage}
+            alt="Happy children playing and learning"
             className="rounded-3xl shadow-playful card-float w-full"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent rounded-3xl"></div>
@@ -80,23 +83,30 @@ const Index = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <div className="card-playful text-center space-y-4">
             <div className="text-5xl">🎯</div>
-            <h3 className="text-xl font-playful text-foreground">Smart Assessment</h3>
+            <h3 className="text-xl font-playful text-foreground">
+              Smart Assessment
+            </h3>
             <p className="font-comic text-muted-foreground">
               Fun games that gently assess learning patterns while kids play
             </p>
           </div>
-          
+
           <div className="card-playful text-center space-y-4">
             <div className="text-5xl">🌱</div>
-            <h3 className="text-xl font-playful text-foreground">Growth Games</h3>
+            <h3 className="text-xl font-playful text-foreground">
+              Growth Games
+            </h3>
             <p className="font-comic text-muted-foreground">
-              Personalized activities that support each child's unique development
+              Personalized activities that support each child's unique
+              development
             </p>
           </div>
-          
+
           <div className="card-playful text-center space-y-4">
             <div className="text-5xl">👨‍👩‍👧‍👦</div>
-            <h3 className="text-xl font-playful text-foreground">Family Journey</h3>
+            <h3 className="text-xl font-playful text-foreground">
+              Family Journey
+            </h3>
             <p className="font-comic text-muted-foreground">
               Tools and insights to support families every step of the way
             </p>
@@ -105,13 +115,13 @@ const Index = () => {
 
         {/* Call to Action */}
         <div className="space-y-6">
-          <Button 
-            onClick={() => navigate('/')}
+          <Button
+            onClick={() => navigate("/")}
             className="btn-fun text-xl px-12 py-4 font-comic btn-bounce text-lg"
           >
             Start Playing Now! 🚀
           </Button>
-          
+
           <p className="text-sm text-muted-foreground font-comic">
             Free to play • Safe & secure • Built with love for kids
           </p>

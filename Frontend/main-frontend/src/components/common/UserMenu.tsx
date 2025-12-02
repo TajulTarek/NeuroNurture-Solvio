@@ -1,23 +1,23 @@
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
-    ChevronDown,
-    Crown,
-    Heart,
-    LogOut,
-    MessageSquare,
-    Settings,
-    User,
-    Users
-} from 'lucide-react';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+  ChevronDown,
+  Crown,
+  Heart,
+  LogOut,
+  MessageSquare,
+  Settings,
+  User,
+  Users,
+} from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface UserMenuProps {
   onLogout?: () => void;
@@ -26,37 +26,45 @@ interface UserMenuProps {
   selectedChild?: any;
 }
 
-const UserMenu = ({ onLogout, showLogout = true, username, selectedChild }: UserMenuProps) => {
+const UserMenu = ({
+  onLogout,
+  showLogout = true,
+  username,
+  selectedChild,
+}: UserMenuProps) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogoutClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('UserMenu logout clicked');
+    console.log("UserMenu logout clicked");
     if (onLogout) {
       onLogout();
     }
   };
 
   const handleSwitchChildClick = () => {
-    console.log('Switch Child clicked');
+    console.log("Switch Child clicked");
     localStorage.removeItem("selectedChild");
     localStorage.removeItem("selectedChildId");
     navigate("/children");
   };
 
   const handleParentInfoClick = () => {
-    console.log('Parent Info clicked');
+    console.log("Parent Info clicked");
     // Check if parent exists and navigate accordingly
-    fetch('http://localhost:8080/auth/me', { credentials: 'include' })
-      .then(res => res.text())
-      .then(email => {
-        return fetch(`http://localhost:8082/api/parents/by-email/${email}`, {
-          credentials: 'include'
-        });
+    fetch("http://188.166.197.135:8080/auth/me", { credentials: "include" })
+      .then((res) => res.text())
+      .then((email) => {
+        return fetch(
+          `http://188.166.197.135:8082/api/parents/by-email/${email}`,
+          {
+            credentials: "include",
+          }
+        );
       })
-      .then(res => {
+      .then((res) => {
         if (res.ok) {
           navigate("/view-parent-info");
         } else {
@@ -69,7 +77,7 @@ const UserMenu = ({ onLogout, showLogout = true, username, selectedChild }: User
   };
 
   const handleReportIssuesClick = () => {
-    console.log('Report Issues clicked');
+    console.log("Report Issues clicked");
     navigate("/tickets");
   };
 
@@ -79,7 +87,7 @@ const UserMenu = ({ onLogout, showLogout = true, username, selectedChild }: User
         <Button
           variant="ghost"
           className="relative h-12 w-auto px-3 bg-transparent hover:bg-white/10 border-none transition-all duration-200 group"
-          style={{ pointerEvents: 'auto' }}
+          style={{ pointerEvents: "auto" }}
         >
           {/* Main content container */}
           <div className="relative z-10 flex items-center space-x-3">
@@ -87,12 +95,12 @@ const UserMenu = ({ onLogout, showLogout = true, username, selectedChild }: User
             <div className="flex items-center justify-center w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 hover:bg-white/30 transition-colors duration-200">
               <User className="w-5 h-5 text-white" />
             </div>
-            
+
             {/* Text content */}
             <div className="flex flex-col items-start text-left">
               <div className="flex items-center space-x-1">
                 <span className="text-sm font-medium text-white">
-                  {username || 'User'}
+                  {username || "User"}
                 </span>
                 <Crown className="w-3 h-3 text-yellow-200" />
               </div>
@@ -105,17 +113,21 @@ const UserMenu = ({ onLogout, showLogout = true, username, selectedChild }: User
                 </div>
               )}
             </div>
-            
+
             {/* Dropdown indicator */}
             <div className="flex flex-col items-center">
-              <ChevronDown className={`w-4 h-4 text-white/80 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown
+                className={`w-4 h-4 text-white/80 transition-transform duration-200 ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+              />
             </div>
           </div>
         </Button>
       </DropdownMenuTrigger>
-      
-      <DropdownMenuContent 
-        align="end" 
+
+      <DropdownMenuContent
+        align="end"
         className="w-56 p-2 bg-white/95 backdrop-blur-md border border-gray-200 rounded-lg shadow-lg animate-in slide-in-from-top-2 duration-200"
       >
         {/* Menu items */}
@@ -137,7 +149,7 @@ const UserMenu = ({ onLogout, showLogout = true, username, selectedChild }: User
               </p>
             </div>
           </DropdownMenuItem>
-          
+
           {/* Parent Info */}
           <DropdownMenuItem
             onClick={handleParentInfoClick}
@@ -168,16 +180,12 @@ const UserMenu = ({ onLogout, showLogout = true, username, selectedChild }: User
               <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
                 Report Issues
               </p>
-              <p className="text-xs text-gray-500">
-                Get help and support
-              </p>
+              <p className="text-xs text-gray-500">Get help and support</p>
             </div>
           </DropdownMenuItem>
-          
+
           {/* Settings (placeholder for future) */}
-          <DropdownMenuItem
-            className="flex items-center space-x-3 px-3 py-2.5 rounded-md hover:bg-gray-50 cursor-pointer group transition-all duration-200"
-          >
+          <DropdownMenuItem className="flex items-center space-x-3 px-3 py-2.5 rounded-md hover:bg-gray-50 cursor-pointer group transition-all duration-200">
             <div className="w-8 h-8 rounded-md bg-orange-100 flex items-center justify-center group-hover:bg-orange-200 transition-colors duration-200">
               <Settings className="w-4 h-4 text-orange-600" />
             </div>
@@ -185,15 +193,13 @@ const UserMenu = ({ onLogout, showLogout = true, username, selectedChild }: User
               <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900 transition-colors">
                 Settings
               </p>
-              <p className="text-xs text-gray-500">
-                App preferences & options
-              </p>
+              <p className="text-xs text-gray-500">App preferences & options</p>
             </div>
           </DropdownMenuItem>
         </div>
-        
+
         <DropdownMenuSeparator className="bg-gray-200 my-1" />
-        
+
         {/* Logout */}
         {showLogout && onLogout && (
           <DropdownMenuItem
@@ -207,9 +213,7 @@ const UserMenu = ({ onLogout, showLogout = true, username, selectedChild }: User
               <p className="text-sm font-medium text-red-600 group-hover:text-red-700 transition-colors">
                 Logout
               </p>
-              <p className="text-xs text-gray-500">
-                Sign out of your account
-              </p>
+              <p className="text-xs text-gray-500">Sign out of your account</p>
             </div>
           </DropdownMenuItem>
         )}

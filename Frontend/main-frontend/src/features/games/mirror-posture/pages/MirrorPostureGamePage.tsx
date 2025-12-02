@@ -1,26 +1,28 @@
-import Navbar from '@/components/common/Navbar';
-import { Button } from '@/components/ui/button';
-import { stopAllCameraStreams } from '@/shared/utils/cameraUtils';
-import { ArrowLeft, Camera, Smile, Trophy } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import MirrorPostureGame from '../components/MirrorPostureGame';
+import Navbar from "@/components/common/Navbar";
+import { Button } from "@/components/ui/button";
+import { stopAllCameraStreams } from "@/shared/utils/cameraUtils";
+import { ArrowLeft, Camera, Smile, Trophy } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import MirrorPostureGame from "../components/MirrorPostureGame";
 
 const MirrorPostureGamePage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [authChecked, setAuthChecked] = useState(false);
-  
+
   // Extract taskId and tournamentId from URL query parameters
-  const taskId = searchParams.get('taskId');
-  const tournamentId = searchParams.get('tournamentId');
+  const taskId = searchParams.get("taskId");
+  const tournamentId = searchParams.get("tournamentId");
 
   useEffect(() => {
-    fetch('http://localhost:8080/auth/session', { credentials: 'include' })
-      .then(res => res.json())
-      .then(authenticated => {
+    fetch("http://188.166.197.135:8080/auth/session", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((authenticated) => {
         if (!authenticated) {
-          navigate('/');
+          navigate("/");
         } else {
           setAuthChecked(true);
         }
@@ -36,9 +38,12 @@ const MirrorPostureGamePage = () => {
   }, []);
 
   const handleLogout = async () => {
-    console.log('Logout button clicked');
-    await fetch('http://localhost:8080/auth/logout', { method: 'POST', credentials: 'include' });
-    window.location.href = '/';
+    console.log("Logout button clicked");
+    await fetch("http://188.166.197.135:8080/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
+    window.location.href = "/";
   };
 
   if (!authChecked) {
@@ -49,26 +54,30 @@ const MirrorPostureGamePage = () => {
     <div className="h-screen bg-gradient-to-br from-orange-100 via-yellow-50 to-pink-100 font-nunito overflow-hidden flex flex-col">
       {/* Beautiful Navbar */}
       <Navbar onLogout={handleLogout} />
-      
+
       {/* Game Header - Compact */}
       <div className="px-3 py-1">
         <div className="flex items-center justify-between max-w-7xl mx-auto">
           <Button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate("/dashboard")}
             className="btn-fun font-comic text-xs py-1 px-3 bg-gradient-to-r from-orange-400 to-pink-400 hover:from-orange-500 hover:to-pink-500 text-white border-2 border-orange-300 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
           >
             <ArrowLeft className="w-3 h-3 mr-1" />
             Back 🏠
           </Button>
-          
+
           <div className="flex items-center space-x-1">
             <div className="flex items-center space-x-1 bg-gradient-to-r from-yellow-400 to-orange-400 px-2 py-1 rounded-full shadow-lg">
               <Camera className="w-3 h-3 text-white" />
-              <span className="text-white font-comic font-bold text-xs">Face Master</span>
+              <span className="text-white font-comic font-bold text-xs">
+                Face Master
+              </span>
             </div>
             <div className="flex items-center space-x-1 bg-gradient-to-r from-pink-400 to-purple-400 px-2 py-1 rounded-full shadow-lg">
               <Smile className="w-3 h-3 text-white" />
-              <span className="text-white font-comic font-bold text-xs">Expression Expert</span>
+              <span className="text-white font-comic font-bold text-xs">
+                Expression Expert
+              </span>
             </div>
           </div>
         </div>
@@ -96,7 +105,9 @@ const MirrorPostureGamePage = () => {
         <div className="flex items-center justify-center space-x-2">
           <div className="flex items-center space-x-1 bg-gradient-to-r from-green-400 to-blue-400 px-2 py-1 rounded-full shadow-lg">
             <Trophy className="w-3 h-3 text-white" />
-            <span className="text-white font-comic font-bold text-xs">You're Incredible! 🎉</span>
+            <span className="text-white font-comic font-bold text-xs">
+              You're Incredible! 🎉
+            </span>
           </div>
         </div>
       </div>
@@ -104,4 +115,4 @@ const MirrorPostureGamePage = () => {
   );
 };
 
-export default MirrorPostureGamePage; 
+export default MirrorPostureGamePage;

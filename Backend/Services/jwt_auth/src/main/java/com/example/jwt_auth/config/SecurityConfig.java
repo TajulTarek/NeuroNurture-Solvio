@@ -62,7 +62,7 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8081", "http://localhost:3001")
+                        .allowedOrigins("http://188.166.197.135", "http://localhost:3001")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowCredentials(true);
             }
@@ -72,7 +72,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:8081", "http://localhost:3001"));
+        configuration.setAllowedOrigins(Arrays.asList("http://188.166.197.135", "http://localhost:3001"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
@@ -118,7 +118,7 @@ public class SecurityConfig {
                     System.out.println("Request URI: " + request.getRequestURI());
                     System.out.println("Request URL: " + request.getRequestURL());
                     exception.printStackTrace();
-                    response.sendRedirect("http://localhost:8081/auth?error=oauth2_failed");
+                    response.sendRedirect("http://188.166.197.135/auth?error=oauth2_failed");
                 })
                 .loginPage("/auth/oauth2/authorization/google")
             )

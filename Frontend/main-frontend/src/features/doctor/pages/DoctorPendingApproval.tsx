@@ -1,8 +1,19 @@
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Brain, ChartLine, CheckSquare, Clock, Eye, Gamepad2, Hand, Loader2, Trophy, Users } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Brain,
+  ChartLine,
+  CheckSquare,
+  Clock,
+  Eye,
+  Gamepad2,
+  Hand,
+  Loader2,
+  Trophy,
+  Users,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface DoctorInfo {
   id: number;
@@ -34,68 +45,74 @@ interface VerificationStatus {
 
 const DoctorPendingApproval: React.FC = () => {
   const navigate = useNavigate();
-  const [verificationStatus, setVerificationStatus] = useState<VerificationStatus | null>(null);
+  const [verificationStatus, setVerificationStatus] =
+    useState<VerificationStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [checkingStatus, setCheckingStatus] = useState(false);
 
   useEffect(() => {
     // Get doctor email from localStorage or URL params
-    const doctorEmail = localStorage.getItem('doctorEmail') || 'newdoctor@example.com';
+    const doctorEmail =
+      localStorage.getItem("doctorEmail") || "newdoctor@example.com";
     checkVerificationStatus(doctorEmail);
   }, []);
 
   const checkVerificationStatus = async (email: string) => {
     try {
       setCheckingStatus(true);
-      const response = await fetch(`http://localhost:8093/api/doctor/auth/verification-status?email=${email}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `http://188.166.197.135:8093/api/doctor/auth/verification-status?email=${email}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         const result = await response.text();
         // Create a mock status response since our backend only returns a string
         setVerificationStatus({
           status: result,
-          message: result === 'pending_email' 
-            ? 'Please check your email and click the verification link to continue.'
-            : result === 'pending_approval'
-            ? 'Your doctor account is under review by our administration team. You will be notified once approved.'
-            : 'Your account has been approved! You can now log in.',
+          message:
+            result === "pending_email"
+              ? "Please check your email and click the verification link to continue."
+              : result === "pending_approval"
+              ? "Your doctor account is under review by our administration team. You will be notified once approved."
+              : "Your account has been approved! You can now log in.",
           doctor: {
             id: 1,
-            firstName: 'Dr.',
-            lastName: 'Doctor',
+            firstName: "Dr.",
+            lastName: "Doctor",
             email: email,
-            phone: '',
-            specialization: '',
-            licenseNumber: '',
-            hospital: '',
-            address: '',
-            city: '',
-            state: '',
-            zipCode: '',
+            phone: "",
+            specialization: "",
+            licenseNumber: "",
+            hospital: "",
+            address: "",
+            city: "",
+            state: "",
+            zipCode: "",
             yearsOfExperience: 0,
-            emailVerified: result !== 'pending_email',
-            isVerified: result === 'approved',
-            subscriptionStatus: 'pending',
+            emailVerified: result !== "pending_email",
+            isVerified: result === "approved",
+            subscriptionStatus: "pending",
             patientLimit: 50,
             currentPatients: 0,
-            assignedAdminId: null
-          }
+            assignedAdminId: null,
+          },
         });
-        
+
         // If approved, redirect to dashboard
-        if (result === 'approved') {
-          navigate('/doctor/dashboard');
+        if (result === "approved") {
+          navigate("/doctor/dashboard");
         }
       } else {
-        console.error('Failed to check verification status');
+        console.error("Failed to check verification status");
       }
     } catch (error) {
-      console.error('Error checking verification status:', error);
+      console.error("Error checking verification status:", error);
     } finally {
       setLoading(false);
       setCheckingStatus(false);
@@ -103,19 +120,25 @@ const DoctorPendingApproval: React.FC = () => {
   };
 
   const handleCheckStatus = () => {
-    const doctorEmail = localStorage.getItem('doctorEmail') || 'newdoctor@example.com';
+    const doctorEmail =
+      localStorage.getItem("doctorEmail") || "newdoctor@example.com";
     checkVerificationStatus(doctorEmail);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('doctorToken');
-    localStorage.removeItem('doctorEmail');
-    navigate('/auth/doctor/login');
+    localStorage.removeItem("doctorToken");
+    localStorage.removeItem("doctorEmail");
+    navigate("/auth/doctor/login");
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{
+          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        }}
+      >
         <Loader2 className="h-8 w-8 animate-spin text-white" />
       </div>
     );
@@ -138,16 +161,20 @@ const DoctorPendingApproval: React.FC = () => {
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                   NeuroNurture
                 </h1>
-                <p className="text-sm text-gray-600 font-medium">Medical Platform</p>
+                <p className="text-sm text-gray-600 font-medium">
+                  Medical Platform
+                </p>
               </div>
             </div>
             <div className="flex items-center space-x-3">
               <div className="hidden sm:block text-right">
-                <p className="text-sm font-medium text-gray-900">Welcome back</p>
+                <p className="text-sm font-medium text-gray-900">
+                  Welcome back
+                </p>
                 <p className="text-xs text-gray-500">Medical Professional</p>
               </div>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={handleLogout}
                 className="border-gray-300 hover:bg-gray-50 transition-all duration-200"
               >
@@ -168,31 +195,35 @@ const DoctorPendingApproval: React.FC = () => {
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 shadow-lg mb-8">
                 <Clock className="h-10 w-10 text-white" />
               </div>
-              
+
               <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-                {verificationStatus?.status === 'pending_email' ? 'Verify Your Email' : 'Account Under Review'}
+                {verificationStatus?.status === "pending_email"
+                  ? "Verify Your Email"
+                  : "Account Under Review"}
               </h1>
-              
+
               <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
                 {verificationStatus?.message}
               </p>
-              
+
               <div className="inline-flex items-center px-6 py-4 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-full shadow-lg mb-8">
                 <div className="w-3 h-3 bg-white rounded-full animate-pulse mr-3"></div>
                 <span className="font-medium">
-                  {verificationStatus?.status === 'pending_email' 
-                    ? 'Check your email for verification instructions'
-                    : 'Our team is reviewing your application'}
+                  {verificationStatus?.status === "pending_email"
+                    ? "Check your email for verification instructions"
+                    : "Our team is reviewing your application"}
                 </span>
               </div>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  onClick={handleCheckStatus} 
+                <Button
+                  onClick={handleCheckStatus}
                   disabled={checkingStatus}
                   className="px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-200"
                 >
-                  {checkingStatus ? <Loader2 className="h-5 w-5 animate-spin mr-2" /> : null}
+                  {checkingStatus ? (
+                    <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                  ) : null}
                   Check Status
                 </Button>
               </div>
@@ -211,16 +242,22 @@ const DoctorPendingApproval: React.FC = () => {
                   <Users className="h-7 w-7 text-white" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-xl font-bold text-gray-900">Patient Management</h3>
-                  <p className="text-sm text-gray-600">Comprehensive patient profiles</p>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Patient Management
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Comprehensive patient profiles
+                  </p>
                 </div>
               </div>
               <p className="text-gray-600 mb-4 leading-relaxed">
-                Manage patient profiles with advanced tracking capabilities, progress monitoring, and detailed medical analytics.
+                Manage patient profiles with advanced tracking capabilities,
+                progress monitoring, and detailed medical analytics.
               </p>
               <div className="flex items-center justify-between">
                 <Badge className="bg-purple-100 text-purple-800 border-0">
-                  Up to {verificationStatus?.doctor?.patientLimit || 50} patients
+                  Up to {verificationStatus?.doctor?.patientLimit || 50}{" "}
+                  patients
                 </Badge>
                 <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
               </div>
@@ -236,12 +273,15 @@ const DoctorPendingApproval: React.FC = () => {
                   <ChartLine className="h-7 w-7 text-white" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-xl font-bold text-gray-900">Medical Analytics</h3>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Medical Analytics
+                  </h3>
                   <p className="text-sm text-gray-600">Real-time insights</p>
                 </div>
               </div>
               <p className="text-gray-600 mb-4 leading-relaxed">
-                Get real-time insights into patient progress, treatment outcomes, and cognitive development with interactive dashboards.
+                Get real-time insights into patient progress, treatment
+                outcomes, and cognitive development with interactive dashboards.
               </p>
               <div className="flex items-center justify-between">
                 <Badge className="bg-green-100 text-green-800 border-0">
@@ -261,12 +301,15 @@ const DoctorPendingApproval: React.FC = () => {
                   <CheckSquare className="h-7 w-7 text-white" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-xl font-bold text-gray-900">Treatment Plans</h3>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Treatment Plans
+                  </h3>
                   <p className="text-sm text-gray-600">Personalized care</p>
                 </div>
               </div>
               <p className="text-gray-600 mb-4 leading-relaxed">
-                Create and manage personalized treatment plans based on individual patient needs and track completion progress.
+                Create and manage personalized treatment plans based on
+                individual patient needs and track completion progress.
               </p>
               <div className="flex items-center justify-between">
                 <Badge className="bg-yellow-100 text-yellow-800 border-0">
@@ -286,12 +329,15 @@ const DoctorPendingApproval: React.FC = () => {
                   <Trophy className="h-7 w-7 text-white" />
                 </div>
                 <div className="ml-4">
-                  <h3 className="text-xl font-bold text-gray-900">Patient Communication</h3>
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Patient Communication
+                  </h3>
                   <p className="text-sm text-gray-600">Seamless interaction</p>
                 </div>
               </div>
               <p className="text-gray-600 mb-4 leading-relaxed">
-                Communicate with patients and their families through secure messaging and progress updates.
+                Communicate with patients and their families through secure
+                messaging and progress updates.
               </p>
               <div className="flex items-center justify-between">
                 <Badge className="bg-blue-100 text-blue-800 border-0">
@@ -307,9 +353,12 @@ const DoctorPendingApproval: React.FC = () => {
         <div className="bg-white rounded-2xl shadow-lg border border-gray-200/50 mb-12 overflow-hidden">
           <div className="bg-gradient-to-r from-purple-500 to-indigo-600 px-8 py-6">
             <div className="text-center">
-              <h2 className="text-3xl font-bold text-white mb-2">Cognitive Development Tools</h2>
+              <h2 className="text-3xl font-bold text-white mb-2">
+                Cognitive Development Tools
+              </h2>
               <p className="text-purple-100 max-w-2xl mx-auto">
-                Access our suite of cognitive development games and assessments designed to enhance patient outcomes.
+                Access our suite of cognitive development games and assessments
+                designed to enhance patient outcomes.
               </p>
             </div>
           </div>
@@ -319,28 +368,36 @@ const DoctorPendingApproval: React.FC = () => {
                 <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Gamepad2 className="h-6 w-6 text-white" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Dance Doodle</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">
+                  Dance Doodle
+                </h4>
                 <p className="text-sm text-gray-600">Motor Skills Assessment</p>
               </div>
               <div className="group text-center p-6 rounded-xl hover:bg-gradient-to-br hover:from-green-50 hover:to-emerald-100 transition-all duration-300 cursor-pointer">
                 <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-r from-green-500 to-emerald-600 mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Brain className="h-6 w-6 text-white" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Memory Tests</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">
+                  Memory Tests
+                </h4>
                 <p className="text-sm text-gray-600">Cognitive Assessment</p>
               </div>
               <div className="group text-center p-6 rounded-xl hover:bg-gradient-to-br hover:from-yellow-50 hover:to-orange-100 transition-all duration-300 cursor-pointer">
                 <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-600 mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Eye className="h-6 w-6 text-white" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Attention Tests</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">
+                  Attention Tests
+                </h4>
                 <p className="text-sm text-gray-600">Focus Assessment</p>
               </div>
               <div className="group text-center p-6 rounded-xl hover:bg-gradient-to-br hover:from-blue-50 hover:to-cyan-100 transition-all duration-300 cursor-pointer">
                 <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-600 mb-4 group-hover:scale-110 transition-transform duration-300">
                   <Hand className="h-6 w-6 text-white" />
                 </div>
-                <h4 className="font-semibold text-gray-900 mb-2">Coordination Tests</h4>
+                <h4 className="font-semibold text-gray-900 mb-2">
+                  Coordination Tests
+                </h4>
                 <p className="text-sm text-gray-600">Motor Assessment</p>
               </div>
             </div>
@@ -351,22 +408,25 @@ const DoctorPendingApproval: React.FC = () => {
         <div className="relative overflow-hidden bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 rounded-2xl shadow-2xl">
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="relative px-8 py-12 text-center">
-            <h3 className="text-3xl font-bold text-white mb-4">Ready to Scale Your Practice?</h3>
+            <h3 className="text-3xl font-bold text-white mb-4">
+              Ready to Scale Your Practice?
+            </h3>
             <p className="text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-              Your current plan includes up to {verificationStatus?.doctor?.patientLimit || 50} patients. 
-              Upgrade to unlock unlimited potential and advanced features.
+              Your current plan includes up to{" "}
+              {verificationStatus?.doctor?.patientLimit || 50} patients. Upgrade
+              to unlock unlimited potential and advanced features.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                variant="outline" 
-                disabled 
+              <Button
+                variant="outline"
+                disabled
                 className="px-8 py-3 bg-white/10 border-white/30 text-white hover:bg-white/20 backdrop-blur-sm"
               >
                 Upgrade Plan (Available after approval)
               </Button>
-              <Button 
-                variant="ghost" 
-                disabled 
+              <Button
+                variant="ghost"
+                disabled
                 className="px-8 py-3 text-white hover:bg-white/10"
               >
                 View Pricing
@@ -380,4 +440,3 @@ const DoctorPendingApproval: React.FC = () => {
 };
 
 export default DoctorPendingApproval;
-

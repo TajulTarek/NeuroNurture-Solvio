@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 @RestController
 @RequestMapping("/api/doctor/chat")
-@CrossOrigin(originPatterns = {"http://localhost:3000", "http://localhost:8081", "http://localhost:3001", "http://localhost:5173"}, allowCredentials = "true")
+@CrossOrigin(originPatterns = {"http://localhost:3000", "http://188.166.197.135", "http://localhost:3001", "http://localhost:5173"}, allowCredentials = "true")
 public class ChatController {
     
     private static final Logger logger = LoggerFactory.getLogger(ChatController.class);

@@ -19,7 +19,7 @@ import com.example.parent.service.TicketService;
 
 @RestController
 @RequestMapping("/api/tickets")
-@CrossOrigin(origins = "http://localhost:8081")
+@CrossOrigin(origins = "http://188.166.197.135")
 public class TicketController {
     
     @Autowired

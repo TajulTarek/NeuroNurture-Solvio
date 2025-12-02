@@ -1,5 +1,5 @@
-import { useChildContext } from '@/features/parent/contexts/ChildContext';
-import { toast } from 'sonner';
+import { useChildContext } from "@/features/parent/contexts/ChildContext";
+import { toast } from "sonner";
 
 export const useChildOperations = () => {
   const { currentChild, currentParent } = useChildContext();
@@ -12,28 +12,31 @@ export const useChildOperations = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8082/api/parents/children/${currentChild.id}/progress`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          childId: currentChild.id,
-          parentId: currentParent?.id,
-          ...progressData
-        }),
-      });
+      const response = await fetch(
+        `http://188.166.197.135:8082/api/parents/children/${currentChild.id}/progress`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            childId: currentChild.id,
+            parentId: currentParent?.id,
+            ...progressData,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to save progress');
+        throw new Error("Failed to save progress");
       }
 
       toast.success("Progress saved successfully!");
       return true;
     } catch (error) {
       toast.error("Failed to save progress");
-      console.error('Error saving progress:', error);
+      console.error("Error saving progress:", error);
       return false;
     }
   };
@@ -46,17 +49,20 @@ export const useChildOperations = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8082/api/parents/children/${currentChild.id}/progress`, {
-        credentials: 'include'
-      });
+      const response = await fetch(
+        `http://188.166.197.135:8082/api/parents/children/${currentChild.id}/progress`,
+        {
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to get progress');
+        throw new Error("Failed to get progress");
       }
 
       return await response.json();
     } catch (error) {
-      console.error('Error getting progress:', error);
+      console.error("Error getting progress:", error);
       return null;
     }
   };
@@ -69,28 +75,31 @@ export const useChildOperations = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8082/api/parents/children/${currentChild.id}/assessments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({
-          childId: currentChild.id,
-          parentId: currentParent?.id,
-          ...assessmentData
-        }),
-      });
+      const response = await fetch(
+        `http://188.166.197.135:8082/api/parents/children/${currentChild.id}/assessments`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            childId: currentChild.id,
+            parentId: currentParent?.id,
+            ...assessmentData,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to save assessment');
+        throw new Error("Failed to save assessment");
       }
 
       toast.success("Assessment saved successfully!");
       return true;
     } catch (error) {
       toast.error("Failed to save assessment");
-      console.error('Error saving assessment:', error);
+      console.error("Error saving assessment:", error);
       return false;
     }
   };
@@ -103,17 +112,20 @@ export const useChildOperations = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8082/api/parents/children/${currentChild.id}/assessments`, {
-        credentials: 'include'
-      });
+      const response = await fetch(
+        `http://188.166.197.135:8082/api/parents/children/${currentChild.id}/assessments`,
+        {
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to get assessments');
+        throw new Error("Failed to get assessments");
       }
 
       return await response.json();
     } catch (error) {
-      console.error('Error getting assessments:', error);
+      console.error("Error getting assessments:", error);
       return null;
     }
   };
@@ -126,24 +138,27 @@ export const useChildOperations = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8082/api/parents/children/${currentChild.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(updatedData),
-      });
+      const response = await fetch(
+        `http://188.166.197.135:8082/api/parents/children/${currentChild.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(updatedData),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to update child profile');
+        throw new Error("Failed to update child profile");
       }
 
       toast.success("Child profile updated successfully!");
       return true;
     } catch (error) {
       toast.error("Failed to update child profile");
-      console.error('Error updating child profile:', error);
+      console.error("Error updating child profile:", error);
       return false;
     }
   };
@@ -159,4 +174,4 @@ export const useChildOperations = () => {
     hasSelectedChild: !!currentChild,
     hasSelectedParent: !!currentParent,
   };
-}; 
+};
