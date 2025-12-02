@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+opencv-python
+numpy
+mediapipe
+joblib
+beam-eye-tracker
+groq
+python-Levenshtein
+python-dotenv
+python-multipart
