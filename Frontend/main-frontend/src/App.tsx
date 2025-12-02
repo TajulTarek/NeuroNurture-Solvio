@@ -61,6 +61,7 @@ import ChildProfile from "./features/school/pages/ChildProfile";
 import ChildProgress from "./features/school/pages/ChildProgress";
 import ChildProgressComparison from "./features/school/pages/ChildProgressComparison";
 import Children from "./features/school/pages/Children";
+import Playground from "./features/school/pages/Playground";
 import SchoolCheckoutPage from "./features/school/pages/SchoolCheckoutPage";
 import SchoolDashboard from "./features/school/pages/SchoolDashboard";
 import SchoolEmailVerification from "./features/school/pages/SchoolEmailVerification";
@@ -84,8 +85,11 @@ import DoctorChat from "./features/doctor/pages/DoctorChat";
 import DoctorDashboard from "./features/doctor/pages/DoctorDashboard";
 import DoctorTasks from "./features/doctor/pages/DoctorTasks";
 import EnrolledChildren from "./features/doctor/pages/EnrolledChildren";
+import PendingReports from "./features/doctor/pages/PendingReports";
 import TaskHistory from "./features/doctor/pages/TaskHistory";
 // Child frontend imports
+import SendReportPage from "./features/child/pages/SendReportPage";
+
 const queryClient = new QueryClient();
 
 
@@ -245,6 +249,14 @@ const App = () => (
               </EmailVerificationGuard>
             </ProtectedRoute>
           } />
+          {/* Child Send Report Route */}
+          <Route path="/child/send-report" element={
+            <ProtectedRoute>
+              <EmailVerificationGuard>
+                <SendReportPage />
+              </EmailVerificationGuard>
+            </ProtectedRoute>
+          } />
           {/* School Dashboard Routes */}
           <Route path="/school" element={
             <SchoolAuthProvider>
@@ -263,6 +275,7 @@ const App = () => (
             <Route path="tournaments" element={<Tournaments />} />
             <Route path="tournaments/:id" element={<TournamentDetails />} />
             <Route path="progress-comparison" element={<ChildProgressComparison />} />
+            <Route path="playground" element={<Playground />} />
             <Route path="tickets" element={<SchoolTicketsPage />} />
             <Route path="tickets/new" element={<SchoolNewTicketPage />} />
             <Route path="tickets/:ticketId" element={<SchoolTicketChatPage />} />
@@ -285,6 +298,7 @@ const App = () => (
             <Route path="tasks" element={<DoctorTasks />} />
             <Route path="tasks/create" element={<CreateDoctorTask />} />
             <Route path="tasks/history" element={<TaskHistory />} />
+            <Route path="reports" element={<PendingReports />} />
             <Route path="chat" element={<DoctorChat />} />
             <Route path="pricing" element={<DoctorPricingPage />} />
             <Route path="subscription/checkout" element={<DoctorCheckoutPage />} />

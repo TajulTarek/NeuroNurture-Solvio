@@ -16,6 +16,17 @@ const RepeatWithMeGamePage = () => {
   const tournamentId = searchParams.get('tournamentId');
 
   useEffect(() => {
+    // Check if childId is in URL (from school playground) - skip auth check
+    const urlParams = new URLSearchParams(window.location.search);
+    const childId = urlParams.get('childId');
+    
+    if (childId) {
+      // Coming from school playground, allow access
+      setAuthChecked(true);
+      return;
+    }
+    
+    // Otherwise check for parent authentication
     fetch('http://localhost:8080/auth/session', { credentials: 'include' })
       .then(res => res.json())
       .then(authenticated => {

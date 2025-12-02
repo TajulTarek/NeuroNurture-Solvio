@@ -1,16 +1,17 @@
 import { useSchoolAuth } from '@/features/school/contexts/SchoolAuthContext';
 import {
-    BarChart3,
-    BookOpen,
-    ChevronDown,
-    Crown,
-    Home,
-    LogOut,
-    Menu,
-    MessageSquare,
-    School,
-    Trophy,
-    Users
+  BarChart3,
+  BookOpen,
+  ChevronDown,
+  Crown,
+  Gamepad2,
+  Home,
+  LogOut,
+  Menu,
+  MessageSquare,
+  School,
+  Trophy,
+  Users
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -34,6 +35,7 @@ const SchoolNavbar: React.FC = () => {
     { name: 'Tasks', href: '/school/tasks', icon: BookOpen },
     { name: 'Tournaments', href: '/school/tournaments', icon: Trophy },
     { name: 'Progress Comparison', href: '/school/progress-comparison', icon: BarChart3 },
+    { name: 'Playground', href: '/school/playground', icon: Gamepad2 },
   ];
 
   // Premium features for schools

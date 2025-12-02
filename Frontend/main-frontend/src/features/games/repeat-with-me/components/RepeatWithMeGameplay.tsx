@@ -32,6 +32,7 @@ const RepeatWithMeGameplay: React.FC = () => {
 
   const [currentSentence, setCurrentSentence] = useState<string>("");
   const [currentAudioFile, setCurrentAudioFile] = useState<string>("");
+  const [currentImageFile, setCurrentImageFile] = useState<string>("");
   const [round, setRound] = useState(0);
   const [gameResults, setGameResults] = useState<{ [key: number]: GameResult }>({});
   const [isAudioPlaying, setIsAudioPlaying] = useState<boolean>(false);
@@ -134,12 +135,15 @@ const RepeatWithMeGameplay: React.FC = () => {
     const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
     const audioPath = `/repeatGame/audio/audio${randomIndex}.mp3`;
     const labelPath = `/repeatGame/label/label${randomIndex}.txt`;
+    // Image path - will try different extensions if needed (handled in onError)
+    const imagePath = `/repeatGame/images/image_${randomIndex}.jpg`;
     
     // Mark this audio file as used
     setUsedAudioIndices(prev => new Set([...prev, randomIndex]));
     
     console.log(`🎵 Loading audio file ${randomIndex} (Round ${round + 1})`);
     setCurrentAudioFile(audioPath);
+    setCurrentImageFile(imagePath);
 
     try {
       const res = await fetch(labelPath);
@@ -639,46 +643,49 @@ const RepeatWithMeGameplay: React.FC = () => {
 
         {/* Listening Phase */}
         {gameState === 'listening' && (
-          <div className="text-center max-w-3xl">
-            {/* Animated listening icon */}
-            <div className="relative mb-8">
-              <div className="text-7xl mb-6 animate-bounce text-blue-500">🔊</div>
-              {/* Sound waves animation */}
-              <div className="flex justify-center space-x-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div
-                    key={i}
-                    className="w-3 bg-gradient-to-t from-blue-400 to-blue-600 rounded-full animate-pulse"
-                    style={{
-                      height: `${i * 10}px`,
-                      animationDelay: `${i * 0.1}s`
+          <div className="text-center w-full flex flex-col items-center justify-center">
+            {/* Image Display - Fixed Size Box */}
+            {currentImageFile && (
+              <div className="mb-4 flex justify-center">
+                <div className="relative w-64 h-64 flex items-center justify-center bg-white rounded-2xl shadow-lg border-4 border-blue-200 overflow-hidden">
+                  <img 
+                    src={currentImageFile}
+                    alt={`Round ${round + 1} illustration`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      const currentSrc = img.src;
+                      if (currentSrc.endsWith('.jpg')) {
+                        img.src = currentSrc.replace('.jpg', '.png');
+                      } else if (currentSrc.endsWith('.png')) {
+                        img.src = currentSrc.replace('.png', '.jpeg');
+                      }
                     }}
-                  ></div>
-                ))}
+                  />
+                  {isAudioPlaying && (
+                    <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse flex items-center gap-1 z-10">
+                      <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce"></div>
+                      🔊
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
             
-            <h3 className="text-4xl font-playful text-primary mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            <h3 className="text-2xl font-playful text-primary mb-3 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
               🎧 Listen Carefully!
             </h3>
             
-            <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-8 rounded-3xl border-4 border-blue-200 shadow-2xl mb-6 transform hover:scale-105 transition-all duration-300">
-              <div className="bg-white p-6 rounded-2xl border-2 border-blue-100 shadow-lg">
-                <p className="text-2xl font-comic text-primary mb-6 leading-relaxed">
+            <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4 rounded-2xl border-2 border-blue-200 shadow-lg max-w-lg w-full">
+              <div className="bg-white p-4 rounded-xl">
+                <p className="text-lg font-comic text-primary mb-2 leading-relaxed">
                   {currentSentence}
                 </p>
-                <div className="flex items-center justify-center space-x-3 text-lg text-muted-foreground font-comic">
+                <div className="flex items-center justify-center space-x-2 text-sm text-muted-foreground font-comic">
                   <span>🎵</span>
                   <span className="animate-pulse">Audio is playing...</span>
                   <span>🎵</span>
                 </div>
-                {isAudioPlaying && (
-                  <div className="mt-4 flex items-center justify-center space-x-3">
-                    <div className="w-4 h-4 bg-green-500 rounded-full animate-bounce"></div>
-                    <span className="text-green-600 font-bold text-lg">🔊 Playing Audio...</span>
-                    <div className="w-4 h-4 bg-green-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                  </div>
-                )}
               </div>
             </div>
             
@@ -699,46 +706,56 @@ const RepeatWithMeGameplay: React.FC = () => {
 
         {/* Speaking Phase */}
         {gameState === 'speaking' && (
-          <div className="text-center max-w-3xl">
-            {/* Animated microphone icon */}
-            <div className="relative mb-8">
-              <div className="text-7xl mb-6 animate-pulse text-red-500">🎙️</div>
-              {/* Recording indicator */}
-              <div className="absolute -top-2 -right-2 w-10 h-10 bg-red-500 rounded-full animate-ping"></div>
-            </div>
+          <div className="text-center w-full flex flex-col items-center justify-center">
+            {/* Image Display - Fixed Size Box */}
+            {currentImageFile && (
+              <div className="mb-4 flex justify-center">
+                <div className="relative w-64 h-64 flex items-center justify-center bg-white rounded-2xl shadow-lg border-4 border-red-200 overflow-hidden">
+                  <img 
+                    src={currentImageFile}
+                    alt={`Round ${round + 1} illustration`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const img = e.target as HTMLImageElement;
+                      const currentSrc = img.src;
+                      if (currentSrc.endsWith('.jpg')) {
+                        img.src = currentSrc.replace('.jpg', '.png');
+                      } else if (currentSrc.endsWith('.png')) {
+                        img.src = currentSrc.replace('.png', '.jpeg');
+                      }
+                    }}
+                  />
+                  {isRecording && (
+                    <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold animate-pulse flex items-center gap-1 z-10">
+                      <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping"></div>
+                      🎙️
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
             
-            <h3 className="text-4xl font-playful text-primary mb-8 bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
+            <h3 className="text-2xl font-playful text-primary mb-3 bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
               🗣️ Now Speak!
             </h3>
             
-            <div className="bg-gradient-to-br from-red-50 via-pink-50 to-purple-50 p-8 rounded-3xl border-4 border-red-200 shadow-2xl mb-8 transform hover:scale-105 transition-all duration-300">
-              <div className="bg-white p-6 rounded-2xl border-2 border-red-100 shadow-lg">
-                <p className="text-xl text-muted-foreground font-comic mb-4">
+            {/* Text Box with Linear Progress Bar */}
+            <div className="bg-gradient-to-br from-red-50 via-pink-50 to-purple-50 p-4 rounded-2xl border-2 border-red-200 shadow-lg max-w-lg w-full">
+              <div className="bg-white p-4 rounded-xl">
+                <p className="text-sm text-muted-foreground font-comic mb-2">
                   🎯 Repeat this sentence:
                 </p>
-                <p className="text-2xl font-comic text-primary mb-6 leading-relaxed">
+                <p className="text-lg font-comic text-primary mb-3 leading-relaxed">
                   {currentSentence}
                 </p>
+                {/* Linear Progress Bar */}
+                <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-red-500 to-pink-500 rounded-full transition-all duration-100 ease-linear"
+                    style={{ width: `${((10 - recordingTimer) / 10) * 100}%` }}
+                  ></div>
+                </div>
               </div>
-            </div>
-            
-            {/* Enhanced countdown timer */}
-            <div className="relative mb-8">
-              <div className="text-7xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent animate-bounce">
-                {recordingTimer}
-              </div>
-              {/* Timer background */}
-              <div className="absolute inset-0 -z-10">
-                <div className="w-36 h-36 bg-gradient-to-r from-red-200 to-pink-200 rounded-full animate-pulse opacity-30"></div>
-              </div>
-            </div>
-            
-            {/* Recording progress bar */}
-            <div className="w-80 mx-auto bg-gray-200 rounded-full h-4 overflow-hidden shadow-inner mb-6">
-              <div 
-                className="h-full bg-gradient-to-r from-red-500 to-pink-500 rounded-full transition-all duration-1000 ease-out shadow-lg"
-                style={{ width: `${((10 - recordingTimer) / 10) * 100}%` }}
-              ></div>
             </div>
 
             {/* Done Button - Allow early completion */}

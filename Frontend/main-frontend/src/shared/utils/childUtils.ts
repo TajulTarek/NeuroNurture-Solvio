@@ -16,4 +16,21 @@ export const clearCurrentChild = () => {
   localStorage.removeItem("selectedChild");
   // Dispatch custom event to notify components of the change
   window.dispatchEvent(new CustomEvent('childSelectionChanged'));
-}; 
+};
+
+// Get current parent data from localStorage
+export const getCurrentParent = () => {
+  const parentData = localStorage.getItem("parent");
+  if (parentData) {
+    try {
+      const parent = JSON.parse(parentData);
+      return {
+        id: parent.id,
+        name: parent.name || parent.username || 'Parent',
+      };
+    } catch (e) {
+      console.error('Error parsing parent data:', e);
+    }
+  }
+  return null;
+};

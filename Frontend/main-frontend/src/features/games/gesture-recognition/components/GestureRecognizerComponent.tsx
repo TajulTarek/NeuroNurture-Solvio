@@ -648,6 +648,12 @@ const GestureRecognizerComponent: React.FC<GestureRecognizerComponentProps> = ({
             currentRound: currentRoundRef.current
         })
         
+        // Early return if already processing this round to prevent duplicate score increments
+        if (isProcessingRoundRef.current) {
+            console.log('Gesture detection blocked: Round already being processed');
+            return;
+        }
+        
         // Simplified validation - only check if game is active
         if (!gameStarted || gameEnded) {
             console.log('Gesture detection blocked: Game not active');
@@ -671,8 +677,7 @@ const GestureRecognizerComponent: React.FC<GestureRecognizerComponentProps> = ({
             isProcessingRoundRef.current = true;
             setIsProcessingRound(true);
             
-            // Update score and show success
-            setScore(prev => prev + 1);
+            // Show success message
             setRoundResult("Correct! 🎉");
             setIsCorrect(true);
             isCorrectRef.current = true;
@@ -684,6 +689,9 @@ const GestureRecognizerComponent: React.FC<GestureRecognizerComponentProps> = ({
              // Always use the target gesture, not the detected gesture
              if (!targetGestureRef.current) {
                  console.error('No target gesture set for round', currentRoundRef.current);
+                 // Reset processing flag if we can't proceed
+                 isProcessingRoundRef.current = false;
+                 setIsProcessingRound(false);
                  return;
              }
              
@@ -705,30 +713,38 @@ const GestureRecognizerComponent: React.FC<GestureRecognizerComponentProps> = ({
                      completed: true
                  };
                  
-                 setGameSession(prev => {
-                     if (prev) {
-                         // Check if this round number already exists to prevent duplicates
-                         const roundExists = prev.rounds.some(round => round.roundNumber === currentRoundRef.current);
-                         if (roundExists) {
-                             console.log(`Round ${currentRoundRef.current} already exists, skipping duplicate entry`);
-                             return prev;
+                 // Check if round already exists before updating state
+                 const roundAlreadyExists = gameSession?.rounds.some(round => round.roundNumber === currentRoundRef.current);
+                 if (roundAlreadyExists) {
+                     console.log(`Round ${currentRoundRef.current} already exists, skipping duplicate entry`);
+                     // Reset processing flag since we're not adding this round
+                     isProcessingRoundRef.current = false;
+                     setIsProcessingRound(false);
+                 } else {
+                     // Only increment score AFTER confirming the round doesn't already exist
+                     setScore(prev => prev + 1);
+                     
+                     setGameSession(prev => {
+                         if (prev) {
+                             console.log('Adding successful round to game session:', roundStats);
+                             return {
+                                 ...prev,
+                                 rounds: [...prev.rounds, roundStats],
+                                 totalScore: prev.totalScore + 1
+                             };
                          }
-                         
-                         console.log('Adding successful round to game session:', roundStats);
-                         return {
-                             ...prev,
-                             rounds: [...prev.rounds, roundStats],
-                             totalScore: prev.totalScore + 1
-                         };
-                     }
-                     return prev;
-                 });
+                         return prev;
+                     });
+                 }
              } else {
                  console.error('Failed to record round: missing gesture or game session', {
                      targetGesture: targetGestureRef.current,
                      currentGesture,
                      gameSession: !!gameSession
                  });
+                 // Reset processing flag if we can't proceed
+                 isProcessingRoundRef.current = false;
+                 setIsProcessingRound(false);
              }
  
              // Stop all timers immediately and clear the refs
@@ -1480,39 +1496,46 @@ const GestureRecognizerComponent: React.FC<GestureRecognizerComponentProps> = ({
                                          <div className="text-6xl mb-3 animate-bounce drop-shadow-2xl">🎉</div>
                                          
                                          <div className="text-2xl font-playful mb-2 text-center drop-shadow-lg">
-                                             Final Score: {score}/11
+                                             Final Score: {gameSession ? gameSession.rounds.filter(r => r.completed).length : score}/11
                                          </div>
                                          
-                                         <div className="text-lg font-comic mb-2 text-center drop-shadow-md">
-                                             {score === 11 ? "Perfect! You're a gesture master! 🌟" : 
-                                              score >= 8 ? "Great job! You're getting better! 👍" : 
-                                              "Keep practicing! You'll improve! 💪"}
-                                         </div>
-                                         
-                                         <div className="text-xs font-comic text-center opacity-90 drop-shadow-sm mb-3">
-                                             {score === 11 ? "Incredible performance! You've mastered all gestures!" :
-                                              score >= 8 ? "Excellent work! You're on your way to becoming a gesture expert!" :
-                                              "Good effort! Every practice session makes you stronger!"}
-                                         </div>
-                                         
-                                         {/* Achievement badges */}
-                                         <div className="flex gap-2 flex-wrap justify-center">
-                                             {score === 11 && (
-                                                 <div className="bg-yellow-400/80 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold animate-pulse">
-                                                     🏅 Perfect
-                                                 </div>
-                                             )}
-                                             {score >= 8 && (
-                                                 <div className="bg-blue-400/80 text-blue-900 px-2 py-1 rounded-full text-xs font-bold">
-                                                     ⭐ Great
-                                                 </div>
-                                             )}
-                                             {score >= 5 && (
-                                                 <div className="bg-green-400/80 text-green-900 px-2 py-1 rounded-full text-xs font-bold">
-                                                     🎯 Good
-                                                 </div>
-                                             )}
-                                         </div>
+                                         {(() => {
+                                             const completedCount = gameSession ? gameSession.rounds.filter(r => r.completed).length : score;
+                                             return (
+                                                 <>
+                                                     <div className="text-lg font-comic mb-2 text-center drop-shadow-md">
+                                                         {completedCount === 11 ? "Perfect! You're a gesture master! 🌟" : 
+                                                          completedCount >= 8 ? "Great job! You're getting better! 👍" : 
+                                                          "Keep practicing! You'll improve! 💪"}
+                                                     </div>
+                                                     
+                                                     <div className="text-xs font-comic text-center opacity-90 drop-shadow-sm mb-3">
+                                                         {completedCount === 11 ? "Incredible performance! You've mastered all gestures!" :
+                                                          completedCount >= 8 ? "Excellent work! You're on your way to becoming a gesture expert!" :
+                                                          "Good effort! Every practice session makes you stronger!"}
+                                                     </div>
+                                                     
+                                                     {/* Achievement badges */}
+                                                     <div className="flex gap-2 flex-wrap justify-center">
+                                                         {completedCount === 11 && (
+                                                             <div className="bg-yellow-400/80 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold animate-pulse">
+                                                                 🏅 Perfect
+                                                             </div>
+                                                         )}
+                                                         {completedCount >= 8 && (
+                                                             <div className="bg-blue-400/80 text-blue-900 px-2 py-1 rounded-full text-xs font-bold">
+                                                                 ⭐ Great
+                                                             </div>
+                                                         )}
+                                                         {completedCount >= 5 && (
+                                                             <div className="bg-green-400/80 text-green-900 px-2 py-1 rounded-full text-xs font-bold">
+                                                                 🎯 Good
+                                                             </div>
+                                                         )}
+                                                     </div>
+                                                 </>
+                                             );
+                                         })()}
                                      </div>
                                  </div>
                              )}
@@ -1757,7 +1780,7 @@ const GestureRecognizerComponent: React.FC<GestureRecognizerComponentProps> = ({
                                 You've completed all 11 rounds! 🏆
                             </p>
                             <div className="text-2xl font-playful text-yellow-600 mt-2">
-                                Final Score: {score}/11
+                                Final Score: {gameSession ? gameSession.rounds.filter(r => r.completed).length : score}/11
                             </div>
                         </div>
                     </div>

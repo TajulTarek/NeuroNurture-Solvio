@@ -2,16 +2,19 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { childDoctorService, DoctorEnrollmentStatus, DoctorInfo } from '@/shared/services/doctor/childDoctorService';
 import { getCurrentChild } from '@/shared/utils/childUtils';
-import { Activity, Heart, Mail, MapPin, MessageCircle, Phone, Stethoscope } from 'lucide-react';
+import { Activity, FileText, Heart, Mail, MapPin, MessageCircle, Phone, Stethoscope } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import ChildReportsList from '../components/ChildReportsList';
 import ChildDoctorChatPage from './ChildDoctorChatPage';
 import ChildDoctorTaskPage from './ChildDoctorTaskPage';
 
 export default function ChildDoctorPage() {
+  const navigate = useNavigate();
   const [selectedChild, setSelectedChild] = useState<any>(null);
   const [doctorStatus, setDoctorStatus] = useState<DoctorEnrollmentStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeDoctorTab, setActiveDoctorTab] = useState<'overview' | 'tasks' | 'chat'>('overview');
+  const [activeDoctorTab, setActiveDoctorTab] = useState<'overview' | 'tasks' | 'chat' | 'reports'>('overview');
   const [doctorInfo, setDoctorInfo] = useState<DoctorInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,79 +58,98 @@ export default function ChildDoctorPage() {
     }
   };
 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30">
       {/* Professional Header */}
       <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
         
+        {/* Navigation Tabs */}
+        <div className="bg-gray-50 border-t border-gray-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav className="flex space-x-8" aria-label="Tabs">
+              <button
+                onClick={() => setActiveDoctorTab('overview')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${activeDoctorTab === 'overview'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <Heart className="w-4 h-4" />
+                  <span>Overview</span>
+                </div>
+              </button>
 
-        {/* Navigation Tabs - Only show if connected */}
-        {doctorStatus?.enrolled && (
-          <div className="bg-gray-50 border-t border-gray-200">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <nav className="flex space-x-8" aria-label="Tabs">
-                <button
-                  onClick={() => setActiveDoctorTab('overview')}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${activeDoctorTab === 'overview'
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                >
-                  <div className="flex items-center space-x-2">
-                    <Heart className="w-4 h-4" />
-                    <span>Overview</span>
-                  </div>
-                </button>
+              {doctorStatus?.enrolled && (
+                <>
+                  <button
+                    onClick={() => setActiveDoctorTab('tasks')}
+                    className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${activeDoctorTab === 'tasks'
+                        ? 'border-blue-500 text-blue-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <Activity className="w-4 h-4" />
+                      <span>Health Tasks</span>
+                    </div>
+                  </button>
 
-                <button
-                  onClick={() => setActiveDoctorTab('tasks')}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${activeDoctorTab === 'tasks'
-                      ? 'border-blue-500 text-blue-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                >
-                  <div className="flex items-center space-x-2">
-                    <Activity className="w-4 h-4" />
-                    <span>Health Tasks</span>
-                  </div>
-                </button>
+                  <button
+                    onClick={() => setActiveDoctorTab('chat')}
+                    className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${activeDoctorTab === 'chat'
+                        ? 'border-green-500 text-green-600'
+                        : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                      }`}
+                  >
+                    <div className="flex items-center space-x-2">
+                      <MessageCircle className="w-4 h-4" />
+                      <span>Chat with Doctor</span>
+                    </div>
+                  </button>
+                </>
+              )}
 
-                <button
-                  onClick={() => setActiveDoctorTab('chat')}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${activeDoctorTab === 'chat'
-                      ? 'border-green-500 text-green-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                    }`}
-                >
-                  <div className="flex items-center space-x-2">
-                    <MessageCircle className="w-4 h-4" />
-                    <span>Chat with Doctor</span>
-                  </div>
-                </button>
-              </nav>
-            </div>
+              <button
+                onClick={() => setActiveDoctorTab('reports')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200 ${activeDoctorTab === 'reports'
+                    ? 'border-purple-500 text-purple-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+              >
+                <div className="flex items-center space-x-2">
+                  <FileText className="w-4 h-4" />
+                  <span>Reports</span>
+                </div>
+              </button>
+            </nav>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Tab Content */}
-        {doctorStatus?.enrolled && activeDoctorTab === 'tasks' ? (
+        {activeDoctorTab === 'tasks' && doctorStatus?.enrolled ? (
           <ChildDoctorTaskPage
             childId={selectedChild?.id?.toString() || ''}
             childName={selectedChild?.name || ''}
           />
-        ) : doctorStatus?.enrolled && activeDoctorTab === 'chat' ? (
+        ) : activeDoctorTab === 'chat' && doctorStatus?.enrolled ? (
           <ChildDoctorChatPage
             childId={selectedChild?.id?.toString() || ''}
             childName={selectedChild?.name || ''}
             doctorId={doctorInfo?.id || 0}
-            doctorName={doctorInfo ? `${doctorInfo.firstName} ${doctorInfo.lastName}` : ''}
+            doctorName={doctorInfo ? ${doctorInfo.firstName} ${doctorInfo.lastName} : ''}
+          />
+        ) : activeDoctorTab === 'reports' ? (
+          <ChildReportsList
+            childId={selectedChild?.id || 0}
           />
         ) : (
           <div className="space-y-8">
-            {/* Welcome Section - Only show if not connected or on overview tab */}
+            {/* Welcome Section - Only show if not connected */}
             {!doctorStatus?.enrolled && (
               <div className="text-center mb-12">
                 <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -240,14 +262,17 @@ export default function ChildDoctorPage() {
 
                 <Card className="text-center p-6 hover:shadow-lg transition-shadow border-gray-200">
                   <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <MessageCircle className="w-6 h-6 text-purple-600" />
+                    <FileText className="w-6 h-6 text-purple-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Direct Communication</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">Send Reports</h3>
                   <p className="text-gray-600 text-sm mb-4">
-                    Chat directly with your healthcare provider for quick consultations.
+                    Send game performance reports to doctors for professional analysis.
                   </p>
-                  <Button variant="outline" className="w-full" disabled>
-                    Available After Connection
+                  <Button 
+                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    onClick={() => navigate('/child/send-report')}
+                  >
+                    Send Report
                   </Button>
                 </Card>
               </div>
