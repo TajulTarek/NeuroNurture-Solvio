@@ -457,52 +457,52 @@ echo "Note: Spring Boot services may take 2-5 minutes on first run to download M
 echo "Subsequent runs will be faster. Check logs in $LOGS_DIR/ for progress."
 echo ""
 run_service "config-server" "cd Backend/Services/config-server && mvn spring-boot:run"
-sleep 3
+wait_for_service "config-server" 180 5
 
 run_service "discovery" "cd Backend/Services/discovery && mvn spring-boot:run"
-sleep 3
+wait_for_service "discovery" 180 5
 
 run_service "jwt_auth" "cd Backend/Services/jwt_auth && mvn spring-boot:run"
-sleep 3
+wait_for_service "jwt_auth" 180 5
 
 run_service "admin" "cd Backend/Services/admin && mvn spring-boot:run"
-sleep 3
+wait_for_service "admin" 180 5
 
 run_service "parent" "cd Backend/Services/parent && mvn spring-boot:run"
-sleep 3
+wait_for_service "parent" 180 5
 
 run_service "school" "cd Backend/Services/school && mvn spring-boot:run"
-sleep 3
+wait_for_service "school" 180 5
 
 run_service "doctor" "cd Backend/Services/doctor && mvn spring-boot:run"
-sleep 3
+wait_for_service "doctor" 180 5
 
 run_service "Mirror_Posture_Game" "cd Backend/Services/mirror_posture_game && mvn spring-boot:run"
-sleep 3
+wait_for_service "Mirror_Posture_Game" 180 5
 
 run_service "dance_doodle" "cd Backend/Services/dance_doodle && mvn spring-boot:run"
-sleep 3
+wait_for_service "dance_doodle" 180 5
 
 run_service "gaze_game" "cd Backend/Services/gaze_game && mvn spring-boot:run"
-sleep 3
+wait_for_service "gaze_game" 180 5
 
 run_service "gesture_game" "cd Backend/Services/gesture_game && mvn spring-boot:run"
-sleep 3
+wait_for_service "gesture_game" 180 5
 
 run_service "repeat_with_me_game" "cd Backend/Services/repeat_with_me_game && mvn spring-boot:run"
-sleep 3
+wait_for_service "repeat_with_me_game" 180 5
 
 run_service "nuru_chat" "cd Backend/Services/nuru_chat && mvn spring-boot:run"
-sleep 3
+wait_for_service "nuru_chat" 180 5
 
 # Frontend Services
 echo ""
 echo "=== Starting Frontend Services ==="
 run_service "main-frontend" "cd Frontend/main-frontend && npm run dev"
-sleep 2
+wait_for_service "main-frontend" 60 3
 
 run_service "admin-website" "cd Frontend/admin-website && npm run dev"
-sleep 2
+wait_for_service "admin-website" 60 3
 
 # Python Services
 echo ""
@@ -523,10 +523,10 @@ if ensure_conda_env "$CONDA_ENV_AGENT" "$NURU_AGENT_DIR"; then
         fi
     fi
     run_service "nuru_agent" "cd $NURU_AGENT_DIR && conda run -n $CONDA_ENV_AGENT python main.py"
+    wait_for_service "nuru_agent" 60 3
 else
     echo "ERROR: Failed to setup conda environment for NuruAgent"
 fi
-sleep 2
 
 # Model Server
 MODEL_SERVER_DIR="$SCRIPT_DIR/Games/model_server"
@@ -543,10 +543,10 @@ if ensure_conda_env "$CONDA_ENV_TF_GPU" "$MODEL_SERVER_DIR"; then
         fi
     fi
     run_service "model_server" "cd $MODEL_SERVER_DIR && conda run -n $CONDA_ENV_TF_GPU python -m uvicorn app.main:app --reload"
+    wait_for_service "model_server" 60 3
 else
     echo "ERROR: Failed to setup conda environment for Model Server"
 fi
-sleep 2
 
 # ALI Model
 ALI_MODEL_DIR="$SCRIPT_DIR/ALI_Model/model"
@@ -563,22 +563,14 @@ if ensure_conda_env "$CONDA_ENV_ALI_MODEL" "$ALI_MODEL_DIR"; then
         fi
     fi
     run_service "ali_model" "cd $ALI_MODEL_DIR && conda run -n $CONDA_ENV_ALI_MODEL python main.py"
+    wait_for_service "ali_model" 60 3
 else
     echo "ERROR: Failed to setup conda environment for ALI Model"
 fi
-sleep 2
-
-echo ""
-echo "All service startup commands have been issued."
-echo "Services are starting in the background..."
-echo ""
-
-# Run health checks
-check_all_services
 
 echo ""
 echo "=========================================="
-echo "All services started!"
+echo "All services started and verified!"
 echo "=========================================="
 echo ""
 echo "Logs are available in: $LOGS_DIR"
