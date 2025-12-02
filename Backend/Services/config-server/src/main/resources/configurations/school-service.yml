@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://ep-lively-bar-a13qc84j-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+    username: neondb_owner
+    password: npg_qI5h7gaVBkKM
+    driver-class-name: org.postgresql.Driver
+
+  # datasource:
+  #   url: jdbc:postgresql://aws-1-ap-southeast-1.pooler.supabase.com:6543/postgres
+  #   username: postgres.xvnkidedwtkewyyzsbka
+  #   password: pscjscsschsc
+  #   driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  data:
+    mongodb:
+      uri: mongodb+srv://abhishekcse4:pscjscsschsc@cluster0.dqxwxgp.mongodb.net/school_tickets?retryWrites=true&w=majority&appName=Cluster0
+
+server:
+  port: 8091
+
+jwt:
+  secret: 8cf840b09b43b5fc6a7d3cfb8311200b67ff362f449e7b3cbde066e56abccd10a99981544fb73910833668fe470b22f6e7e30d2acb66d84e82bc960ac404c63d
+  expiration: 86400000
+
+sendgrid:
+  api-key: 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
+  from-email: boshonto2@gmail.com
+  from-name: NeuroNurture
+
+stripe:
+  secret-key: sk_test_51S6l8D0EZDpckBwTfPphT3upGXEsr666hiElgWrCs2DrmGc6bROI8zwnwu4yseNJu1rg4zo1qXcdzMSXTkPslXbQ00oM6TQiuO
+  publishable-key: pk_test_51S6l8D0EZDpckBwTmtFUk2EKtCa85tMHL0Uj4yBzTKclKnttvL0ILZ7NLRewbmlBCRTOBkkEy8IhLa7y4NHBRoZF00dWsOLlkx
