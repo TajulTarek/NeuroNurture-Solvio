@@ -542,7 +542,7 @@ if ensure_conda_env "$CONDA_ENV_TF_GPU" "$MODEL_SERVER_DIR"; then
             echo "  ✓ uvicorn installed"
         fi
     fi
-    run_service "model_server" "cd $MODEL_SERVER_DIR && conda run -n $CONDA_ENV_TF_GPU python -m uvicorn app.main:app --reload"
+    run_service "model_server" "cd $MODEL_SERVER_DIR && conda run -n $CONDA_ENV_TF_GPU python -m uvicorn app.main:app --host 0.0.0.0 --reload"
     wait_for_service "model_server" 60 3
 else
     echo "ERROR: Failed to setup conda environment for Model Server"
