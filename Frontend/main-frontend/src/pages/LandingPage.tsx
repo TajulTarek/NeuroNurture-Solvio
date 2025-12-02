@@ -1,345 +1,414 @@
-import LandingNavbar from '@/components/common/LandingNavbar';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import LandingNavbar from "@/components/common/LandingNavbar";
+import { Button } from "@/components/ui/button";
 import {
-    ArrowRight,
-    Award,
-    BarChart3,
-    Brain,
-    Clock,
-    GraduationCap,
-    Heart,
-    MessageSquare,
-    Shield,
-    Star,
-    Stethoscope,
-    Target,
-    TrendingUp,
-    Users,
-    Zap
-} from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+  Activity,
+  ArrowRight,
+  Brain,
+  Dna,
+  Gamepad2,
+  Globe2,
+  Microscope,
+  Network,
+  Stethoscope,
+  Users,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
-  const [isVisible, setIsVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Strict Color Palette
+  const THEME = {
+    cyan: "#3fa8d2", // Neural/Tech
+    brown: "#483a35", // Earth/Grounding
+    brownLight: "#6d5a52", // Softer Text
+    white: "#ffffff",
+    glass: "rgba(255, 255, 255, 0.7)",
+  };
 
   useEffect(() => {
-    setIsVisible(true);
+    setMounted(true);
   }, []);
 
   const handleRoleSelection = (role: string) => {
     navigate(`/auth/${role}/login`);
   };
 
-  const roleCards = [
-    {
-      id: 'parent',
-      title: 'Parent',
-      description: 'Track your child\'s development journey and support their growth through engaging games',
-      icon: Users,
-      color: 'from-blue-500 to-blue-700',
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
-      features: [
-        'Detect child\'s autism through gameplay',
-        'Growth of cognitive skills',
-        'Track child\'s growth',
-        'Get AI insights',
-        'Connect with schools and doctors',
-        'Dedicated AI Agent for getting insights for all child',
-        'Advance comparison between child'
-      ],
-      image: '/images/parent-illustration.svg'
-    },
-    {
-      id: 'school',
-      title: 'School',
-      description: 'Manage student development, organize competitions, and track educational progress',
-      icon: GraduationCap,
-      color: 'from-green-500 to-green-700',
-      bgColor: 'bg-green-50',
-      borderColor: 'border-green-200',
-      features: [
-        'Track child\'s progress',
-        'Arrange competition',
-        'Assign task and track',
-        'Compare among children',
-        'Dedicated AI Agent for getting insights of enrolled child'
-      ],
-      image: '/images/school-illustration.svg'
-    },
-    {
-      id: 'doctor',
-      title: 'Doctor',
-      description: 'Monitor patient development, assign therapeutic tasks, and maintain detailed records',
-      icon: Stethoscope,
-      color: 'from-purple-500 to-purple-700',
-      bgColor: 'bg-purple-50',
-      borderColor: 'border-purple-200',
-      features: [
-        'Track patient\'s progress',
-        'Assign task and track',
-        'Chat with patient',
-        'Dedicated AI Agent for getting insights of patient'
-      ],
-      image: '/images/doctor-illustration.svg'
-    }
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      {/* Navbar */}
+    <div className="min-h-screen bg-white selection:bg-[#3fa8d2] selection:text-white font-sans overflow-x-hidden">
       <LandingNavbar />
-      
-      {/* Header */}
-      <header className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="text-center">
-            <div className={`transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-              <div className="flex justify-center mb-8">
-                <div className="relative">
-                  <Brain className="w-20 h-20 text-blue-600 animate-pulse" />
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full animate-bounce"></div>
-                </div>
+
+      {/* --- HERO SECTION: The Neural Interface --- */}
+      <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 z-0">
+          {/* Subtle Grid Pattern representing neural mesh */}
+          <svg
+            className="absolute w-full h-full opacity-[0.03]"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <pattern
+                id="neural-grid"
+                width="40"
+                height="40"
+                patternUnits="userSpaceOnUse"
+              >
+                <path
+                  d="M0 40L40 0H20L0 20M40 40V20L20 40"
+                  stroke="#483a35"
+                  strokeWidth="1"
+                  fill="none"
+                />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#neural-grid)" />
+          </svg>
+
+          {/* Ambient Glows */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#3fa8d2] rounded-full blur-[120px] opacity-10 animate-pulse" />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#483a35] rounded-full blur-[100px] opacity-5" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Typography & CTA */}
+            <div
+              className={`transition-all duration-1000 ${
+                mounted
+                  ? "opacity-100 translate-x-0"
+                  : "opacity-0 -translate-x-10"
+              }`}
+            >
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-[#3fa8d2]/30 bg-[#3fa8d2]/5 text-[#483a35] text-xs font-bold tracking-widest uppercase mb-6">
+                <span className="w-2 h-2 rounded-full bg-[#3fa8d2] animate-pulse" />
+                AI-Powered Autism Detection
               </div>
-              <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
-                NeuroNurture
+
+              <h1
+                className="text-5xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6"
+                style={{ color: THEME.brown }}
+              >
+                Autism Detection <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3fa8d2] to-[#2c7a99]">
+                  Through Growth.
+                </span>
               </h1>
-              <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">
-                Empowering child development through innovative technology and collaborative care
+
+              <p
+                className="text-lg lg:text-xl mb-8 max-w-lg leading-relaxed"
+                style={{ color: THEME.brownLight }}
+              >
+                NeuroNurture combines cutting-edge AI technology with engaging
+                gameplay to create a holistic approach to autism detection and
+                child development.
               </p>
-              <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
-                <div className="flex items-center gap-2">
-                  <Target className="w-4 h-4 text-green-500" />
-                  <span>Evidence-Based</span>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button
+                  onClick={() =>
+                    document
+                      .getElementById("portals")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                  className="h-14 px-8 rounded-full text-white font-semibold shadow-lg shadow-[#3fa8d2]/20 hover:shadow-[#3fa8d2]/40 transition-all text-lg"
+                  style={{ backgroundColor: THEME.cyan }}
+                >
+                  Get Started
+                </Button>
+                <Button
+                  onClick={() =>
+                    document
+                      .getElementById("features")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                  variant="outline"
+                  className="h-14 px-8 rounded-full border-2 font-semibold hover:bg-[#483a35]/5 transition-all text-lg bg-transparent"
+                  style={{ borderColor: THEME.brown, color: THEME.brown }}
+                >
+                  Learn More
+                </Button>
+              </div>
+            </div>
+
+            {/* Right: Abstract Medical Visualization */}
+            <div
+              className={`relative hidden lg:block transition-all duration-1000 delay-300 ${
+                mounted
+                  ? "opacity-100 translate-y-0"
+                  : "opacity-0 translate-y-10"
+              }`}
+            >
+              <div className="relative w-full aspect-square max-w-md mx-auto">
+                {/* Central Brain Node */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-64 h-64 bg-gradient-to-tr from-[#3fa8d2]/10 to-white backdrop-blur-md border border-[#3fa8d2]/20 rounded-full flex items-center justify-center shadow-2xl z-20">
+                    <Brain
+                      className="w-32 h-32 text-[#3fa8d2]"
+                      strokeWidth={1}
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-blue-500" />
-                  <span>Progress Tracking</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Heart className="w-4 h-4 text-red-500" />
-                  <span>Child-Centered</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-yellow-500" />
-                  <span>Professional Grade</span>
-                </div>
+
+                {/* Orbiting Satellites */}
+                {[
+                  {
+                    icon: Stethoscope,
+                    label: "Clinical",
+                    delay: "0s",
+                    pos: "top-0 right-10",
+                  },
+                  {
+                    icon: Users,
+                    label: "Family",
+                    delay: "2s",
+                    pos: "bottom-10 right-0",
+                  },
+                  {
+                    icon: Network,
+                    label: "School",
+                    delay: "4s",
+                    pos: "bottom-20 left-10",
+                  },
+                ].map((item, i) => (
+                  <div
+                    key={i}
+                    className={`absolute ${item.pos} animate-bounce`}
+                    style={{
+                      animationDuration: "6s",
+                      animationDelay: item.delay,
+                    }}
+                  >
+                    <div className="bg-white p-4 rounded-2xl shadow-xl border border-[#483a35]/10 flex flex-col items-center gap-2 w-28">
+                      <item.icon className="w-6 h-6 text-[#483a35]" />
+                      <span className="text-xs font-bold text-[#483a35]">
+                        {item.label}
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
-      </header>
+      </section>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Choose Your Role
-          </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Select your role to access the appropriate dashboard and features tailored to your needs
-          </p>
-        </div>
-
-        {/* Role Selection Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-          {roleCards.map((role, index) => (
-            <Card 
-              key={role.id}
-              className={`${role.bgColor} ${role.borderColor} border-2 hover:shadow-2xl transition-all duration-500 cursor-pointer group hover:scale-105 h-full flex flex-col ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
-              style={{ transitionDelay: `${index * 100}ms` }}
-              onClick={() => handleRoleSelection(role.id)}
+      {/* --- PORTALS SECTION: Clean Clinical Entry Points --- */}
+      <section id="portals" className="py-24 bg-[#f8fcfd] relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <h2
+              className="text-3xl font-bold mb-4"
+              style={{ color: THEME.brown }}
             >
-              <CardContent className="p-8 flex flex-col h-full">
-                {/* Header Section */}
-                <div className="text-center mb-6">
-                  <div className="relative mb-6">
-                    <div className={`w-20 h-20 mx-auto rounded-full bg-gradient-to-r ${role.color} flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>
-                      <role.icon className="w-10 h-10 text-white" />
-                    </div>
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-white rounded-full shadow-md flex items-center justify-center">
-                      <ArrowRight className="w-3 h-3 text-gray-600 group-hover:text-blue-600 transition-colors" />
-                    </div>
+              Select Access Portal
+            </h2>
+            <div className="w-24 h-1 bg-[#3fa8d2] mx-auto rounded-full" />
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                id: "parent",
+                label: "Family Guardian",
+                icon: Users,
+                desc: "Autism detection, AI insights, dedicated AI agent, and growth through interactive gameplay.",
+              },
+              {
+                id: "school",
+                label: "Educational Institute",
+                icon: Globe2,
+                desc: "Competition management, progress tracking, child comparison, task assignment, and dedicated AI agent.",
+              },
+              {
+                id: "doctor",
+                label: "Clinical Specialist",
+                icon: Activity,
+                desc: "Patient progress tracking, dedicated chat system, task management, and dedicated AI agent.",
+              },
+            ].map((role) => (
+              <div
+                key={role.id}
+                onClick={() => handleRoleSelection(role.id)}
+                className="group relative bg-white rounded-t-lg rounded-b-xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-500 border border-gray-100"
+              >
+                {/* Top colored line */}
+                <div className="h-1.5 w-full bg-[#3fa8d2] origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+
+                <div className="p-8">
+                  <div className="w-14 h-14 rounded-2xl bg-[#3fa8d2]/10 flex items-center justify-center mb-6 group-hover:bg-[#3fa8d2] transition-colors duration-300">
+                    <role.icon className="w-7 h-7 text-[#3fa8d2] group-hover:text-white transition-colors" />
                   </div>
-                  
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                    {role.title}
+
+                  <h3
+                    className="text-xl font-bold mb-3 flex items-center justify-between"
+                    style={{ color: THEME.brown }}
+                  >
+                    {role.label}
+                    <ArrowRight className="w-5 h-5 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 text-[#3fa8d2]" />
                   </h3>
-                  
-                  <p className="text-gray-600 leading-relaxed">
-                    {role.description}
+
+                  <p
+                    className="text-sm leading-relaxed"
+                    style={{ color: THEME.brownLight }}
+                  >
+                    {role.desc}
                   </p>
                 </div>
-                
-                {/* Features Section - Left Aligned */}
-                <div className="flex-1 mb-6">
-                  <div className="space-y-2 text-left">
-                    {role.features.map((feature, featureIndex) => (
-                      <div 
-                        key={featureIndex}
-                        className="text-sm text-gray-500 flex items-start gap-2"
-                      >
-                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></div>
-                        <span className="text-sm">{feature}</span>
-                      </div>
-                    ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* --- SCIENCE & FEATURES: The "Why" --- */}
+      <section id="features" className="py-24 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-16">
+              <h2
+                className="text-4xl font-bold mb-6"
+                style={{ color: THEME.brown }}
+              >
+                AI-Powered Platform <br />
+                <span style={{ color: THEME.cyan }}>for Autism Detection</span>
+              </h2>
+              <p className="text-lg leading-relaxed text-gray-600 max-w-2xl mx-auto">
+                A comprehensive microservices-based platform designed to detect
+                autism in children and provide personalized growth tracking
+                through AI-powered insights, gameplay, and professional
+                supervision.
+              </p>
+            </div>
+
+            <div className="space-y-6">
+              {[
+                {
+                  title: "Advanced AI Algorithms",
+                  desc: "Advanced AI algorithms to detect early signs of autism in children.",
+                  icon: Dna,
+                },
+                {
+                  title: "Interactive Games",
+                  desc: "Engaging games designed to promote development while having fun.",
+                  icon: Gamepad2,
+                },
+                {
+                  title: "Nuru AI Agent",
+                  desc: "Personalized AI assistant for tracking and supporting growth journey.",
+                  icon: Microscope,
+                },
+              ].map((item, i) => (
+                <div key={i} className="flex gap-4">
+                  <div className="flex-shrink-0 mt-1">
+                    <div className="w-10 h-10 rounded-full border border-[#3fa8d2]/30 flex items-center justify-center">
+                      <item.icon className="w-5 h-5 text-[#3fa8d2]" />
+                    </div>
+                  </div>
+                  <div>
+                    <h4
+                      className="text-lg font-bold mb-1"
+                      style={{ color: THEME.brown }}
+                    >
+                      {item.title}
+                    </h4>
+                    <p className="text-sm text-gray-500">{item.desc}</p>
                   </div>
                 </div>
-                
-                {/* Button Section - Always at bottom */}
-                <div className="mt-auto">
-                  <Button 
-                    className={`w-full bg-gradient-to-r ${role.color} hover:shadow-lg transition-all duration-300 group-hover:scale-105`}
-                    size="lg"
-                  >
-                    Continue as {role.title}
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Features Section */}
-        <div className="bg-white rounded-3xl shadow-2xl p-12 mb-16">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Why Choose NeuroNurture?
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              A comprehensive platform designed to support every aspect of child development
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-blue-500 to-blue-700 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Brain className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">AI-Powered Insights</h3>
-              <p className="text-gray-600">Advanced analytics and machine learning to provide meaningful insights into child development patterns.</p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-green-500 to-green-700 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Users className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Collaborative Care</h3>
-              <p className="text-gray-600">Seamless communication between parents, educators, and healthcare professionals for holistic support.</p>
-            </div>
-            
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-purple-500 to-purple-700 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Target className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Evidence-Based</h3>
-              <p className="text-gray-600">Built on scientific research and validated methodologies for reliable developmental assessment.</p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Secure & Private</h3>
-              <p className="text-gray-600">Enterprise-grade security with end-to-end encryption to protect sensitive child development data.</p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Clock className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Real-Time Monitoring</h3>
-              <p className="text-gray-600">Track progress and development milestones in real-time with instant updates.</p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <BarChart3 className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Comprehensive Analytics</h3>
-              <p className="text-gray-600">Detailed reports and visualizations to track progress, identify patterns, and measure improvement.</p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <MessageSquare className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Integrated Communication</h3>
-              <p className="text-gray-600">Built-in messaging for doctors and parents.</p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Zap className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Fast & Responsive</h3>
-              <p className="text-gray-600">Lightning-fast performance with optimized gameplay .</p>
-            </div>
-
-            <div className="text-center group">
-              <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Award className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Proven Results</h3>
-              <p className="text-gray-600">Trusted by autism schools with measurable improvements in child development.</p>
+              ))}
             </div>
           </div>
         </div>
+      </section>
 
-        {/* CTA Section */}
-        <div className="text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl p-12 text-white">
-          <h2 className="text-4xl font-bold mb-4">
-            Ready to Get Started?
-          </h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join thousands of professionals and families already using NeuroNurture
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              variant="secondary"
-              className="bg-white text-blue-600 hover:bg-gray-100"
-              onClick={() => handleRoleSelection('parent')}
-            >
-              Start as Parent
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-green-600 bg-transparent"
-              onClick={() => handleRoleSelection('school')}
-            >
-              Join as School
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-purple-600 bg-transparent"
-              onClick={() => handleRoleSelection('doctor')}
-            >
-              Join as Doctor
-            </Button>
-          </div>
-        </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      {/* --- FOOTER: Professional & Minimal --- */}
+      <footer className="bg-[#483a35] text-white pt-16 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-4">
-              <Brain className="w-8 h-8 text-blue-400" />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div className="col-span-1 md:col-span-1">
+              <div className="flex items-center gap-2 mb-6">
+                <Brain className="w-8 h-8 text-[#3fa8d2]" />
+                <span className="text-xl font-bold tracking-tight">
+                  NeuroNurture
+                </span>
+              </div>
+              <p className="text-white/60 text-sm leading-relaxed">
+                An AI-Powered Autism Detection and Growth Platform for Children.
+                Empowering children with autism through technology and care.
+              </p>
             </div>
-            <p className="text-gray-400">
-              © 2025 NeuroNurture. Empowering child development through technology.
-            </p>
+
+            <div>
+              <h4 className="font-bold mb-4 text-[#3fa8d2]">Platform</h4>
+              <ul className="space-y-2 text-sm text-white/60">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Autism Detection
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Growth Through Gameplay
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    AI Insights
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-bold mb-4 text-[#3fa8d2]">Research</h4>
+              <ul className="space-y-2 text-sm text-white/60">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Methodology
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Publications
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Case Studies
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-bold mb-4 text-[#3fa8d2]">Legal</h4>
+              <ul className="space-y-2 text-sm text-white/60">
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    Terms of Service
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-white transition-colors">
+                    HIPAA Compliance
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/40">
+            <p>© 2025 NeuroNurture. All rights reserved.</p>
+            <div className="flex gap-4">
+              <span>Sylhet, Bangladesh</span>
+            </div>
           </div>
         </div>
       </footer>
