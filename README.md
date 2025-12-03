@@ -10,6 +10,8 @@ NeuroNurture combines cutting-edge AI technology with engaging gameplay to creat
 
 ![Microservices Architecture](ref/microservice.png)
 
+![Home Page](ref/home.png)
+
 ## Key Features
 
 ### Parent Features
