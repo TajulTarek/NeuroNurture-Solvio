@@ -1,3 +1,6 @@
+
+![Home Page](ref/home.png)
+
 # NeuroNurture
 
 **An AI-Powered Autism Detection and Growth Platform for Children**
@@ -9,8 +12,6 @@ NeuroNurture is a comprehensive microservices-based platform designed to detect 
 NeuroNurture combines cutting-edge AI technology with engaging gameplay to create a holistic approach to autism detection and child development. The platform serves three main user types: parents, schools, and doctors, each with specialized features and capabilities.
 
 ![Microservices Architecture](ref/microservice.png)
-
-![Home Page](ref/home.png)
 
 ## Key Features
 
@@ -226,3 +227,4 @@ NeuroNurture/
 
 
 **NeuroNurture** - Empowering children with autism through technology and care.
+
