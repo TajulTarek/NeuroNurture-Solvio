@@ -22,7 +22,7 @@ export interface ChildTaskResponse {
   overdueTasks: number;
 }
 
-const API_BASE_URL = "http://188.166.197.135:8091/api/school";
+const API_BASE_URL = "https://neronurture.app:18091/api/school";
 
 export const childTaskService = {
   // Fetch all tasks assigned to a specific child

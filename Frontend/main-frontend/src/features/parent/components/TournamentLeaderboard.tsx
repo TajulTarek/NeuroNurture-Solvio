@@ -37,11 +37,13 @@ interface LeaderboardEntry {
 }
 
 const GAME_SERVICE_URLS = {
-  "Dance Doodle": "http://188.166.197.135:8087/api/dance-doodle",
-  "Gaze Game": "http://188.166.197.135:8086/api/gaze-game",
-  "Gesture Game": "http://188.166.197.135:8084/api/gesture-game",
-  "Mirror Posture Game": "http://188.166.197.135:8083/api/mirror-posture-game",
-  "Repeat With Me Game": "http://188.166.197.135:8089/api/repeat-with-me-game",
+  "Dance Doodle": "https://neronurture.app:18087/api/dance-doodle",
+  "Gaze Game": "https://neronurture.app:18086/api/gaze-game",
+  "Gesture Game": "https://neronurture.app:18084/api/gesture-game",
+  "Mirror Posture Game":
+    "https://neronurture.app:18083/api/mirror-posture-game",
+  "Repeat With Me Game":
+    "https://neronurture.app:18089/api/repeat-with-me-game",
 };
 
 const GAME_ICONS = {
@@ -244,7 +246,7 @@ const TournamentLeaderboard: React.FC<TournamentLeaderboardProps> = ({
       const promises = childIds.map(async (childId) => {
         try {
           const response = await fetch(
-            `http://188.166.197.135:8082/api/parents/children/${childId}/details`
+            `https://neronurture.app:18082/api/parents/children/${childId}/details`
           );
           if (response.ok) {
             const childData = await response.json();

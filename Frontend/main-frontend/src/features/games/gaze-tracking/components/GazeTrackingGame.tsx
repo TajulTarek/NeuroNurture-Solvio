@@ -367,7 +367,7 @@ const GazeTrackingGame: React.FC = () => {
     try {
       console.log("Sending camera start request...");
       const cameraResponse = await fetch(
-        "http://188.166.197.135:8000/start-camera",
+        "https://neronurture.app:18000/start-camera",
         {
           method: "POST",
         }
@@ -394,7 +394,7 @@ const GazeTrackingGame: React.FC = () => {
     // Check camera status
     try {
       const statusResponse = await fetch(
-        "http://188.166.197.135:8000/camera-status"
+        "https://neronurture.app:18000/camera-status"
       );
       const statusData = await statusResponse.json();
       console.log("Camera status check:", statusData);
@@ -409,7 +409,7 @@ const GazeTrackingGame: React.FC = () => {
     intervalRef.current = setInterval(async () => {
       try {
         const response = await fetch(
-          "http://188.166.197.135:8000/current-gaze"
+          "https://neronurture.app:18000/current-gaze"
         );
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -508,7 +508,7 @@ const GazeTrackingGame: React.FC = () => {
     // Stop the camera
     try {
       const cameraResponse = await fetch(
-        "http://188.166.197.135:8000/stop-camera",
+        "https://neronurture.app:18000/stop-camera",
         {
           method: "POST",
         }
@@ -1218,7 +1218,7 @@ const GazeTrackingGame: React.FC = () => {
         intervalRef.current = setInterval(async () => {
           try {
             const response = await fetch(
-              "http://188.166.197.135:8000/current-gaze"
+              "https://neronurture.app:18000/current-gaze"
             );
             if (!response.ok) {
               throw new Error(
@@ -1304,7 +1304,7 @@ const GazeTrackingGame: React.FC = () => {
 
       // Stop camera when component unmounts
       if (isTracking) {
-        fetch("http://188.166.197.135:8000/stop-camera", {
+        fetch("https://neronurture.app:18000/stop-camera", {
           method: "POST",
         }).catch((error) =>
           console.error("Failed to stop camera on unmount:", error)

@@ -102,7 +102,7 @@ const GestureRecognizerComponent: React.FC<GestureRecognizerComponentProps> = ({
   const videoWidth = "640px";
 
   // API endpoint for gesture detection
-  const API_ENDPOINT = "http://188.166.197.135:8000/predictGesture";
+  const API_ENDPOINT = "https://neronurture.app:18000/predictGesture";
 
   // Create session ID
   const createSessionId = useCallback(() => {
@@ -128,7 +128,7 @@ const GestureRecognizerComponent: React.FC<GestureRecognizerComponentProps> = ({
           if (childId) {
             try {
               const response = await fetch(
-                `http://188.166.197.135:8082/api/parents/children/${childId}/details`
+                `https://neronurture.app:18082/api/parents/children/${childId}/details`
               );
               if (response.ok) {
                 childData = await response.json();
@@ -270,7 +270,7 @@ const GestureRecognizerComponent: React.FC<GestureRecognizerComponentProps> = ({
         console.log("Saving game data to backend:", requestData);
 
         const response = await fetch(
-          "http://188.166.197.135:8084/api/gesture-game/save",
+          "https://neronurture.app:18084/api/gesture-game/save",
           {
             method: "POST",
             headers: {

@@ -24,7 +24,7 @@ export const SignUpForm = ({
   const handleGoogleSignUp = async () => {
     setIsLoading(true);
     window.location.href =
-      "http://188.166.197.135:8080/oauth2/authorization/google";
+      "https://neronurture.app:18080/oauth2/authorization/google";
   };
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
@@ -59,7 +59,7 @@ export const SignUpForm = ({
 
     setIsLoading(true);
     try {
-      const res = await fetch("http://188.166.197.135:8080/auth/register", {
+      const res = await fetch("https://neronurture.app:18080/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

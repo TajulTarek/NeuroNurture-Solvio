@@ -9,7 +9,7 @@ import { clearCurrentChild } from "./childUtils";
 export const performLogout = async (): Promise<void> => {
   try {
     // Call backend logout endpoint
-    await fetch("http://188.166.197.135:8080/auth/logout", {
+    await fetch("https://neronurture.app:18080/auth/logout", {
       method: "POST",
       credentials: "include",
     });

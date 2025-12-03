@@ -59,7 +59,7 @@ const ParentRegister: React.FC = () => {
 
     try {
       const res = await fetch(
-        "http://188.166.197.135:8080/auth/register/parent",
+        "https://neronurture.app:18080/auth/register/parent",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

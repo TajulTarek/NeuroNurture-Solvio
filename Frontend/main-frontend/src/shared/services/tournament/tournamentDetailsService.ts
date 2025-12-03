@@ -62,7 +62,7 @@ export interface TournamentStatistics {
 }
 
 class TournamentDetailsService {
-  private baseUrl = "http://188.166.197.135:8091/api/school/tournaments";
+  private baseUrl = "https://neronurture.app:18091/api/school/tournaments";
 
   /**
    * Get tournament details with leaderboard and statistics

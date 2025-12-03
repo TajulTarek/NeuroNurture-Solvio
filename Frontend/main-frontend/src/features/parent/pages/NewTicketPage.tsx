@@ -39,7 +39,7 @@ const NewTicketPage = () => {
     const fetchParentId = async () => {
       try {
         const emailResponse = await fetch(
-          "http://188.166.197.135:8080/auth/me",
+          "https://neronurture.app:18080/auth/me",
           {
             credentials: "include",
           }
@@ -47,7 +47,7 @@ const NewTicketPage = () => {
         const email = await emailResponse.text();
 
         const parentResponse = await fetch(
-          `http://188.166.197.135:8082/api/parents/by-email/${email}`,
+          `https://neronurture.app:18082/api/parents/by-email/${email}`,
           {
             credentials: "include",
           }

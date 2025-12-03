@@ -21,7 +21,7 @@ import com.example.doctor.service.SubscriptionService;
 
 @RestController
 @RequestMapping("/api/doctor/subscription")
-@CrossOrigin(originPatterns = {"http://localhost:3000", "http://188.166.197.135", "http://localhost:3001"}, allowCredentials = "true")
+@CrossOrigin(originPatterns = {"http://localhost:3000", "https://neronurture.app", "http://localhost:3001"}, allowCredentials = "true")
 public class SubscriptionController {
 
     @Autowired

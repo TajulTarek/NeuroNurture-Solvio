@@ -28,7 +28,7 @@ const DanceDoodleGamePage = () => {
     }
 
     // Otherwise check for parent authentication
-    fetch("http://188.166.197.135:8080/auth/session", {
+    fetch("https://neronurture.app:18080/auth/session", {
       credentials: "include",
     })
       .then((res) => res.json())

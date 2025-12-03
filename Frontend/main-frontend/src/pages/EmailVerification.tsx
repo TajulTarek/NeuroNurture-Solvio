@@ -20,7 +20,7 @@ const EmailVerification: React.FC = () => {
     }
 
     // Call the verification endpoint
-    fetch(`http://188.166.197.135:8080/auth/verify-email?token=${token}`, {
+    fetch(`https://neronurture.app:18080/auth/verify-email?token=${token}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

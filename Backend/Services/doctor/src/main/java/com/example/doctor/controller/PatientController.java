@@ -17,7 +17,7 @@ import com.example.doctor.dto.PatientDetailsDto;
 
 @RestController
 @RequestMapping("/api/doctor/patients")
-@CrossOrigin(originPatterns = {"http://localhost:3000", "http://188.166.197.135", "http://localhost:3001", "http://localhost:5173"}, allowCredentials = "true")
+@CrossOrigin(originPatterns = {"http://localhost:3000", "https://neronurture.app", "http://localhost:3001", "http://localhost:5173"}, allowCredentials = "true")
 public class PatientController {
     
     private static final Logger logger = LoggerFactory.getLogger(PatientController.class);

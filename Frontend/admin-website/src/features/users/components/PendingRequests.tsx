@@ -97,7 +97,7 @@ export default function PendingRequests() {
   const fetchPendingSchools = async () => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8090/api/admin/schools/pending/${adminId}`
+        `https://neronurture.app:18090/api/admin/schools/pending/${adminId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -113,7 +113,7 @@ export default function PendingRequests() {
   const fetchPendingDoctors = async () => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8090/api/admin/doctors/pending/${adminId}`
+        `https://neronurture.app:18090/api/admin/doctors/pending/${adminId}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -140,7 +140,7 @@ export default function PendingRequests() {
     try {
       setProcessing((prev) => new Set(prev).add(`school-${schoolId}`));
       const response = await fetch(
-        `http://188.166.197.135:8090/api/admin/schools/${schoolId}/approve`,
+        `https://neronurture.app:18090/api/admin/schools/${schoolId}/approve`,
         {
           method: "PUT",
           headers: {
@@ -170,7 +170,7 @@ export default function PendingRequests() {
     try {
       setProcessing((prev) => new Set(prev).add(`school-${schoolId}`));
       const response = await fetch(
-        `http://188.166.197.135:8090/api/admin/schools/${schoolId}/reject`,
+        `https://neronurture.app:18090/api/admin/schools/${schoolId}/reject`,
         {
           method: "PUT",
           headers: {
@@ -200,7 +200,7 @@ export default function PendingRequests() {
     try {
       setProcessing((prev) => new Set(prev).add(`doctor-${doctorId}`));
       const response = await fetch(
-        `http://188.166.197.135:8090/api/admin/doctors/${doctorId}/approve`,
+        `https://neronurture.app:18090/api/admin/doctors/${doctorId}/approve`,
         {
           method: "PUT",
           headers: {
@@ -230,7 +230,7 @@ export default function PendingRequests() {
     try {
       setProcessing((prev) => new Set(prev).add(`doctor-${doctorId}`));
       const response = await fetch(
-        `http://188.166.197.135:8090/api/admin/doctors/${doctorId}/reject`,
+        `https://neronurture.app:18090/api/admin/doctors/${doctorId}/reject`,
         {
           method: "PUT",
           headers: {

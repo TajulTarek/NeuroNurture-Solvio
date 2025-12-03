@@ -174,7 +174,7 @@ const DanceDoodleGame: React.FC<DanceDoodleGameProps> = ({
           if (childId) {
             try {
               const response = await fetch(
-                `http://188.166.197.135:8082/api/parents/children/${childId}/details`
+                `https://neronurture.app:18082/api/parents/children/${childId}/details`
               );
               if (response.ok) {
                 childData = await response.json();
@@ -276,7 +276,7 @@ const DanceDoodleGame: React.FC<DanceDoodleGameProps> = ({
         console.log("Saving game data to backend:", requestData);
 
         const response = await fetch(
-          "http://188.166.197.135:8087/api/dance-doodle/save",
+          "https://neronurture.app:18087/api/dance-doodle/save",
           {
             method: "POST",
             headers: {
@@ -378,7 +378,7 @@ const DanceDoodleGame: React.FC<DanceDoodleGameProps> = ({
         if (childId) {
           try {
             const response = await fetch(
-              `http://188.166.197.135:8082/api/parents/children/${childId}/details`
+              `https://neronurture.app:18082/api/parents/children/${childId}/details`
             );
             if (response.ok) {
               childData = await response.json();

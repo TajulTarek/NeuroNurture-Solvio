@@ -25,7 +25,7 @@ public class EmailService {
                 message.setText(
                     "Hello " + username + ",\n\n" +
                     "Thank you for registering with NeuroNurture! Please verify your email address by clicking the link below:\n\n" +
-                    "http://188.166.197.135/verify-email?token=" + verificationToken + "\n\n" +
+                    "https://neronurture.app/verify-email?token=" + verificationToken + "\n\n" +
                     "This link will expire in 24 hours.\n\n" +
                     "If you didn't create an account, please ignore this email.\n\n" +
                     "Best regards,\n" +
@@ -37,7 +37,7 @@ public class EmailService {
             } else {
                 // Fallback: log the verification token for development
                 logger.warn("Email service not configured. Verification token for {}: {}", to, verificationToken);
-                logger.info("For development, use this verification link: http://188.166.197.135/verify-email?token={}", verificationToken);
+                logger.info("For development, use this verification link: https://neronurture.app/verify-email?token={}", verificationToken);
             }
         } catch (Exception e) {
             logger.error("Failed to send verification email to: {}", to, e);
@@ -56,7 +56,7 @@ public class EmailService {
                 message.setText(
                     "Hello " + username + ",\n\n" +
                     "You requested to reset your password. Please click the link below to reset it:\n\n" +
-                    "http://188.166.197.135/reset-password?token=" + resetToken + "\n\n" +
+                    "https://neronurture.app/reset-password?token=" + resetToken + "\n\n" +
                     "This link will expire in 1 hour.\n\n" +
                     "If you didn't request a password reset, please ignore this email.\n\n" +
                     "Best regards,\n" +

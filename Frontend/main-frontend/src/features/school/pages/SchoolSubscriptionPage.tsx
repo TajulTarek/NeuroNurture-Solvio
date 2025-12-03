@@ -45,7 +45,7 @@ const SchoolSubscriptionPage: React.FC = () => {
   const fetchSubscriptionInfo = async () => {
     try {
       const response = await makeAuthenticatedSchoolRequest(
-        "http://188.166.197.135:8091/api/school/subscription/current"
+        "https://neronurture.app:18091/api/school/subscription/current"
       );
       if (response.ok) {
         const subscriptionData = await response.json();

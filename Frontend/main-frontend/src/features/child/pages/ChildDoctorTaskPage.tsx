@@ -62,7 +62,7 @@ export default function ChildDoctorTaskPage({
       console.log("Fetching doctor tasks for child ID:", childId);
 
       const response = await fetch(
-        `http://188.166.197.135:8093/api/doctor/tasks/child/${childId}`,
+        `https://neronurture.app:18093/api/doctor/tasks/child/${childId}`,
         {
           method: "GET",
           headers: {
@@ -110,7 +110,7 @@ export default function ChildDoctorTaskPage({
       console.log("Marking task as completed:", taskId);
 
       const response = await fetch(
-        `http://188.166.197.135:8093/api/doctor/tasks/${taskId}/status`,
+        `https://neronurture.app:18093/api/doctor/tasks/${taskId}/status`,
         {
           method: "PUT",
           headers: {

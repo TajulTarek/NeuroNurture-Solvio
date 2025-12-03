@@ -129,19 +129,19 @@ export default function DanceDoodleGameInsights() {
       const [statsRes, analysisRes, trendsRes, summaryRes, historyRes] =
         await Promise.all([
           fetch(
-            `http://188.166.197.135:8087/api/dance-doodle/child/${childId}/statistics`
+            `https://neronurture.app:18087/api/dance-doodle/child/${childId}/statistics`
           ),
           fetch(
-            `http://188.166.197.135:8087/api/dance-doodle/child/${childId}/pose-analysis`
+            `https://neronurture.app:18087/api/dance-doodle/child/${childId}/pose-analysis`
           ),
           fetch(
-            `http://188.166.197.135:8087/api/dance-doodle/child/${childId}/improvement-trends`
+            `https://neronurture.app:18087/api/dance-doodle/child/${childId}/improvement-trends`
           ),
           fetch(
-            `http://188.166.197.135:8087/api/dance-doodle/child/${childId}/performance-summary`
+            `https://neronurture.app:18087/api/dance-doodle/child/${childId}/performance-summary`
           ),
           fetch(
-            `http://188.166.197.135:8087/api/dance-doodle/child/${childId}/history?page=0&size=10`
+            `https://neronurture.app:18087/api/dance-doodle/child/${childId}/history?page=0&size=10`
           ),
         ]);
 
@@ -278,7 +278,7 @@ export default function DanceDoodleGameInsights() {
   const loadGameHistory = async (page: number) => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8087/api/dance-doodle/child/${selectedChild.id}/history?page=${page}&size=10`
+        `https://neronurture.app:18087/api/dance-doodle/child/${selectedChild.id}/history?page=${page}&size=10`
       );
       if (response.ok) {
         const data = await response.json();

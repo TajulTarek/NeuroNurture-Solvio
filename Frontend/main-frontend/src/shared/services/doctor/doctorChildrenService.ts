@@ -24,7 +24,7 @@ export interface DoctorChild {
 }
 
 class DoctorChildrenService {
-  private baseUrl = "http://188.166.197.135:8082/api/parents"; // Parent service URL
+  private baseUrl = "https://neronurture.app:18082/api/parents"; // Parent service URL
 
   // Get all children assigned to a specific doctor
   async getChildrenByDoctor(doctorId: number): Promise<DoctorChild[]> {

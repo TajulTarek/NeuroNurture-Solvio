@@ -11,7 +11,7 @@ export interface DashboardStats {
   totalSessions: number;
 }
 
-const API_BASE_URL = "http://188.166.197.135:8093"; // Doctor service URL (direct)
+const API_BASE_URL = "https://neronurture.app:18093"; // Doctor service URL (direct)
 
 export class DoctorDashboardService {
   private static getAuthHeaders(): HeadersInit {

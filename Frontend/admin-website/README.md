@@ -75,7 +75,7 @@ npm install
 npm run dev
 ```
 
-The admin website will be available at `http://188.166.197.135:3001`
+The admin website will be available at `https://neronurture.app:3001`
 
 ### Build for Production
 
@@ -91,7 +91,7 @@ Admin users must be created manually through the JWT service API. See `ADMIN_AUT
 
 ### Prerequisites
 
-- JWT authentication service running on `http://188.166.197.135:8080`
+- JWT authentication service running on `https://neronurture.app:18080`
 - Admin user created and email verified
 
 ### Navigation

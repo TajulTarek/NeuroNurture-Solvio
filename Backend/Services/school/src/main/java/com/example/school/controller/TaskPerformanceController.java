@@ -16,7 +16,7 @@ import com.example.school.service.TaskPerformanceService;
 
 @RestController
 @RequestMapping("/api/school/task-performance")
-@CrossOrigin(originPatterns = {"http://localhost:3000", "http://188.166.197.135", "http://localhost:3001", "http://localhost:8090", "http://localhost:5173"}, allowCredentials = "true")
+@CrossOrigin(originPatterns = {"http://localhost:3000", "https://neronurture.app", "http://localhost:3001", "http://localhost:8090", "http://localhost:5173"}, allowCredentials = "true")
 public class TaskPerformanceController {
     
     @Autowired

@@ -21,7 +21,7 @@ export interface ChildSchoolInfo {
   status: "active" | "inactive";
 }
 
-const API_BASE_URL = "http://188.166.197.135:8082/api/parents";
+const API_BASE_URL = "https://neronurture.app:18082/api/parents";
 
 export const schoolService = {
   // Get school information by school ID

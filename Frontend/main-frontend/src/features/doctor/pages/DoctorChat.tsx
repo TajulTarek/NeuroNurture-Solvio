@@ -109,7 +109,7 @@ const DoctorChat: React.FC = () => {
     for (const patient of patientsList) {
       try {
         const response = await makeAuthenticatedDoctorRequest(
-          `http://188.166.197.135:8093/api/doctor/chat/history/${patient.id}/${doctor.id}`
+          `https://neronurture.app:18093/api/doctor/chat/history/${patient.id}/${doctor.id}`
         );
 
         if (response.ok) {
@@ -136,7 +136,7 @@ const DoctorChat: React.FC = () => {
     try {
       setIsLoadingMessages(true);
       const response = await makeAuthenticatedDoctorRequest(
-        `http://188.166.197.135:8093/api/doctor/chat/history/${selectedPatient.id}/${doctor.id}`
+        `https://neronurture.app:18093/api/doctor/chat/history/${selectedPatient.id}/${doctor.id}`
       );
 
       if (!response.ok) {
@@ -166,7 +166,7 @@ const DoctorChat: React.FC = () => {
 
     try {
       await makeAuthenticatedDoctorRequest(
-        `http://188.166.197.135:8093/api/doctor/chat/mark-read/${selectedPatient.id}/${doctor.id}`,
+        `https://neronurture.app:18093/api/doctor/chat/mark-read/${selectedPatient.id}/${doctor.id}`,
         { method: "PUT" }
       );
     } catch (error) {
@@ -192,7 +192,7 @@ const DoctorChat: React.FC = () => {
 
     try {
       const response = await makeAuthenticatedDoctorRequest(
-        "http://188.166.197.135:8093/api/doctor/chat/send",
+        "https://neronurture.app:18093/api/doctor/chat/send",
         {
           method: "POST",
           headers: {

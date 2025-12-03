@@ -28,7 +28,7 @@ const WebcamCapture: React.FC<WebcamCaptureProps> = ({
   const [confidence, setConfidence] = useState<number>(0);
 
   // API endpoint for posture detection
-  const API_ENDPOINT = "http://188.166.197.135:8000/predictPosture";
+  const API_ENDPOINT = "https://neronurture.app:18000/predictPosture";
 
   // Test API connection on component mount
   useEffect(() => {

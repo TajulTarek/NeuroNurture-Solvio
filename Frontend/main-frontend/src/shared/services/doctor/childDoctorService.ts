@@ -22,7 +22,7 @@ export interface DoctorInfo {
 }
 
 class ChildDoctorService {
-  private baseUrl = "http://188.166.197.135:8082/api/parents"; // Parent service URL
+  private baseUrl = "https://neronurture.app:18082/api/parents"; // Parent service URL
 
   // Get child's doctor enrollment status
   async getChildDoctorStatus(childId: number): Promise<DoctorEnrollmentStatus> {

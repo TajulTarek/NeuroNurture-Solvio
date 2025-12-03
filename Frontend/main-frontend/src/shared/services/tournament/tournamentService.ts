@@ -42,7 +42,7 @@ export interface GameMapping {
 }
 
 class TournamentService {
-  private baseUrl = "http://188.166.197.135:8091/api/school/tournaments";
+  private baseUrl = "https://neronurture.app:18091/api/school/tournaments";
 
   // Create tournaments for a specific grade
   async createTournaments(

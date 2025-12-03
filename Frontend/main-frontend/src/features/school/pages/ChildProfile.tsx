@@ -178,7 +178,7 @@ const ChildProfile: React.FC = () => {
       setIsLoadingTasks(true);
       try {
         const response = await fetch(
-          `http://188.166.197.135:8091/api/school/tasks/child/${childId}`
+          `https://neronurture.app:18091/api/school/tasks/child/${childId}`
         );
         if (response.ok) {
           const tasksData = await response.json();
@@ -276,7 +276,7 @@ const ChildProfile: React.FC = () => {
   const fetchRealGameStats = async (childId: string) => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8091/api/school/tasks/child/${childId}/stats`
+        `https://neronurture.app:18091/api/school/tasks/child/${childId}/stats`
       );
       if (response.ok) {
         const stats = await response.json();
@@ -309,7 +309,7 @@ const ChildProfile: React.FC = () => {
     setIsLoadingActivity(true);
     try {
       const response = await fetch(
-        `http://188.166.197.135:8091/api/school/tasks/child/${childId}/recent-activity`
+        `https://neronurture.app:18091/api/school/tasks/child/${childId}/recent-activity`
       );
       if (response.ok) {
         const activities = await response.json();
@@ -343,7 +343,7 @@ const ChildProfile: React.FC = () => {
     setIsUpdatingGrade(true);
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/children/${child.id}/enroll-school`,
+        `https://neronurture.app:18082/api/parents/children/${child.id}/enroll-school`,
         {
           method: "PUT",
           headers: {

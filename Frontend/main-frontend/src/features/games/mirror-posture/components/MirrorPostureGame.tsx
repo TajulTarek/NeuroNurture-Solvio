@@ -613,7 +613,7 @@ const MirrorPostureGame: React.FC<MirrorPostureGameProps> = ({
           if (childId) {
             try {
               const response = await fetch(
-                `http://188.166.197.135:8082/api/parents/children/${childId}/details`
+                `https://neronurture.app:18082/api/parents/children/${childId}/details`
               );
               if (response.ok) {
                 childData = await response.json();
@@ -707,7 +707,7 @@ const MirrorPostureGame: React.FC<MirrorPostureGameProps> = ({
         console.log("Saving game data to backend:", requestData);
 
         const response = await fetch(
-          "http://188.166.197.135:8083/api/mirror-posture-game/save",
+          "https://neronurture.app:18083/api/mirror-posture-game/save",
           {
             method: "POST",
             headers: {

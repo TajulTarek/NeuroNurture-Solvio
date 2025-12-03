@@ -113,16 +113,16 @@ export default function GazeGameInsights() {
       const [statsRes, analysisRes, summaryRes, historyRes] = await Promise.all(
         [
           fetch(
-            `http://188.166.197.135:8086/api/gaze-game/child/${childId}/statistics`
+            `https://neronurture.app:18086/api/gaze-game/child/${childId}/statistics`
           ),
           fetch(
-            `http://188.166.197.135:8086/api/gaze-game/child/${childId}/performance-analysis`
+            `https://neronurture.app:18086/api/gaze-game/child/${childId}/performance-analysis`
           ),
           fetch(
-            `http://188.166.197.135:8086/api/gaze-game/child/${childId}/performance-summary`
+            `https://neronurture.app:18086/api/gaze-game/child/${childId}/performance-summary`
           ),
           fetch(
-            `http://188.166.197.135:8086/api/gaze-game/child/${childId}/history?page=0&size=10`
+            `https://neronurture.app:18086/api/gaze-game/child/${childId}/history?page=0&size=10`
           ),
         ]
       );
@@ -375,7 +375,7 @@ export default function GazeGameInsights() {
   const loadGameHistory = async (page: number) => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8086/api/gaze-game/child/${selectedChild.id}/history?page=${page}&size=10`
+        `https://neronurture.app:18086/api/gaze-game/child/${selectedChild.id}/history?page=${page}&size=10`
       );
       if (response.ok) {
         const data = await response.json();

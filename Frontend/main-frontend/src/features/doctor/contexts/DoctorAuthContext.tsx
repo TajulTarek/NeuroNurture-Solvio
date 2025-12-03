@@ -125,7 +125,7 @@ export const DoctorAuthProvider: React.FC<DoctorAuthProviderProps> = ({
 
     try {
       const response = await fetch(
-        "http://188.166.197.135:8093/api/doctor/auth/login",
+        "https://neronurture.app:18093/api/doctor/auth/login",
         {
           method: "POST",
           headers: {

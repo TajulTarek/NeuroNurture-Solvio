@@ -9,7 +9,7 @@ export interface SchoolEnrollmentStatus {
 }
 
 class SchoolEnrollmentService {
-  private baseUrl = "http://188.166.197.135:8082/api/parents"; // Parent service URL
+  private baseUrl = "https://neronurture.app:18082/api/parents"; // Parent service URL
 
   // Check if parent service is available
   private async checkServiceHealth(): Promise<boolean> {

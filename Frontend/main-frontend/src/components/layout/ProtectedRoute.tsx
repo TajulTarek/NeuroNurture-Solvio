@@ -11,7 +11,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    fetch("http://188.166.197.135:8080/auth/session", {
+    fetch("https://neronurture.app:18080/auth/session", {
       credentials: "include",
     })
       .then((res) => res.json())

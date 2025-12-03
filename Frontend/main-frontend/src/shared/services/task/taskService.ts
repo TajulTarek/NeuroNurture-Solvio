@@ -43,7 +43,7 @@ export interface GameMapping {
 }
 
 class TaskService {
-  private baseUrl = "http://188.166.197.135:8091/api/school/tasks";
+  private baseUrl = "https://neronurture.app:18091/api/school/tasks";
 
   // Create new tasks for multiple children
   async createTasks(

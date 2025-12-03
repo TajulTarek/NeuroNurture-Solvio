@@ -40,7 +40,7 @@ interface Message {
   isRead: boolean;
 }
 
-const ADMIN_SERVICE_URL = "http://188.166.197.135:8090";
+const ADMIN_SERVICE_URL = "https://neronurture.app:18090";
 
 const TicketManagement = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);

@@ -114,13 +114,13 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
 
       // Game service URLs mapping
       const gameServiceUrls: { [key: string]: string } = {
-        dance_doodle_game: "http://188.166.197.135:8087/api/dance-doodle",
-        gesture_game: "http://188.166.197.135:8084/api/gesture-game",
-        gaze_tracking_game: "http://188.166.197.135:8086/api/gaze-game",
+        dance_doodle_game: "https://neronurture.app:18087/api/dance-doodle",
+        gesture_game: "https://neronurture.app:18084/api/gesture-game",
+        gaze_tracking_game: "https://neronurture.app:18086/api/gaze-game",
         mirror_posture_game:
-          "http://188.166.197.135:8083/api/mirror-posture-game",
+          "https://neronurture.app:18083/api/mirror-posture-game",
         repeat_with_me_game:
-          "http://188.166.197.135:8089/api/repeat-with-me-game",
+          "https://neronurture.app:18089/api/repeat-with-me-game",
       };
 
       // Map frontend game IDs to ALI model game IDs
@@ -335,7 +335,7 @@ const ALIScoreModal: React.FC<ALIScoreModalProps> = ({ isOpen, onClose }) => {
 
       // Send request to backend
       const response = await fetch(
-        "http://188.166.197.135:8010/predict_ali_score",
+        "https://neronurture.app:18010/predict_ali_score",
         {
           method: "POST",
           headers: {

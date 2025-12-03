@@ -21,7 +21,7 @@ export const EmailVerificationGuard: React.FC<EmailVerificationGuardProps> = ({
   const checkEmailVerificationStatus = async () => {
     try {
       const res = await fetch(
-        "http://188.166.197.135:8080/auth/check-email-verified",
+        "https://neronurture.app:18080/auth/check-email-verified",
         {
           method: "GET",
           credentials: "include",

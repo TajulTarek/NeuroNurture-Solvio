@@ -1,7 +1,7 @@
 // Admin service for fetching data from the admin backend
 import { adminAuthService } from "./adminAuthService";
 
-const ADMIN_SERVICE_URL = "http://188.166.197.135:8090";
+const ADMIN_SERVICE_URL = "https://neronurture.app:18090";
 
 export interface Child {
   id: number;

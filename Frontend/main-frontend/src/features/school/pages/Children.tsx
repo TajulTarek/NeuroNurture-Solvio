@@ -235,7 +235,7 @@ const Children: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/children/${childIdInput}/details`
+        `https://neronurture.app:18082/api/parents/children/${childIdInput}/details`
       );
       if (response.ok) {
         const childData = await response.json();
@@ -265,7 +265,7 @@ const Children: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/enrollment-requests`,
+        `https://neronurture.app:18082/api/parents/enrollment-requests`,
         {
           method: "POST",
           headers: {

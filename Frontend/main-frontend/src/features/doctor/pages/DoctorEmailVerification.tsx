@@ -26,7 +26,7 @@ const DoctorEmailVerification: React.FC = () => {
   const verifyEmail = async (verificationToken: string) => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8093/api/doctor/auth/verify-email?token=${verificationToken}`,
+        `https://neronurture.app:18093/api/doctor/auth/verify-email?token=${verificationToken}`,
         {
           method: "GET",
           headers: {

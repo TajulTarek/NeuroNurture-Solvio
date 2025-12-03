@@ -13,7 +13,7 @@ export default function Auth() {
 
   useEffect(() => {
     console.log("Auth page: Checking session...");
-    fetch("http://188.166.197.135:8080/auth/session", {
+    fetch("https://neronurture.app:18080/auth/session", {
       credentials: "include",
     })
       .then((res) => {

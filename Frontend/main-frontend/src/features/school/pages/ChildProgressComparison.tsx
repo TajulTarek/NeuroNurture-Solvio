@@ -921,7 +921,7 @@ const ChildProgressComparison: React.FC = () => {
       switch (gameType) {
         case "gesture-control":
           response = await fetch(
-            `http://188.166.197.135:8084/api/gesture-game/child/${childId}`
+            `https://neronurture.app:18084/api/gesture-game/child/${childId}`
           );
           if (response.ok) {
             sessions = await response.json();
@@ -930,7 +930,7 @@ const ChildProgressComparison: React.FC = () => {
           break;
         case "mirror-posture":
           response = await fetch(
-            `http://188.166.197.135:8083/api/mirror-posture-game/child/${childId}`
+            `https://neronurture.app:18083/api/mirror-posture-game/child/${childId}`
           );
           if (response.ok) {
             sessions = await response.json();
@@ -939,7 +939,7 @@ const ChildProgressComparison: React.FC = () => {
           break;
         case "dance-doodle":
           response = await fetch(
-            `http://188.166.197.135:8087/api/dance-doodle/child/${childId}`
+            `https://neronurture.app:18087/api/dance-doodle/child/${childId}`
           );
           if (response.ok) {
             sessions = await response.json();
@@ -948,7 +948,7 @@ const ChildProgressComparison: React.FC = () => {
           break;
         case "repeat-with-me":
           response = await fetch(
-            `http://188.166.197.135:8089/api/repeat-with-me-game/child/${childId}`
+            `https://neronurture.app:18089/api/repeat-with-me-game/child/${childId}`
           );
           if (response.ok) {
             sessions = await response.json();
@@ -957,7 +957,7 @@ const ChildProgressComparison: React.FC = () => {
           break;
         case "gaze-tracking":
           response = await fetch(
-            `http://188.166.197.135:8086/api/gaze-game/child/${childId}`
+            `https://neronurture.app:18086/api/gaze-game/child/${childId}`
           );
           if (response.ok) {
             sessions = await response.json();
@@ -1168,7 +1168,7 @@ const ChildProgressComparison: React.FC = () => {
     try {
       // Fetch gesture game sessions directly from gesture game service
       const response = await fetch(
-        `http://188.166.197.135:8084/api/gesture-game/child/${childId}`
+        `https://neronurture.app:18084/api/gesture-game/child/${childId}`
       );
       if (response.ok) {
         const sessions = await response.json();
@@ -1225,7 +1225,7 @@ const ChildProgressComparison: React.FC = () => {
   ): Promise<{ score: number; sessions: number }> => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8083/api/mirror-posture-game/child/${childId}`
+        `https://neronurture.app:18083/api/mirror-posture-game/child/${childId}`
       );
       if (response.ok) {
         const sessions = await response.json();
@@ -1278,7 +1278,7 @@ const ChildProgressComparison: React.FC = () => {
   ): Promise<{ score: number; sessions: number }> => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8087/api/dance-doodle/child/${childId}`
+        `https://neronurture.app:18087/api/dance-doodle/child/${childId}`
       );
       if (response.ok) {
         const sessions = await response.json();
@@ -1334,7 +1334,7 @@ const ChildProgressComparison: React.FC = () => {
   ): Promise<{ score: number; sessions: number }> => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8089/api/repeat-with-me-game/child/${childId}`
+        `https://neronurture.app:18089/api/repeat-with-me-game/child/${childId}`
       );
       if (response.ok) {
         const sessions = await response.json();
@@ -1394,7 +1394,7 @@ const ChildProgressComparison: React.FC = () => {
   ): Promise<{ score: number; sessions: number }> => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8086/api/gaze-game/child/${childId}`
+        `https://neronurture.app:18086/api/gaze-game/child/${childId}`
       );
       if (response.ok) {
         const sessions = await response.json();

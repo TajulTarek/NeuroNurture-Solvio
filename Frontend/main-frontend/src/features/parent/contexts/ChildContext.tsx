@@ -77,7 +77,7 @@ export const ChildProvider: React.FC<ChildProviderProps> = ({ children }) => {
   const loadParentData = async (parentId: number) => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/${parentId}`,
+        `https://neronurture.app:18082/api/parents/${parentId}`,
         {
           credentials: "include",
         }

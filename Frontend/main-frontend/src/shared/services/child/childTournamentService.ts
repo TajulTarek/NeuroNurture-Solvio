@@ -23,7 +23,7 @@ export interface ChildTournamentResponse {
   completedTournaments: number;
 }
 
-const API_BASE_URL = "http://188.166.197.135:8091/api/school";
+const API_BASE_URL = "https://neronurture.app:18091/api/school";
 
 export const childTournamentService = {
   // Fetch all tournaments assigned to a specific child

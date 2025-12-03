@@ -149,7 +149,7 @@ export default function RepeatWithMeGameInsights() {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8089/api/repeat-with-me-game/child/${childId}/statistics`
+        `https://neronurture.app:18089/api/repeat-with-me-game/child/${childId}/statistics`
       );
       console.log("Statistics Response:", response.status, response.ok);
 
@@ -189,7 +189,7 @@ export default function RepeatWithMeGameInsights() {
     try {
       // Use the regular child endpoint instead of paginated history
       const response = await fetch(
-        `http://188.166.197.135:8089/api/repeat-with-me-game/child/${childId}`
+        `https://neronurture.app:18089/api/repeat-with-me-game/child/${childId}`
       );
       console.log("Session Data Response:", response.status, response.ok);
 
@@ -260,7 +260,7 @@ export default function RepeatWithMeGameInsights() {
   const loadGameHistory = async (childId: string, page: number = 0) => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8089/api/repeat-with-me-game/child/${childId}/history?page=${page}&size=3`
+        `https://neronurture.app:18089/api/repeat-with-me-game/child/${childId}/history?page=${page}&size=3`
       );
       console.log("Game History Response:", response.status, response.ok);
 

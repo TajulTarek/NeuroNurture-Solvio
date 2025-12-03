@@ -62,7 +62,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       console.log("Creating payment intent for plan:", plan.id);
 
       const createResponse = await fetch(
-        "http://188.166.197.135:8093/api/doctor/subscription/create-payment-intent",
+        "https://neronurture.app:18093/api/doctor/subscription/create-payment-intent",
         {
           method: "POST",
           headers: {
@@ -126,7 +126,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
 
         // Step 3: Confirm payment on backend
         const confirmResponse = await fetch(
-          "http://188.166.197.135:8093/api/doctor/subscription/confirm-payment",
+          "https://neronurture.app:18093/api/doctor/subscription/confirm-payment",
           {
             method: "POST",
             headers: {
@@ -245,7 +245,7 @@ const DoctorCheckoutPage: React.FC = () => {
   const fetchPlan = async () => {
     try {
       const response = await fetch(
-        "http://188.166.197.135:8093/api/doctor/subscription/plans"
+        "https://neronurture.app:18093/api/doctor/subscription/plans"
       );
       if (response.ok) {
         const plans = await response.json();

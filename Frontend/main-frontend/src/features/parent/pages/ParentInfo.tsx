@@ -34,7 +34,7 @@ const ParentInfo = () => {
     clearCurrentChild();
 
     // Fetch user email from JWT token
-    fetch("http://188.166.197.135:8080/auth/me", { credentials: "include" })
+    fetch("https://neronurture.app:18080/auth/me", { credentials: "include" })
       .then((res) => res.text())
       .then((email) => {
         setUserEmail(email);
@@ -63,14 +63,17 @@ const ParentInfo = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://188.166.197.135:8082/api/parents", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "https://neronurture.app:18082/api/parents",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to save parent information");
@@ -88,7 +91,7 @@ const ParentInfo = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://188.166.197.135:8080/auth/logout", {
+      await fetch("https://neronurture.app:18080/auth/logout", {
         method: "POST",
         credentials: "include",
       });

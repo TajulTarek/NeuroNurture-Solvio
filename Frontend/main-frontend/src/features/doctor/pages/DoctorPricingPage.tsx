@@ -32,7 +32,7 @@ const DoctorPricingPage: React.FC = () => {
   const fetchPlans = async () => {
     try {
       const response = await fetch(
-        "http://188.166.197.135:8093/api/doctor/subscription/plans"
+        "https://neronurture.app:18093/api/doctor/subscription/plans"
       );
       if (response.ok) {
         const data = await response.json();

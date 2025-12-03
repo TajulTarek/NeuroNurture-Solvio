@@ -52,7 +52,7 @@ export interface PerformanceOverview {
 }
 
 class PerformanceOverviewService {
-  private baseUrl = "http://188.166.197.135:8005";
+  private baseUrl = "https://neronurture.app:18005";
 
   /**
    * Get performance overview for a specific child

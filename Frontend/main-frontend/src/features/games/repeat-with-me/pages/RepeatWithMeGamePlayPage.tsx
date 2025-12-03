@@ -227,7 +227,7 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
         formData.append("round_number", round.toString());
 
         try {
-          fetch("http://188.166.197.135:8000/transcribe", {
+          fetch("https://neronurture.app:18000/transcribe", {
             method: "POST",
             body: formData,
           }).catch((error) => {
@@ -292,7 +292,7 @@ const RepeatWithMeGamePlayPage: React.FC = () => {
 
   const handleLogout = async () => {
     console.log("Logout button clicked");
-    await fetch("http://188.166.197.135:8080/auth/logout", {
+    await fetch("https://neronurture.app:18080/auth/logout", {
       method: "POST",
       credentials: "include",
     });

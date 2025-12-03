@@ -71,7 +71,7 @@ const SchoolRegister: React.FC = () => {
 
     try {
       const response = await fetch(
-        "http://188.166.197.135:8091/api/school/auth/register",
+        "https://neronurture.app:18091/api/school/auth/register",
         {
           method: "POST",
           headers: {

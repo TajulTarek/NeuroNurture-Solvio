@@ -44,7 +44,7 @@ export interface GameSessionData {
 }
 
 class ReportService {
-  private baseUrl = "http://188.166.197.135:8093/api/doctor";
+  private baseUrl = "https://neronurture.app:18093/api/doctor";
 
   /**
    * Send a performance report to a doctor
@@ -190,23 +190,23 @@ class ReportService {
   ): Promise<GameSessionData[]> {
     const gameUrls: { [key: string]: { url: string; name: string } } = {
       gaze: {
-        url: `http://188.166.197.135:8086/api/gaze-game/child/${childId}`,
+        url: `https://neronurture.app:18086/api/gaze-game/child/${childId}`,
         name: "Gaze Game",
       },
       gesture: {
-        url: `http://188.166.197.135:8084/api/gesture-game/child/${childId}`,
+        url: `https://neronurture.app:18084/api/gesture-game/child/${childId}`,
         name: "Gesture Game",
       },
       dance: {
-        url: `http://188.166.197.135:8087/api/dance-doodle/child/${childId}`,
+        url: `https://neronurture.app:18087/api/dance-doodle/child/${childId}`,
         name: "Dance Doodle",
       },
       mirror: {
-        url: `http://188.166.197.135:8083/api/mirror-posture-game/child/${childId}`,
+        url: `https://neronurture.app:18083/api/mirror-posture-game/child/${childId}`,
         name: "Mirror Posture",
       },
       repeat: {
-        url: `http://188.166.197.135:8089/api/repeat-with-me-game/child/${childId}`,
+        url: `https://neronurture.app:18089/api/repeat-with-me-game/child/${childId}`,
         name: "Repeat With Me",
       },
     };

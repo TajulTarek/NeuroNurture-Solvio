@@ -25,7 +25,7 @@ export interface ChildSessionStats {
 
 class ChildSessionService {
   private schoolServiceUrl =
-    "http://188.166.197.135:8091/api/school/tournaments";
+    "https://neronurture.app:18091/api/school/tournaments";
 
   /**
    * Get all sessions for a specific child from all game services via school service

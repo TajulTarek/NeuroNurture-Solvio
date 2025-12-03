@@ -31,7 +31,7 @@ export const EmailVerification = ({
     setIsLoading(true);
     try {
       const res = await fetch(
-        `http://188.166.197.135:8080/auth/verify-email?token=${token}`,
+        `https://neronurture.app:18080/auth/verify-email?token=${token}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -78,7 +78,7 @@ export const EmailVerification = ({
     setIsResending(true);
     try {
       const res = await fetch(
-        "http://188.166.197.135:8080/auth/resend-verification",
+        "https://neronurture.app:18080/auth/resend-verification",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

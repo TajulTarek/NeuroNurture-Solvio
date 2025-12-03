@@ -1,6 +1,6 @@
 // API Configuration
 export const API_BASE_URL =
-  process.env.REACT_APP_API_BASE_URL || "http://188.166.197.135:8080";
+  process.env.REACT_APP_API_BASE_URL || "https://neronurture.app:18080";
 
 // User Status
 export const USER_STATUS = {

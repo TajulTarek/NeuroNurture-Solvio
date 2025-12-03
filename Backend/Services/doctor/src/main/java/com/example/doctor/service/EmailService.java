@@ -33,7 +33,7 @@ public class EmailService {
             String subject = "Verify Your Doctor Account - NeuroNurture";
             Email to = new Email(toEmail);
             
-            String verificationUrl = "http://188.166.197.135/doctor/verify-email?token=" + verificationToken;
+            String verificationUrl = "https://neronurture.app/doctor/verify-email?token=" + verificationToken;
             
             String htmlContent = buildVerificationEmailHtml(doctorName, verificationUrl);
             Content content = new Content("text/html", htmlContent);

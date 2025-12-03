@@ -42,11 +42,11 @@ const AddChild = () => {
     clearCurrentChild();
 
     // Get parent info to get parentId
-    fetch("http://188.166.197.135:8080/auth/me", { credentials: "include" })
+    fetch("https://neronurture.app:18080/auth/me", { credentials: "include" })
       .then((res) => res.text())
       .then((email) => {
         return fetch(
-          `http://188.166.197.135:8082/api/parents/by-email/${email}`,
+          `https://neronurture.app:18082/api/parents/by-email/${email}`,
           {
             credentials: "include",
           }
@@ -90,7 +90,7 @@ const AddChild = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/${parentId}/children`,
+        `https://neronurture.app:18082/api/parents/${parentId}/children`,
         {
           method: "POST",
           headers: {

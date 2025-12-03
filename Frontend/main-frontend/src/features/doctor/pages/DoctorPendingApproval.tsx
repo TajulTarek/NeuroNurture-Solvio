@@ -61,7 +61,7 @@ const DoctorPendingApproval: React.FC = () => {
     try {
       setCheckingStatus(true);
       const response = await fetch(
-        `http://188.166.197.135:8093/api/doctor/auth/verification-status?email=${email}`,
+        `https://neronurture.app:18093/api/doctor/auth/verification-status?email=${email}`,
         {
           method: "GET",
           headers: {

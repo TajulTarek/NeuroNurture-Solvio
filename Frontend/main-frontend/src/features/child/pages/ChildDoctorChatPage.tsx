@@ -55,7 +55,7 @@ export default function ChildDoctorChatPage({
       setError(null);
 
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/chat/history/${childId}/${doctorId}`
+        `https://neronurture.app:18082/api/parents/chat/history/${childId}/${doctorId}`
       );
 
       if (!response.ok) {
@@ -75,7 +75,7 @@ export default function ChildDoctorChatPage({
   const markMessagesAsRead = async () => {
     try {
       await fetch(
-        `http://188.166.197.135:8082/api/parents/chat/mark-read/${childId}/${doctorId}/child`,
+        `https://neronurture.app:18082/api/parents/chat/mark-read/${childId}/${doctorId}/child`,
         {
           method: "PUT",
         }
@@ -93,7 +93,7 @@ export default function ChildDoctorChatPage({
       setError(null);
 
       const response = await fetch(
-        "http://188.166.197.135:8082/api/parents/chat/send-from-child",
+        "https://neronurture.app:18082/api/parents/chat/send-from-child",
         {
           method: "POST",
           headers: {

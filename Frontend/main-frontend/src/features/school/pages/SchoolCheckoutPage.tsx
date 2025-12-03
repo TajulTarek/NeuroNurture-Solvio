@@ -47,7 +47,7 @@ const CheckoutForm: React.FC<{ plan: SubscriptionPlan }> = ({ plan }) => {
     try {
       // Create payment intent
       const response = await makeAuthenticatedSchoolRequest(
-        "http://188.166.197.135:8091/api/school/subscription/create-payment-intent",
+        "https://neronurture.app:18091/api/school/subscription/create-payment-intent",
         {
           method: "POST",
           headers: {
@@ -80,7 +80,7 @@ const CheckoutForm: React.FC<{ plan: SubscriptionPlan }> = ({ plan }) => {
       if (paymentIntent.status === "succeeded") {
         // Confirm payment on backend
         const confirmResponse = await makeAuthenticatedSchoolRequest(
-          "http://188.166.197.135:8091/api/school/subscription/confirm-payment",
+          "https://neronurture.app:18091/api/school/subscription/confirm-payment",
           {
             method: "POST",
             headers: {
@@ -254,7 +254,7 @@ const SchoolCheckoutPage: React.FC = () => {
   const fetchPlan = async () => {
     try {
       const response = await makeAuthenticatedSchoolRequest(
-        "http://188.166.197.135:8091/api/school/subscription/plans"
+        "https://neronurture.app:18091/api/school/subscription/plans"
       );
       if (response.ok) {
         const plans = await response.json();

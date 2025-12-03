@@ -218,7 +218,7 @@ const GazeTrackingGamePlayPage: React.FC<GazeTrackingGamePlayPageProps> = ({
           console.log("Saving game data:", requestData);
 
           const response = await fetch(
-            "http://188.166.197.135:8086/api/gaze-game/save",
+            "https://neronurture.app:18086/api/gaze-game/save",
             {
               method: "POST",
               headers: {
@@ -316,7 +316,7 @@ const GazeTrackingGamePlayPage: React.FC<GazeTrackingGamePlayPageProps> = ({
       console.log("Making camera start request...");
       // Start the camera first with better error handling
       const cameraResponse = await fetch(
-        "http://188.166.197.135:8000/start-camera",
+        "https://neronurture.app:18000/start-camera",
         {
           method: "POST",
           headers: {
@@ -340,7 +340,7 @@ const GazeTrackingGamePlayPage: React.FC<GazeTrackingGamePlayPageProps> = ({
       // Check camera status to ensure it's running
       try {
         const statusResponse = await fetch(
-          "http://188.166.197.135:8000/camera-status"
+          "https://neronurture.app:18000/camera-status"
         );
         const statusData = await statusResponse.json();
         console.log("Camera status check:", statusData);
@@ -363,7 +363,7 @@ const GazeTrackingGamePlayPage: React.FC<GazeTrackingGamePlayPageProps> = ({
           const timeoutId = setTimeout(() => controller.abort(), 1000); // Increased timeout
 
           const response = await fetch(
-            "http://188.166.197.135:8000/current-gaze",
+            "https://neronurture.app:18000/current-gaze",
             {
               signal: controller.signal,
               headers: {
@@ -553,7 +553,7 @@ const GazeTrackingGamePlayPage: React.FC<GazeTrackingGamePlayPageProps> = ({
     setConnectionRetries(0);
 
     try {
-      await fetch("http://188.166.197.135:8000/stop-camera", {
+      await fetch("https://neronurture.app:18000/stop-camera", {
         method: "POST",
       });
       setGazeStatus("Camera stopped");
@@ -1013,7 +1013,7 @@ const GazeTrackingGamePlayPage: React.FC<GazeTrackingGamePlayPageProps> = ({
 
       // Stop camera when component unmounts
       if (isTracking) {
-        fetch("http://188.166.197.135:8000/stop-camera", {
+        fetch("https://neronurture.app:18000/stop-camera", {
           method: "POST",
         }).catch((error) =>
           console.error("Failed to stop camera on unmount:", error)

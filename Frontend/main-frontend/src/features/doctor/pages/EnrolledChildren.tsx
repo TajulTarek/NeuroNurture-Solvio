@@ -152,7 +152,7 @@ const EnrolledChildren: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/children/${childIdInput}/details`
+        `https://neronurture.app:18082/api/parents/children/${childIdInput}/details`
       );
 
       if (response.ok) {
@@ -188,7 +188,7 @@ const EnrolledChildren: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/children/${childDetails.id}/enroll-doctor`,
+        `https://neronurture.app:18082/api/parents/children/${childDetails.id}/enroll-doctor`,
         {
           method: "PUT",
           headers: {

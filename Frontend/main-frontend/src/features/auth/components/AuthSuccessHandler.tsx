@@ -46,7 +46,7 @@ export const AuthSuccessHandler = ({ onComplete }: AuthSuccessHandlerProps) => {
 
         // Get user email from JWT
         const emailResponse = await fetch(
-          "http://188.166.197.135:8080/auth/me",
+          "https://neronurture.app:18080/auth/me",
           {
             credentials: "include",
           }
@@ -62,7 +62,7 @@ export const AuthSuccessHandler = ({ onComplete }: AuthSuccessHandlerProps) => {
         // Check if parent info exists
         console.log("AuthSuccessHandler: Checking parent info...");
         const parentResponse = await fetch(
-          `http://188.166.197.135:8082/api/parents/by-email/${email}`,
+          `https://neronurture.app:18082/api/parents/by-email/${email}`,
           {
             credentials: "include",
           }
@@ -73,7 +73,7 @@ export const AuthSuccessHandler = ({ onComplete }: AuthSuccessHandlerProps) => {
           const parent = await parentResponse.json();
           console.log("AuthSuccessHandler: Parent found, checking children...");
           const childrenResponse = await fetch(
-            `http://188.166.197.135:8082/api/parents/${parent.id}/children`,
+            `https://neronurture.app:18082/api/parents/${parent.id}/children`,
             {
               credentials: "include",
             }

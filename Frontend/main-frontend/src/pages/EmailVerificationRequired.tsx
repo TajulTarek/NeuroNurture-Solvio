@@ -23,7 +23,7 @@ const EmailVerificationRequired: React.FC = () => {
 
     try {
       const response = await fetch(
-        "http://188.166.197.135:8080/auth/resend-verification",
+        "https://neronurture.app:18080/auth/resend-verification",
         {
           method: "POST",
           headers: {

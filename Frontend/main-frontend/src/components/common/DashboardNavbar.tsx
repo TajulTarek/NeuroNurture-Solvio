@@ -23,7 +23,7 @@ const DashboardNavbar = ({
 
   useEffect(() => {
     // Get username
-    fetch("http://188.166.197.135:8080/auth/me", { credentials: "include" })
+    fetch("https://neronurture.app:18080/auth/me", { credentials: "include" })
       .then((res) => res.text())
       .then((name) => setUsername(name))
       .catch((err) => console.error("Failed to get username:", err));
@@ -60,7 +60,7 @@ const DashboardNavbar = ({
     try {
       // Check if user is authenticated
       const sessionResponse = await fetch(
-        "http://188.166.197.135:8080/auth/session",
+        "https://neronurture.app:18080/auth/session",
         {
           credentials: "include",
         }

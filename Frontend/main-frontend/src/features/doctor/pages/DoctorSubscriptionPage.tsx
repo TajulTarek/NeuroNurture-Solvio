@@ -44,7 +44,7 @@ const DoctorSubscriptionPage: React.FC = () => {
   const fetchSubscriptionInfo = async () => {
     try {
       const response = await fetch(
-        "http://188.166.197.135:8093/api/doctor/subscription/current",
+        "https://neronurture.app:18093/api/doctor/subscription/current",
         {
           headers: {
             "X-Doctor-Id": doctor?.id,

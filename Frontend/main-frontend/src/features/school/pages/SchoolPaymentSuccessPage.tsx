@@ -45,7 +45,7 @@ const SchoolPaymentSuccessPage: React.FC = () => {
   const fetchPlan = async () => {
     try {
       const response = await makeAuthenticatedSchoolRequest(
-        "http://188.166.197.135:8091/api/school/subscription/plans"
+        "https://neronurture.app:18091/api/school/subscription/plans"
       );
       if (response.ok) {
         const plans = await response.json();

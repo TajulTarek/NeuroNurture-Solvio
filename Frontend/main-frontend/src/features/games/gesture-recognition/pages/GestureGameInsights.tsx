@@ -139,19 +139,19 @@ export default function GestureGameInsights() {
       const [statsRes, analysisRes, trendsRes, summaryRes, historyRes] =
         await Promise.all([
           fetch(
-            `http://188.166.197.135:8084/api/gesture-game/child/${childId}/statistics`
+            `https://neronurture.app:18084/api/gesture-game/child/${childId}/statistics`
           ),
           fetch(
-            `http://188.166.197.135:8084/api/gesture-game/child/${childId}/gesture-analysis`
+            `https://neronurture.app:18084/api/gesture-game/child/${childId}/gesture-analysis`
           ),
           fetch(
-            `http://188.166.197.135:8084/api/gesture-game/child/${childId}/improvement-trends`
+            `https://neronurture.app:18084/api/gesture-game/child/${childId}/improvement-trends`
           ),
           fetch(
-            `http://188.166.197.135:8084/api/gesture-game/child/${childId}/performance-summary`
+            `https://neronurture.app:18084/api/gesture-game/child/${childId}/performance-summary`
           ),
           fetch(
-            `http://188.166.197.135:8084/api/gesture-game/child/${childId}/history?page=0&size=10`
+            `https://neronurture.app:18084/api/gesture-game/child/${childId}/history?page=0&size=10`
           ),
         ]);
 
@@ -288,7 +288,7 @@ export default function GestureGameInsights() {
   const loadGameHistory = async (page: number) => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8084/api/gesture-game/child/${selectedChild.id}/history?page=${page}&size=10`
+        `https://neronurture.app:18084/api/gesture-game/child/${selectedChild.id}/history?page=${page}&size=10`
       );
       if (response.ok) {
         const data = await response.json();

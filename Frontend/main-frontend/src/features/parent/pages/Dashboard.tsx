@@ -19,7 +19,7 @@ export default function Dashboard() {
   const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
   useEffect(() => {
-    fetch("http://188.166.197.135:8080/auth/session", {
+    fetch("https://neronurture.app:18080/auth/session", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -27,7 +27,7 @@ export default function Dashboard() {
         if (!authenticated) {
           navigate("/");
         } else {
-          fetch("http://188.166.197.135:8080/auth/me", {
+          fetch("https://neronurture.app:18080/auth/me", {
             credentials: "include",
           })
             .then((res) => res.text())

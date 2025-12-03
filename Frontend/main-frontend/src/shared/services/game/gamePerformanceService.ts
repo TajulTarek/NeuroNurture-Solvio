@@ -113,11 +113,11 @@ export interface RepeatWithMeGameData {
 
 class GamePerformanceService {
   private baseUrls = {
-    gesture: "http://188.166.197.135:8084/api/gesture-game",
-    mirrorPosture: "http://188.166.197.135:8083/api/mirror-posture-game",
-    danceDoodle: "http://188.166.197.135:8087/api/dance-doodle",
-    gaze: "http://188.166.197.135:8086/api/gaze-game",
-    repeatWithMe: "http://188.166.197.135:8089/api/repeat-with-me-game",
+    gesture: "https://neronurture.app:18084/api/gesture-game",
+    mirrorPosture: "https://neronurture.app:18083/api/mirror-posture-game",
+    danceDoodle: "https://neronurture.app:18087/api/dance-doodle",
+    gaze: "https://neronurture.app:18086/api/gaze-game",
+    repeatWithMe: "https://neronurture.app:18089/api/repeat-with-me-game",
   };
 
   // Fetch all game performances for a child

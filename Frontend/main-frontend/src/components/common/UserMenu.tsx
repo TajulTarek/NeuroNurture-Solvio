@@ -54,11 +54,11 @@ const UserMenu = ({
   const handleParentInfoClick = () => {
     console.log("Parent Info clicked");
     // Check if parent exists and navigate accordingly
-    fetch("http://188.166.197.135:8080/auth/me", { credentials: "include" })
+    fetch("https://neronurture.app:18080/auth/me", { credentials: "include" })
       .then((res) => res.text())
       .then((email) => {
         return fetch(
-          `http://188.166.197.135:8082/api/parents/by-email/${email}`,
+          `https://neronurture.app:18082/api/parents/by-email/${email}`,
           {
             credentials: "include",
           }

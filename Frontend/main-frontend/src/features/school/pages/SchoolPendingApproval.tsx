@@ -58,7 +58,7 @@ const SchoolPendingApproval: React.FC = () => {
     try {
       setCheckingStatus(true);
       const response = await fetch(
-        `http://188.166.197.135:8091/api/school/auth/verification-status?email=${email}`,
+        `https://neronurture.app:18091/api/school/auth/verification-status?email=${email}`,
         {
           method: "GET",
           headers: {

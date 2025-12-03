@@ -30,11 +30,11 @@ const ViewParentInfo = () => {
 
   useEffect(() => {
     // Fetch parent info
-    fetch("http://188.166.197.135:8080/auth/me", { credentials: "include" })
+    fetch("https://neronurture.app:18080/auth/me", { credentials: "include" })
       .then((res) => res.text())
       .then((email) => {
         return fetch(
-          `http://188.166.197.135:8082/api/parents/by-email/${email}`,
+          `https://neronurture.app:18082/api/parents/by-email/${email}`,
           {
             credentials: "include",
           }
@@ -70,7 +70,7 @@ const ViewParentInfo = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/${parentInfo.id}`,
+        `https://neronurture.app:18082/api/parents/${parentInfo.id}`,
         {
           method: "PUT",
           headers: {
@@ -104,7 +104,7 @@ const ViewParentInfo = () => {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://188.166.197.135:8080/auth/logout", {
+      await fetch("https://neronurture.app:18080/auth/logout", {
         method: "POST",
         credentials: "include",
       });

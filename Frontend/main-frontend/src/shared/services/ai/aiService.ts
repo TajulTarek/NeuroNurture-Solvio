@@ -1,5 +1,5 @@
 // AI service for ticket classification and message refinement
-const AI_SERVICE_URL = "http://188.166.197.135:8005";
+const AI_SERVICE_URL = "https://neronurture.app:18005";
 
 export interface TicketClassification {
   priority: "LOW" | "MEDIUM" | "HIGH" | "URGENT";

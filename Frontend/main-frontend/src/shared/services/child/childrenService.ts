@@ -21,7 +21,7 @@ export interface SchoolChild {
 }
 
 class ChildrenService {
-  private baseUrl = "http://188.166.197.135:8082/api/parents"; // Parent service URL
+  private baseUrl = "https://neronurture.app:18082/api/parents"; // Parent service URL
 
   // Get all children enrolled in a specific school
   async getChildrenBySchool(schoolId: number): Promise<SchoolChild[]> {

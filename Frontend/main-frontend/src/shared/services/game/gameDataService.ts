@@ -78,11 +78,11 @@ export interface GameStats {
 
 class GameDataService {
   private baseUrls = {
-    gesture: "http://188.166.197.135:8084/api/gesture-game",
-    gaze: "http://188.166.197.135:8086/api/gaze-game",
-    danceDoodle: "http://188.166.197.135:8087/api/dance-doodle",
-    mirrorPosture: "http://188.166.197.135:8083/api/mirror-posture-game",
-    repeatWithMe: "http://188.166.197.135:8089/api/repeat-with-me-game",
+    gesture: "https://neronurture.app:18084/api/gesture-game",
+    gaze: "https://neronurture.app:18086/api/gaze-game",
+    danceDoodle: "https://neronurture.app:18087/api/dance-doodle",
+    mirrorPosture: "https://neronurture.app:18083/api/mirror-posture-game",
+    repeatWithMe: "https://neronurture.app:18089/api/repeat-with-me-game",
   };
 
   // Fetch all game sessions for a specific child

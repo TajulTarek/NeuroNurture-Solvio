@@ -13,7 +13,7 @@ export const useChildOperations = () => {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/children/${currentChild.id}/progress`,
+        `https://neronurture.app:18082/api/parents/children/${currentChild.id}/progress`,
         {
           method: "POST",
           headers: {
@@ -50,7 +50,7 @@ export const useChildOperations = () => {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/children/${currentChild.id}/progress`,
+        `https://neronurture.app:18082/api/parents/children/${currentChild.id}/progress`,
         {
           credentials: "include",
         }
@@ -76,7 +76,7 @@ export const useChildOperations = () => {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/children/${currentChild.id}/assessments`,
+        `https://neronurture.app:18082/api/parents/children/${currentChild.id}/assessments`,
         {
           method: "POST",
           headers: {
@@ -113,7 +113,7 @@ export const useChildOperations = () => {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/children/${currentChild.id}/assessments`,
+        `https://neronurture.app:18082/api/parents/children/${currentChild.id}/assessments`,
         {
           credentials: "include",
         }
@@ -139,7 +139,7 @@ export const useChildOperations = () => {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/children/${currentChild.id}`,
+        `https://neronurture.app:18082/api/parents/children/${currentChild.id}`,
         {
           method: "PUT",
           headers: {

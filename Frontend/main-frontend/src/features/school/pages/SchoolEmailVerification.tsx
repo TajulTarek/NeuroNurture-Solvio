@@ -26,7 +26,7 @@ const SchoolEmailVerification: React.FC = () => {
   const verifyEmail = async (verificationToken: string) => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8091/api/school/auth/verify-email?token=${verificationToken}`,
+        `https://neronurture.app:18091/api/school/auth/verify-email?token=${verificationToken}`,
         {
           method: "GET",
           headers: {

@@ -1,5 +1,5 @@
 // Ticket service for parent frontend
-const PARENT_SERVICE_URL = "http://188.166.197.135:8082";
+const PARENT_SERVICE_URL = "https://neronurture.app:18082";
 
 export interface Ticket {
   id: string;

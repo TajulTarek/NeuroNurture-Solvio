@@ -286,7 +286,7 @@ const RepeatWithMeGameplay: React.FC = () => {
         // Send audio to backend for transcription
         try {
           const response = await fetch(
-            "http://188.166.197.135:8000/transcribe",
+            "https://neronurture.app:18000/transcribe",
             {
               method: "POST",
               body: formData,
@@ -416,7 +416,7 @@ const RepeatWithMeGameplay: React.FC = () => {
     const pollInterval = setInterval(async () => {
       try {
         const resultResponse = await fetch(
-          `http://188.166.197.135:8000/round-result/${round}`
+          `https://neronurture.app:18000/round-result/${round}`
         );
         if (resultResponse.ok) {
           const resultData = await resultResponse.json();
@@ -442,7 +442,9 @@ const RepeatWithMeGameplay: React.FC = () => {
   // Get all game results from backend (like Javafest_agor)
   const getGameResults = useCallback(async () => {
     try {
-      const response = await fetch("http://188.166.197.135:8000/game-results");
+      const response = await fetch(
+        "https://neronurture.app:18000/game-results"
+      );
       if (response.ok) {
         const data = await response.json();
         console.log("All game results:", data);
@@ -461,7 +463,7 @@ const RepeatWithMeGameplay: React.FC = () => {
   const clearGameResults = useCallback(async () => {
     try {
       const response = await fetch(
-        "http://188.166.197.135:8000/clear-game-results",
+        "https://neronurture.app:18000/clear-game-results",
         {
           method: "POST",
         }
@@ -518,7 +520,7 @@ const RepeatWithMeGameplay: React.FC = () => {
           if (childId) {
             try {
               const response = await fetch(
-                `http://188.166.197.135:8082/api/parents/children/${childId}/details`
+                `https://neronurture.app:18082/api/parents/children/${childId}/details`
               );
               if (response.ok) {
                 childData = await response.json();
@@ -604,7 +606,7 @@ const RepeatWithMeGameplay: React.FC = () => {
         console.log("Saving game data to backend:", gameData);
 
         const response = await fetch(
-          "http://188.166.197.135:8089/api/repeat-with-me-game/save",
+          "https://neronurture.app:18089/api/repeat-with-me-game/save",
           {
             method: "POST",
             headers: {
@@ -669,7 +671,7 @@ const RepeatWithMeGameplay: React.FC = () => {
 
   const handleLogout = async () => {
     console.log("Logout button clicked");
-    await fetch("http://188.166.197.135:8080/auth/logout", {
+    await fetch("https://neronurture.app:18080/auth/logout", {
       method: "POST",
       credentials: "include",
     });

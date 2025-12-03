@@ -113,7 +113,7 @@ export default function MirrorPostureGameInsights() {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8083/api/mirror-posture-game/child/${childId}/statistics`
+        `https://neronurture.app:18083/api/mirror-posture-game/child/${childId}/statistics`
       );
       console.log("Statistics Response:", response.status, response.ok);
 
@@ -153,7 +153,7 @@ export default function MirrorPostureGameInsights() {
     try {
       // Use the regular child endpoint instead of paginated history
       const response = await fetch(
-        `http://188.166.197.135:8083/api/mirror-posture-game/child/${childId}`
+        `https://neronurture.app:18083/api/mirror-posture-game/child/${childId}`
       );
       console.log("Session Data Response:", response.status, response.ok);
 
@@ -230,7 +230,7 @@ export default function MirrorPostureGameInsights() {
   const loadGameHistory = async (childId: string, page: number = 0) => {
     try {
       const response = await fetch(
-        `http://188.166.197.135:8083/api/mirror-posture-game/child/${childId}/history?page=${page}&size=5`
+        `https://neronurture.app:18083/api/mirror-posture-game/child/${childId}/history?page=${page}&size=5`
       );
       console.log("Game History Response:", response.status, response.ok);
 

@@ -17,7 +17,7 @@ export interface Patient {
 }
 
 class PatientService {
-  private baseUrl = "http://188.166.197.135:8093/api/doctor"; // Doctor service URL
+  private baseUrl = "https://neronurture.app:18093/api/doctor"; // Doctor service URL
 
   // Get all patients for a specific doctor
   async getPatientsByDoctor(doctorId: number): Promise<Patient[]> {

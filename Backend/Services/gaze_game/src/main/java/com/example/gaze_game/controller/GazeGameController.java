@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/gaze-game")
-@CrossOrigin(originPatterns = {"http://localhost:3000", "http://188.166.197.135", "http://localhost:3001", "http://localhost:8090", "http://localhost:5173"})
+@CrossOrigin(originPatterns = {"http://localhost:3000", "https://neronurture.app", "http://localhost:3001", "http://localhost:8090", "http://localhost:5173"})
 @Slf4j
 public class GazeGameController {
     

@@ -27,7 +27,7 @@ const Assistant: React.FC<AssistantProps> = ({ isOpen, onToggle }) => {
     const fetchUserData = async () => {
       try {
         const response = await fetch(
-          "http://188.166.197.135:8080/auth/me?format=json",
+          "https://neronurture.app:18080/auth/me?format=json",
           {
             credentials: "include",
           }

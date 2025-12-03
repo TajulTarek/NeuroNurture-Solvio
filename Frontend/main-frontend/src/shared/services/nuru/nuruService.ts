@@ -1,5 +1,5 @@
 // Nuru Chat Service API
-const NURU_CHAT_API_BASE_URL = "http://188.166.197.135:8094";
+const NURU_CHAT_API_BASE_URL = "https://neronurture.app:18094";
 
 export interface NuruChatRequest {
   message: string;

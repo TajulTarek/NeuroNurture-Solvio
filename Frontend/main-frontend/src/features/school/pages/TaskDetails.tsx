@@ -443,7 +443,7 @@ const TaskDetails: React.FC = () => {
         );
 
         const response = await fetch(
-          `http://188.166.197.135:8091/api/school/tasks/${taskId}/details?schoolId=${school.id}`,
+          `https://neronurture.app:18091/api/school/tasks/${taskId}/details?schoolId=${school.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -484,7 +484,7 @@ const TaskDetails: React.FC = () => {
         );
 
         const response = await fetch(
-          `http://188.166.197.135:8091/api/school/task-performance/${taskId}?schoolId=${school.id}`,
+          `https://neronurture.app:18091/api/school/task-performance/${taskId}?schoolId=${school.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

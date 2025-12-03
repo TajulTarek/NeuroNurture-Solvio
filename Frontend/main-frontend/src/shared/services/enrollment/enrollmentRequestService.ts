@@ -27,7 +27,7 @@ export interface RespondToEnrollmentRequestDto {
 }
 
 class EnrollmentRequestService {
-  private baseUrl = "http://188.166.197.135:8082/api/parents";
+  private baseUrl = "https://neronurture.app:18082/api/parents";
 
   // Get enrollment requests for a child
   async getEnrollmentRequestsForChild(

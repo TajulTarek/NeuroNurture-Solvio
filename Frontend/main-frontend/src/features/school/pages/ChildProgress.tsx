@@ -52,11 +52,13 @@ const GAME_OPTIONS = [
 ];
 
 const GAME_SERVICE_URLS = {
-  "dance-doodle": "http://188.166.197.135:8087/api/dance-doodle",
-  "gaze-game": "http://188.166.197.135:8086/api/gaze-game",
-  "gesture-game": "http://188.166.197.135:8084/api/gesture-game",
-  "mirror-posture-game": "http://188.166.197.135:8083/api/mirror-posture-game",
-  "repeat-with-me-game": "http://188.166.197.135:8089/api/repeat-with-me-game",
+  "dance-doodle": "https://neronurture.app:18087/api/dance-doodle",
+  "gaze-game": "https://neronurture.app:18086/api/gaze-game",
+  "gesture-game": "https://neronurture.app:18084/api/gesture-game",
+  "mirror-posture-game":
+    "https://neronurture.app:18083/api/mirror-posture-game",
+  "repeat-with-me-game":
+    "https://neronurture.app:18089/api/repeat-with-me-game",
 };
 
 const ChildProgress: React.FC = () => {
@@ -92,7 +94,7 @@ const ChildProgress: React.FC = () => {
     try {
       setIsLoading(true);
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/children/${childId}/details`
+        `https://neronurture.app:18082/api/parents/children/${childId}/details`
       );
 
       if (response.ok) {

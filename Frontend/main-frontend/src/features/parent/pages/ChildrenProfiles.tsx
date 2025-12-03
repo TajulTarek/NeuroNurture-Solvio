@@ -35,11 +35,11 @@ const ChildrenProfiles = () => {
 
   useEffect(() => {
     // First get parent info to get parentId
-    fetch("http://188.166.197.135:8080/auth/me", { credentials: "include" })
+    fetch("https://neronurture.app:18080/auth/me", { credentials: "include" })
       .then((res) => res.text())
       .then((email) => {
         return fetch(
-          `http://188.166.197.135:8082/api/parents/by-email/${email}`,
+          `https://neronurture.app:18082/api/parents/by-email/${email}`,
           {
             credentials: "include",
           }
@@ -57,7 +57,7 @@ const ChildrenProfiles = () => {
       .then((parent) => {
         setParentId(parent.id);
         return fetch(
-          `http://188.166.197.135:8082/api/parents/${parent.id}/children`,
+          `https://neronurture.app:18082/api/parents/${parent.id}/children`,
           {
             credentials: "include",
           }
@@ -158,7 +158,7 @@ const ChildrenProfiles = () => {
 
     try {
       const response = await fetch(
-        `http://188.166.197.135:8082/api/parents/children/${childId}`,
+        `https://neronurture.app:18082/api/parents/children/${childId}`,
         {
           method: "DELETE",
           credentials: "include",

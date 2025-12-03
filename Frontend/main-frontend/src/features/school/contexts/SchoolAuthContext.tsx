@@ -86,7 +86,7 @@ export const SchoolAuthProvider: React.FC<SchoolAuthProviderProps> = ({
 
     try {
       const response = await fetch(
-        "http://188.166.197.135:8091/api/school/auth/login",
+        "https://neronurture.app:18091/api/school/auth/login",
         {
           method: "POST",
           headers: {
@@ -192,7 +192,7 @@ export const SchoolAuthProvider: React.FC<SchoolAuthProviderProps> = ({
 
     try {
       const response = await fetch(
-        "http://188.166.197.135:8091/api/school/tasks/school/1",
+        "https://neronurture.app:18091/api/school/tasks/school/1",
         {
           headers: {
             Authorization: `Bearer ${token}`,

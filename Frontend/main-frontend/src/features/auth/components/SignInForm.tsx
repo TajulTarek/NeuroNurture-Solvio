@@ -23,7 +23,7 @@ export const SignInForm = ({
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     window.location.href =
-      "http://188.166.197.135:8080/oauth2/authorization/google";
+      "https://neronurture.app:18080/oauth2/authorization/google";
   };
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
@@ -39,7 +39,7 @@ export const SignInForm = ({
 
     setIsLoading(true);
     try {
-      const res = await fetch("http://188.166.197.135:8080/auth/login", {
+      const res = await fetch("https://neronurture.app:18080/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -91,7 +91,7 @@ export const SignInForm = ({
 
     try {
       const res = await fetch(
-        "http://188.166.197.135:8080/auth/resend-verification",
+        "https://neronurture.app:18080/auth/resend-verification",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

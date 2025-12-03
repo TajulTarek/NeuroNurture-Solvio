@@ -16,7 +16,7 @@ const MirrorPostureGamePage = () => {
   const tournamentId = searchParams.get("tournamentId");
 
   useEffect(() => {
-    fetch("http://188.166.197.135:8080/auth/session", {
+    fetch("https://neronurture.app:18080/auth/session", {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -39,7 +39,7 @@ const MirrorPostureGamePage = () => {
 
   const handleLogout = async () => {
     console.log("Logout button clicked");
-    await fetch("http://188.166.197.135:8080/auth/logout", {
+    await fetch("https://neronurture.app:18080/auth/logout", {
       method: "POST",
       credentials: "include",
     });

@@ -89,12 +89,12 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
             // For parents, redirect to auth page to let AuthSuccessHandler determine the
             // flow
             System.out.println("Redirecting parent to /auth for AuthSuccessHandler");
-            response.sendRedirect("http://188.166.197.135/auth");
+            response.sendRedirect("https://neronurture.app/auth");
         } else {
             // For other roles, redirect to their respective dashboards
             System.out.println("Redirecting " + user.getUserRole() + " to dashboard");
             response.sendRedirect(
-                    "http://188.166.197.135/" + user.getUserRole().toString().toLowerCase() + "/dashboard");
+                    "https://neronurture.app/" + user.getUserRole().toString().toLowerCase() + "/dashboard");
         }
     }
 }
